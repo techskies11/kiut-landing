@@ -232,6 +232,8 @@ onMounted(() => {
         </div>
         <div class="mt-12 pt-8 border-t text-center text-muted-foreground">
           <p>© {{ new Date().getFullYear() }} OnService.AI. All rights reserved.</p>
+          <p>AI Travel Technologies Inc.</p>
+          <p>16192 Coastal Highway, Lewes, Delaware 19958</p>
         </div>
       </div>
     </footer>
