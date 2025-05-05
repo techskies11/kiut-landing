@@ -90,7 +90,7 @@ onMounted(() => {
         </div>
       </section>
 
-      <section class="py-20 md:py-28">
+      <section class="py-20 md:py-28" v-if="false">
         <div class="container flex flex-col items-center text-center">
           <h1 class="text-3xl md:text-6xl font-bold tracking-tight mb-8 max-w-4xl">
             Trusted by leading companies to elevate customer service.
@@ -214,9 +214,9 @@ onMounted(() => {
             Join thousands of users who are already using OnService.AI to be more productive, creative, and effective.
           </p>
           <div>
-            <button class="px-8 py-3 text-base font-medium rounded-md text-violet-500">
+            <a href="mailto:jrestrepo@kiusys.com" class="px-8 py-3 text-base font-medium rounded-md text-violet-500 bg-white">
               Schedule a demo
-            </button>
+            </a>
           </div>
         </div>
       </section>
