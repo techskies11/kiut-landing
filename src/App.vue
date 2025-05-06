@@ -127,7 +127,7 @@ const questions = ref({
             </p>
           </div>
           <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            <div class="relative rounded-xl p-6 bg-[#0A0A0A] text-white overflow-hidden">
+            <div class="relative rounded-xl p-6 bg-[#0f0f0f] text-white overflow-hidden">
               <div class="absolute inset-0 bg-gradient-to-tr from-purple-900/10 via-transparent to-transparent opacity-70 pointer-events-none"></div>
               <div class="relative z-10 flex flex-col items-center">
                 <div class="mb-4">
@@ -135,11 +135,11 @@ const questions = ref({
                 </div>
                 <h3 class="text-xl font-semibold">Virtual Agent</h3>
                 <p class="mt-2 text-gray-300">
-                  Virtual agent available via the most popular chat platforms, with a friendly interface for conversations in a natural language.
+                  A virtual agent available on the most popular chat platforms, featuring a user-friendly interface for natural language conversations.
                 </p>
               </div>
             </div>
-            <div class="relative rounded-xl p-6 bg-[#0A0A0A] text-white overflow-hidden">
+            <div class="relative rounded-xl p-6 bg-[#0f0f0f] text-white overflow-hidden">
               <div class="absolute inset-0 bg-gradient-to-tr from-purple-900/10 via-transparent to-transparent opacity-70 pointer-events-none"></div>
               <div class="relative z-10 flex flex-col items-center">
                 <div class="mb-4">
@@ -147,12 +147,12 @@ const questions = ref({
                 </div>
                 <h3 class="text-xl font-semibold">Quick Answers</h3>
                 <p class="mt-2 text-gray-300">
-                  Answers the most frequent questions about fares and reservations efficiently, optimizing response times.
+                  Efficiently answers the most frequent questions about fares and reservations, optimizing response times.
                 </p>
               </div>
             </div>
 
-            <div class="relative rounded-xl p-6 bg-[#0A0A0A] text-white overflow-hidden">
+            <div class="relative rounded-xl p-6 bg-[#0f0f0f] text-white overflow-hidden">
               <div class="absolute inset-0 bg-gradient-to-tr from-purple-900/10 via-transparent to-transparent opacity-70 pointer-events-none"></div>
               <div class="relative z-10 flex flex-col items-center">
                 <div class="mb-4">
@@ -160,12 +160,12 @@ const questions = ref({
                 </div>
                 <h3 class="text-xl font-semibold">Smart Upselling</h3>
                 <p class="mt-2 text-gray-300">
-                  Smart upsell of relevant ancillary services for the customer in queries for flight availability, fares, reservation, check-in.
+                  Intelligently upsells relevant ancillary services during customer inquiries about flight availability, fares, reservations, and check-in.
                 </p>
               </div>
             </div>
 
-            <div class="relative rounded-xl p-6 bg-[#0A0A0A] text-white overflow-hidden">
+            <div class="relative rounded-xl p-6 bg-[#0f0f0f] text-white overflow-hidden">
               <div class="absolute inset-0 bg-gradient-to-tr from-purple-900/10 via-transparent to-transparent opacity-70 pointer-events-none"></div>
               <div class="relative z-10 flex flex-col items-center">
                 <div class="mb-4">
@@ -178,7 +178,7 @@ const questions = ref({
               </div>
             </div>
 
-            <div class="relative rounded-xl p-6 bg-[#0A0A0A] text-white overflow-hidden">
+            <div class="relative rounded-xl p-6 bg-[#0f0f0f] text-white overflow-hidden">
               <div class="absolute inset-0 bg-gradient-to-tr from-purple-900/10 via-transparent to-transparent opacity-70 pointer-events-none"></div>
               <div class="relative z-10 flex flex-col items-center">
                 <div class="mb-4">
@@ -186,12 +186,12 @@ const questions = ref({
                 </div>
                 <h3 class="text-xl font-semibold">24/7 Support</h3>
                 <p class="mt-2 text-gray-300">
-                  Expands customer service beyond business hours. Also, multiple languages are available based on your markets.
+                  Expands customer service beyond business hours. Supports multiple languages, catering to a diverse customer base.
                 </p>
               </div>
             </div>
 
-            <div class="relative rounded-xl p-6 bg-[#0A0A0A] text-white overflow-hidden">
+            <div class="relative rounded-xl p-6 bg-[#0f0f0f] text-white overflow-hidden">
               <div class="absolute inset-0 bg-gradient-to-tr from-purple-900/10 via-transparent to-transparent opacity-70 pointer-events-none"></div>
               <div class="relative z-10 flex flex-col items-center">
                 <div class="mb-4">
@@ -199,7 +199,7 @@ const questions = ref({
                 </div>
                 <h3 class="text-xl font-semibold">Task Automation</h3>
                 <p class="mt-2 text-gray-300">
-                  Allows the automation of frequently asked questions so that your most qualified staff deals with complex cases.
+                  Provides a seamless experience through integration with existing airline systems and platforms.
                 </p>
               </div>
             </div>
