@@ -62,6 +62,18 @@ onMounted(() => {
   });
   gsap.from(".typing", { opacity: 0, y: 20, duration: 0.6, delay: 0.2 });
 
+  gsap.from("header", {
+    y: -80,
+    opacity: 0,
+    duration: 0.8,
+    ease: "power2.out",
+    scrollTrigger: {
+      trigger: "main",
+      start: "top top+=10",
+      toggleActions: "play none none reverse",
+    },
+  });
+
   const container = document.querySelector(".panel-container");
 
   if (container) {
@@ -122,18 +134,21 @@ const questions = ref({
         </div>
 
         <p
-          class="text-lg sm:text-xl md:text-2xl text-gray-400 max-w-xl mb-12 px-4"
+          class="text-gray-400 text-xl md:text-[1.25rem] leading-relaxed tracking-wide max-w-2xl mx-auto mt-6 sm:mt-8 mb-10 px-4 sm:px-0"
         >
-          A solution powered by artificial intelligence that optimizes sales and
-          customer service via WhatsApp, and soon will be extended to Telegram,
-          WeChat, and iMessage.
+          Our AI solution transforms customer experiences and boosts sales
+          through
+          <strong class="text-white font-medium">WhatsApp</strong> — soon
+          expanding to <strong class="text-white font-medium">Telegram</strong>,
+          <strong class="text-white font-medium">WeChat</strong>, and
+          <strong class="text-white font-medium">iMessage</strong>.
         </p>
 
-        <div class="flex flex-col sm:flex-row gap-4 px-4">
+        <div class="flex flex-col sm:flex-row gap-4 px-4 justify-center mt-6">
           <a
             href="https://wa.me/5491130261625"
             target="_blank"
-            class="px-6 py-3 bg-violet-600 text-white rounded-lg hover:bg-violet-700 transition text-sm sm:text-base"
+            class="px-8 py-3.5 bg-violet-600 text-white rounded-xl hover:bg-violet-700 transition text-base font-semibold shadow-md h-12 flex items-center justify-center min-w-[200px]"
           >
             Chat with Agent AI
           </a>
@@ -160,7 +175,9 @@ const questions = ref({
 
       <!-- videoiframe -->
 
-      <section class="pb-32 relative w-full flex justify-center bg-black max-w-screen">
+      <section
+        class="pb-32 pt-20 relative w-full flex justify-center bg-black max-w-screen"
+      >
         <div
           class="rounded-lg border bg-card shadow-xl overflow-hidden w-full max-w-4xl"
         >
@@ -180,28 +197,62 @@ const questions = ref({
       </section>
 
       <!-- horizontal scroll -->
-      <section class="relative w-full overflow-x-hidden">
-        <div class="horizontal-scroll h-screen">
+      <section class="horizontal-scroll relative w-full overflow-x-hidden">
+        <div class="panel-container flex">
           <div class="panel-container flex w-[300vw]">
             <div
-              class="panel w-screen h-screen bg-purple-700 flex items-center justify-center text-white text-4xl"
+              class="panel w-screen h-screen bg-gradient-to-br from-violet-700 via-purple-800 to-black text-white flex items-center justify-center px-8"
             >
-              1
+              <div class="max-w-xl text-center">
+                <img
+                  src="/gifs/chat-typing.gif"
+                  class="mx-auto mb-6 w-40 h-40"
+                />
+                <h2 class="text-3xl font-bold mb-4">
+                  Automated chat onboarding
+                </h2>
+                <p class="text-lg text-gray-300">
+                  Guide your users with smart flows powered by AI. Start
+                  conversations in seconds.
+                </p>
+              </div>
             </div>
+
             <div
-              class="panel w-screen h-screen bg-black flex items-center justify-center text-white text-4xl"
+              class="panel w-screen h-screen bg-black text-white flex items-center justify-center px-8"
             >
-              2
+              <div class="max-w-xl text-center">
+                <img
+                  src="/gifs/integrations.gif"
+                  class="mx-auto mb-6 w-40 h-40"
+                />
+                <h2 class="text-3xl font-bold mb-4">
+                  Integrates with your tools
+                </h2>
+                <p class="text-lg text-gray-300">
+                  Connect to WhatsApp, Telegram, iMessage, CRMs, and more
+                  without writing code.
+                </p>
+              </div>
             </div>
+
             <div
-              class="panel w-screen h-screen bg-violet-500 flex items-center justify-center text-white text-4xl"
+              class="panel w-screen h-screen bg-gradient-to-br from-black to-violet-600 text-white flex items-center justify-center px-8"
             >
-              3
+              <div class="max-w-xl text-center">
+                <img src="/gifs/metrics.gif" class="mx-auto mb-6 w-40 h-40" />
+                <h2 class="text-3xl font-bold mb-4">Real-time metrics</h2>
+                <p class="text-lg text-gray-300">
+                  Track performance, satisfaction and conversion in one
+                  dashboard.
+                </p>
+              </div>
             </div>
           </div>
         </div>
       </section>
 
+      <!-- clients? dont show -->
       <section class="py-20 md:py-28" v-if="false">
         <div class="container flex flex-col items-center text-center">
           <h1
@@ -552,7 +603,7 @@ const questions = ref({
 
       <!-- CTA Section -->
       <div
-        class="relative bg-black text-white rounded-2xl p-12 overflow-hidden max-w-screen"
+        class="relative bg-black text-white rounded-2xl px-6 py-20 md:py-28 overflow-hidden max-w-screen text-center"
       >
         <div
           class="absolute inset-0 bg-gradient-to-br from-[#1A1A1A] opacity-60 z-0"
@@ -565,12 +616,9 @@ const questions = ref({
             Join thousands of users who are already using OnService.AI to be
             more productive, creative, and effective.
           </p>
-          <a
-            href="mailto:jrestrepo@kiusys.com"
-            class="inline-block mt-6 px-6 py-3 bg-purple-600 text-white no-underline rounded-lg hover:bg-purple-700 transition font-medium"
-          >
-            Schedule a demo
-          </a>
+          <div class="inline-block mt-6 px-6 py-3">
+            <ButtonAnimate />
+          </div>
         </div>
       </div>
     </main>
