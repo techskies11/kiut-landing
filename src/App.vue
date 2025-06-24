@@ -49,8 +49,6 @@ const openLink = (url) => {
   window.open(url, "_blank");
 };
 
-const NUM_PANELS = 3;
-
 onMounted(() => {
   typeEffect();
 
@@ -74,22 +72,34 @@ onMounted(() => {
     },
   });
 
-  const container = document.querySelector(".panel-container");
+  const panels = gsap.utils.toArray(".panel");
+  const container = document.querySelector(".panel-track");
 
-  if (container) {
+  if (container && panels.length) {
+    const total = panels.length;
     gsap.to(container, {
-      xPercent: -100 * (NUM_PANELS - 1),
+      xPercent: -100 * (total - 1),
       ease: "none",
       scrollTrigger: {
         trigger: ".horizontal-scroll",
         pin: true,
         scrub: 1,
-        snap: 1 / (NUM_PANELS - 1),
-        end: () => "+=" + container.offsetWidth,
+        snap: 1 / (total - 1),
+        end: () => "+=" + (container.offsetWidth - window.innerWidth),
       },
     });
+
+    panels.forEach((panel) => {
+      ScrollTrigger.create({
+        trigger: panel,
+        containerAnimation: containerAnim,
+        start: "left center",
+        end: "right center",
+        toggleClass: { targets: panel, className: "active" },
+      });
+    });
   } else {
-    console.warn("⚠️ .panel-container no encontrado en el DOM");
+    console.warn("⚠️ .panel-track no encontrado en el DOM");
   }
 });
 
@@ -199,13 +209,14 @@ const questions = ref({
       <!-- horizontal scroll -->
       <section class="horizontal-scroll relative w-full overflow-x-hidden">
         <div class="panel-container flex">
-          <div class="panel-container flex w-[300vw]">
+          <div class="panel-track flex w-[300vw]">
             <div
               class="panel w-screen h-screen bg-gradient-to-br from-violet-700 via-purple-800 to-black text-white flex items-center justify-center px-8"
             >
               <div class="max-w-xl text-center">
                 <img
-                  src="/gifs/chat-typing.gif"
+                  src="/conversation.png"
+                  alt="Chat onboarding"
                   class="mx-auto mb-6 w-40 h-40"
                 />
                 <h2 class="text-3xl font-bold mb-4">
@@ -223,7 +234,8 @@ const questions = ref({
             >
               <div class="max-w-xl text-center">
                 <img
-                  src="/gifs/integrations.gif"
+                  src="/bot.png"
+                  alt="Intefrations"
                   class="mx-auto mb-6 w-40 h-40"
                 />
                 <h2 class="text-3xl font-bold mb-4">
@@ -240,7 +252,7 @@ const questions = ref({
               class="panel w-screen h-screen bg-gradient-to-br from-black to-violet-600 text-white flex items-center justify-center px-8"
             >
               <div class="max-w-xl text-center">
-                <img src="/gifs/metrics.gif" class="mx-auto mb-6 w-40 h-40" />
+                <img src="/clipboard.png" alt="Metrics" class="mx-auto mb-6 w-40 h-40" />
                 <h2 class="text-3xl font-bold mb-4">Real-time metrics</h2>
                 <p class="text-lg text-gray-300">
                   Track performance, satisfaction and conversion in one
@@ -757,6 +769,15 @@ body {
 
 .border-primary {
   border-color: hsl(var(--primary));
+}
+
+.panel {
+  opacity: 0.3;
+  transition: opacity 0.6s ease;
+}
+
+.panel.active {
+  opacity: 1;
 }
 
 .container {
