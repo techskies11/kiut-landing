@@ -1,10 +1,10 @@
 <script setup>
-import { onMounted, ref } from "vue";
+import { onMounted, onBeforeUnmount, ref, nextTick } from "vue";
 import ButtonAnimate from "./components/ButtonAnimate.vue";
 import gsap from "gsap";
-import ScrollTrigger from "gsap/ScrollTrigger";
+import { ScrollToPlugin } from "gsap/ScrollToPlugin";
 
-gsap.registerPlugin(ScrollTrigger);
+gsap.registerPlugin(ScrollToPlugin);
 
 const words = [
   "customer support",
@@ -24,18 +24,16 @@ let wordIndex = 0;
 let charIndex = 0;
 let isDeleting = false;
 const typing = ref("");
+const cursor = ref(null);
+const showScrollTop = ref(false);
+const scrollBtn = ref(null);
 
-const typeEffect = () => {
-  let currentWord = words[wordIndex];
-  if (isDeleting) {
-    charIndex--;
-  } else {
-    charIndex++;
-  }
+function typeEffect() {
+  const current = words[wordIndex];
+  charIndex += isDeleting ? -1 : 1;
+  typing.value = current.substring(0, charIndex);
 
-  typing.value = currentWord.substring(0, charIndex);
-
-  if (!isDeleting && charIndex === currentWord.length) {
+  if (!isDeleting && charIndex === current.length) {
     setTimeout(() => (isDeleting = true), 1000);
   } else if (isDeleting && charIndex === 0) {
     isDeleting = false;
@@ -43,7 +41,45 @@ const typeEffect = () => {
   }
 
   setTimeout(typeEffect, isDeleting ? 50 : 100);
-};
+}
+
+function handleScroll() {
+  if (window.scrollY > 300 && !showScrollTop.value) {
+    showScrollTop.value = true;
+    nextTick(() => {
+      gsap.fromTo(
+        scrollBtn.value,
+        { opacity: 0, scale: 0, y: 20 },
+        { opacity: 1, scale: 1, y: 0, duration: 1.4, ease: "back.out(1.5)" }
+      );
+      gsap.to(scrollBtn.value, {
+        y: -6,
+        duration: 1.5,
+        repeat: -1,
+        yoyo: true,
+        ease: "sine.inOut",
+        delay: 0.5,
+      });
+    });
+  } else if (window.scrollY <= 300 && showScrollTop.value) {
+    gsap.to(scrollBtn.value, {
+      opacity: 0,
+      scale: 0,
+      duration: 0.2,
+      ease: "power2.in",
+      opacity: 0,
+      scale: 0,
+      y: 20,
+      duration: 0.3,
+      ease: "power1.inOut",
+      onComplete: () => (showScrollTop.value = false),
+    });
+  }
+}
+
+function scrollToTop() {
+  gsap.to(window, { duration: 0.3, scrollTo: { y: 0 }, ease: "power2.out" });
+}
 
 const openLink = (url) => {
   window.open(url, "_blank");
@@ -51,6 +87,58 @@ const openLink = (url) => {
 
 onMounted(() => {
   typeEffect();
+  // Cursor parpadeante
+  gsap.to(cursor.value, {
+    opacity: 1,
+    duration: 0.6,
+    ease: "power1.inOut",
+    repeat: -1,
+    yoyo: true,
+  });
+
+  // Timeline para animar el Hero completo
+  const tl = gsap.timeline();
+  tl.from(".gsap-hero span.block", {
+    opacity: 0,
+    y: 40,
+    duration: 0.8,
+    stagger: 0.2,
+    ease: "power3.out",
+  })
+    .from(
+      ".hero-desc",
+      { opacity: 0, y: 20, duration: 0.6, ease: "power3.out" },
+      "-=0.4"
+    )
+    .from(
+      ".hero-cta",
+      {
+        opacity: 0,
+        scale: 0.8,
+        duration: 0.6,
+        ease: "back.out(1.4)",
+        stagger: 0.2,
+      },
+      "-=0.4"
+    )
+    .from(
+      ".arrow",
+      { opacity: 0, y: 20, duration: 0.6, ease: "power2.out" },
+      "-=0.4"
+    );
+  gsap.to(".arrow", {
+    y: -8,
+    duration: 1.2, 
+    ease: "sine.inOut",
+    repeat: -1,
+    yoyo: true,
+    delay: 1.5,
+  });
+
+  window.addEventListener("scroll", handleScroll);
+  onBeforeUnmount(() => {
+    window.removeEventListener("scroll", handleScroll);
+  });
 
   gsap.from(".gsap-hero", {
     opacity: 0,
@@ -58,46 +146,18 @@ onMounted(() => {
     duration: 1.2,
     ease: "power3.out",
   });
-  gsap.from(".typing", { opacity: 0, y: 20, duration: 0.6, delay: 0.2 });
 
   gsap.from("header", {
     y: -80,
     opacity: 0,
     duration: 0.8,
     ease: "power2.out",
-    scrollTrigger: {
-      trigger: "main",
-      start: "top top+=10",
-      toggleActions: "play none none reverse",
-    },
   });
 
-  const panels = gsap.utils.toArray(".panel");
   const container = document.querySelector(".panel-track");
 
-  if (container && panels.length) {
-    const total = panels.length;
-    gsap.to(container, {
-      xPercent: -100 * (total - 1),
-      ease: "none",
-      scrollTrigger: {
-        trigger: ".horizontal-scroll",
-        pin: true,
-        scrub: 1,
-        snap: 1 / (total - 1),
-        end: () => "+=" + (container.offsetWidth - window.innerWidth),
-      },
-    });
-
-    panels.forEach((panel) => {
-      ScrollTrigger.create({
-        trigger: panel,
-        containerAnimation: containerAnim,
-        start: "left center",
-        end: "right center",
-        toggleClass: { targets: panel, className: "active" },
-      });
-    });
+  if (container) {
+    console.log(container, "container");
   } else {
     console.warn("⚠️ .panel-track no encontrado en el DOM");
   }
@@ -116,7 +176,7 @@ const questions = ref({
 </script>
 
 <template>
-  <div class="flex min-h-screen flex-col">
+  <div class="flex min-h-screen flex-col bg-black">
     <!-- Header -->
     <header
       class="fixed top-0 left-0 w-full z-50 bg-gradient-to-b from-black/80 to-transparent backdrop-blur-md"
@@ -126,35 +186,41 @@ const questions = ref({
       </div>
     </header>
 
-    <main class="flex-1">
+    <main class="flex-1 bg-black">
       <!-- Hero Section -->
       <section
-        class="bg-black text-white pt-24 md:py-28 px-4 sm:px-6 text-center flex flex-col items-center justify-center min-h-[90vh] w-full overflow-hidden max-w-screen"
+        class="bg-black text-white pt-24 md:py-28 px-4 sm:px-6 text-center flex flex-col items-center justify-center min-h-[90vh] w-full overflow-hidden"
       >
         <div class="w-full max-w-screen-md px-4">
           <h1
-            class="gsap-hero text-4xl sm:text-5xl md:text-7xl font-bold leading-tight mb-4 text-center"
+            class="gsap-hero text-4xl sm:text-5xl md:text-7xl font-bold leading-tight mb-4"
           >
             <span class="block">The new evolution of</span>
-            <span class="inline-block min-w-[11ch] text-violet-500 typing">{{
-              typing
-            }}</span>
+
+            <!-- Typing con cursor -->
+            <span class="inline-block min-w-[11ch] text-violet-500 typing">
+              {{ typing
+              }}<span ref="cursor" class="inline-block opacity-0">|</span>
+            </span>
+
             <span class="block">for airlines.</span>
           </h1>
         </div>
 
         <p
-          class="text-gray-400 text-xl md:text-[1.25rem] leading-relaxed tracking-wide max-w-2xl mx-auto mt-6 sm:mt-8 mb-10 px-4 sm:px-0"
+          class="hero-desc text-gray-400 text-xl md:text-[1.25rem] leading-relaxed tracking-wide max-w-2xl mx-auto mt-6 sm:mt-8 mb-10 px-4 sm:px-0"
         >
           Our AI solution transforms customer experiences and boosts sales
-          through
-          <strong class="text-white font-medium">WhatsApp</strong> — soon
-          expanding to <strong class="text-white font-medium">Telegram</strong>,
+          through <strong class="text-white font-medium">WhatsApp</strong> —
+          soon expanding to
+          <strong class="text-white font-medium">Telegram</strong>,
           <strong class="text-white font-medium">WeChat</strong>, and
           <strong class="text-white font-medium">iMessage</strong>.
         </p>
 
-        <div class="flex flex-col sm:flex-row gap-4 px-4 justify-center mt-6">
+        <div
+          class="hero-cta flex flex-col sm:flex-row gap-4 px-4 justify-center mt-6"
+        >
           <a
             href="https://wa.me/5491130261625"
             target="_blank"
@@ -165,7 +231,7 @@ const questions = ref({
           <ButtonAnimate />
         </div>
 
-        <div class="mt-16 animate-bounce text-gray-500">
+        <div class="arrow mt-16 text-gray-500">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             class="w-8 h-8 mx-auto"
@@ -185,9 +251,7 @@ const questions = ref({
 
       <!-- videoiframe -->
 
-      <section
-        class="pb-32 pt-20 relative w-full flex justify-center bg-black max-w-screen"
-      >
+      <section class="pb-32 pt-20 relative w-full flex justify-center bg-black">
         <div
           class="rounded-lg border bg-card shadow-xl overflow-hidden w-full max-w-4xl"
         >
@@ -207,7 +271,7 @@ const questions = ref({
       </section>
 
       <!-- horizontal scroll -->
-      <section class="horizontal-scroll relative w-full overflow-x-hidden">
+      <!-- <section class="horizontal-scroll relative w-full overflow-x-hidden">
         <div class="panel-container flex">
           <div class="panel-track flex w-[300vw]">
             <div
@@ -252,7 +316,11 @@ const questions = ref({
               class="panel w-screen h-screen bg-gradient-to-br from-black to-violet-600 text-white flex items-center justify-center px-8"
             >
               <div class="max-w-xl text-center">
-                <img src="/clipboard.png" alt="Metrics" class="mx-auto mb-6 w-40 h-40" />
+                <img
+                  src="/clipboard.png"
+                  alt="Metrics"
+                  class="mx-auto mb-6 w-40 h-40"
+                />
                 <h2 class="text-3xl font-bold mb-4">Real-time metrics</h2>
                 <p class="text-lg text-gray-300">
                   Track performance, satisfaction and conversion in one
@@ -262,7 +330,7 @@ const questions = ref({
             </div>
           </div>
         </div>
-      </section>
+      </section> -->
 
       <!-- clients? dont show -->
       <section class="py-20 md:py-28" v-if="false">
@@ -318,7 +386,7 @@ const questions = ref({
       </section>
 
       <!-- Features Section -->
-      <section id="features" class="py-20 max-w-screen bg-muted/50">
+      <section id="features" class="py-20 bg-black">
         <div class="container">
           <div class="text-center mb-16">
             <h2 class="text-3xl md:text-4xl font-semibold mb-4">
@@ -468,7 +536,7 @@ const questions = ref({
       </section>
 
       <!-- FAQ Section -->
-      <section id="faq" class="py-20 max-w-screen">
+      <section id="faq" class="py-20">
         <div class="container">
           <div class="text-center mb-16">
             <h2 class="text-3xl md:text-4xl font-semibold mb-4">
@@ -614,50 +682,129 @@ const questions = ref({
       </section>
 
       <!-- CTA Section -->
-      <div
-        class="relative bg-black text-white rounded-2xl px-6 py-20 md:py-28 overflow-hidden max-w-screen text-center"
+      <section
+        class="relative overflow-hidden bg-gradient-to-br from-[#1b0c34] via-[#2d0e59] to-[#381171] px-8 py-24 md:py-32 text-center"
       >
         <div
-          class="absolute inset-0 bg-gradient-to-br from-[#1A1A1A] opacity-60 z-0"
+          class="pointer-events-none absolute -left-20 -top-20 h-72 w-72 rounded-full bg-purple-500/40 blur-3xl"
         ></div>
-        <div class="relative z-10 text-center">
-          <h1 class="text-4xl md:text-5xl font-semibold leading-tight">
-            Ready to experience the future of AI chat?
-          </h1>
-          <p class="mt-4 text-gray-300">
-            Join thousands of users who are already using OnService.AI to be
-            more productive, creative, and effective.
-          </p>
-          <div class="inline-block mt-6 px-6 py-3">
-            <ButtonAnimate />
-          </div>
-        </div>
-      </div>
-    </main>
-
-    <footer class="py-12 md:py-16 max-w-screen">
-      <div class="container">
         <div
-          class="flex gap-2 justify-between md:items-end flex-col md:flex-row"
-        >
+          class="pointer-events-none absolute -bottom-20 -right-20 h-72 w-72 rounded-full bg-violet-600/30 blur-3xl"
+        ></div>
+        <h2 class="text-4xl md:text-5xl font-bold text-white">
+          Ready to experience the future of AI chat?
+        </h2>
+        <p class="mx-auto mt-4 max-w-xl text-base text-gray-300">
+          Join thousands of users already boosting their customer service with
+          OnService.AI.
+        </p>
+        <div class="mt-8 inline-block">
+          <ButtonAnimate />
+        </div>
+      </section>
+    </main>
+    <!-- back to top -->
+    <div
+      v-if="showScrollTop"
+      ref="scrollBtn"
+      @click="scrollToTop"
+      class="fixed bottom-8 right-8 z-50 flex h-12 w-12 cursor-pointer items-center justify-center rounded-full bg-violet-600 shadow-xl hover:bg-violet-700"
+    >
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        class="h-6 w-6 text-white"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke="currentColor"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          d="M5 15l7-7 7 7"
+        />
+      </svg>
+    </div>
+
+    <footer class="bg-[#09090b] text-gray-400 pt-16 pb-10">
+      <div class="container mx-auto px-4">
+        <!-- 3 columnas: Logo/Descripción – Quick Links – Contacto -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <!-- Columna 1: Logo + Descripción + Terminos/Privacidad -->
           <div class="flex flex-col items-center md:items-start">
-            <img src="/logo.png" alt="OnService.AI" class="w-auto max-w-40" />
-            <p class="text-muted-foreground mx-1 mt-2">
-              16192 Coastal Highway<br />Lewes, Delaware 19958
+            <img src="/logo.png" alt="OnService.AI" class="h-10 mb-4" />
+            <p class="text-sm text-center md:text-left mb-4">
+              The next generation of AI chat assistants, designed to help you
+              achieve more.
+            </p>
+            <div
+              class="flex flex-col sm:flex-row items-center sm:items-start gap-2 sm:gap-4"
+            >
+              <a href="/privacy" class="hover:text-white text-sm"
+                >Privacy Policy</a
+              >
+              <a href="/terms" class="hover:text-white text-sm"
+                >Terms of Service</a
+              >
+            </div>
+          </div>
+
+          <!-- Columna 2: Quick Links -->
+          <div class="flex flex-col items-center">
+            <h4 class="text-white font-semibold mb-4">Quick Links</h4>
+            <ul class="space-y-2 text-sm">
+              <li><a href="#features" class="hover:text-white">Features</a></li>
+              <li><a href="#faq" class="hover:text-white">FAQ</a></li>
+              <li><a href="#pricing" class="hover:text-white">Pricing</a></li>
+              <li>
+                <a href="#demo" class="hover:text-white">Schedule a Demo</a>
+              </li>
+            </ul>
+          </div>
+
+          <!-- Columna 3: Contacto -->
+          <div class="flex flex-col items-center md:items-end">
+            <h4 class="text-white font-semibold mb-4">Contact Us</h4>
+            <p class="text-sm mb-2">
+              Email:
+              <a href="mailto:hello@onservice.ai" class="hover:text-white">
+                hello@onservice.ai
+              </a>
+            </p>
+            <p class="text-sm mb-2">
+              Phone:
+              <a href="tel:+5491130261625" class="hover:text-white">
+                +54 9 11 3026 1625
+              </a>
+            </p>
+            <p class="text-sm text-center md:text-right">
+              16192 Coastal Highway<br />
+              Lewes, DE 19958
             </p>
           </div>
-          <p class="text-muted-foreground mb-4">
-            The next generation of AI chat assistants, designed to help you
-            achieve more.
-          </p>
         </div>
+
+        <!-- Divider -->
+        <div class="mt-12 border-t border-white/10"></div>
+
+        <!-- Bottom row: copyright + compañía + redes -->
         <div
-          class="mt-12 pt-8 border-t text-center text-muted-foreground flex justify-between flex-col md:flex-row"
+          class="mt-6 flex flex-col md:flex-row items-center justify-between text-xs space-y-2 md:space-y-0"
         >
           <p>
             © {{ new Date().getFullYear() }} OnService.AI. All rights reserved.
           </p>
           <p>AI Travel Technologies Inc.</p>
+          <div class="flex space-x-4">
+            <a
+              href="https://linkedin.com/company/onservice"
+              class="hover:text-white"
+              >LinkedIn</a
+            >
+            <a href="https://twitter.com/onservice" class="hover:text-white"
+              >Twitter</a
+            >
+          </div>
         </div>
       </div>
     </footer>
@@ -769,15 +916,6 @@ body {
 
 .border-primary {
   border-color: hsl(var(--primary));
-}
-
-.panel {
-  opacity: 0.3;
-  transition: opacity 0.6s ease;
-}
-
-.panel.active {
-  opacity: 1;
 }
 
 .container {
