@@ -1,5 +1,5 @@
 <script setup>
-import { onMounted, onBeforeUnmount, ref, nextTick } from "vue";
+import { onMounted, onBeforeUnmount, ref, nextTick, computed } from "vue";
 import ButtonAnimate from "./components/ButtonAnimate.vue";
 import ParticleBackground from "./components/ParticleBackground.vue";
 import gsap from "gsap";
@@ -146,7 +146,10 @@ const scrollBtn = ref(null);
 const underline = ref(null);
 const cards = ref([]);
 
-const teamScrollRef = ref(null);
+const teamTrack = ref(null);
+let teamScrollTrigger = null;
+
+const visibleTeam = computed(() => team.slice(0, 8));
 
 function typeEffect() {
   const current = words[wordIndex];
@@ -310,37 +313,29 @@ window.addEventListener('resize', () => {
   teamSlides.value = getTeamSlides();
 });
 
-function scrollTeamToStart() {
-  if (teamScrollRef.value) {
-    teamScrollRef.value.scrollTo({ left: 0, behavior: "smooth" });
+function updateTeamScrollTrigger() {
+  const track = teamTrack.value;
+  const section = document.getElementById('team');
+  if (track && section) {
+    const container = track.parentElement;
+    const totalScroll = track.scrollWidth - container.clientWidth;
+    if (teamScrollTrigger) teamScrollTrigger.kill();
+    teamScrollTrigger = gsap.to(track, {
+      x: () => `-${totalScroll}px`,
+      ease: 'none',
+      scrollTrigger: {
+        id: 'teamPin',
+        trigger: section,
+        start: 'top top',
+        end: () => `+=${totalScroll * 1.3}`,
+        pin: true,
+        scrub: 1.2,
+        anticipatePin: 1,
+        invalidateOnRefresh: true,
+      },
+    });
+    setTimeout(() => { window.ScrollTrigger && window.ScrollTrigger.refresh && window.ScrollTrigger.refresh(); }, 100);
   }
-}
-function scrollTeamToEnd() {
-  if (teamScrollRef.value) {
-    teamScrollRef.value.scrollTo({ left: teamScrollRef.value.scrollWidth, behavior: "smooth" });
-  }
-}
-
-function sectionEnter(el, done) {
-  gsap.fromTo(
-    el,
-    { opacity: 0, y: 40 },
-    { opacity: 1, y: 0, duration: 0.7, ease: "power3.out", onComplete: done }
-  );
-}
-function sectionLeave(el, done) {
-  gsap.to(el, { opacity: 0, y: 40, duration: 0.5, ease: "power2.in", onComplete: done });
-}
-
-function featuresEnter(el, done) {
-  gsap.fromTo(
-    el,
-    { opacity: 0, y: 40 },
-    { opacity: 1, y: 0, duration: 0.7, ease: "power3.out", onComplete: done }
-  );
-}
-function featuresLeave(el, done) {
-  gsap.to(el, { opacity: 0, y: 40, duration: 0.5, ease: "power2.in", onComplete: done });
 }
 
 onMounted(async () => {
@@ -369,41 +364,6 @@ onMounted(async () => {
     stagger: 0.12,
     clearProps: "all",
   });
-
-  // GSAP horizontal swipe tipo slide para el team
-  const panels = document.querySelectorAll(".team-panel-slide");
-  const track = document.querySelector(".team-panel-track");
-  if (panels.length && track) {
-    gsap.to(track, {
-      xPercent: -100 * (panels.length - 1),
-      ease: "none",
-      scrollTrigger: {
-        trigger: ".team-horizontal-scroll",
-        start: "top top",
-        end: () => `+=${window.innerWidth * panels.length}`,
-        pin: true,
-        scrub: 1,
-        anticipatePin: 1,
-        snap: 1 / (panels.length - 1),
-      },
-    });
-    // Animación de entrada para cada slide
-    panels.forEach((panel, i) => {
-      gsap.from(panel.querySelectorAll('.team-name, .team-role, .team-desc, .avatar'), {
-        scrollTrigger: {
-          trigger: panel,
-          containerAnimation: ScrollTrigger.getById('teamSwipe'),
-          start: "left center",
-        },
-        opacity: 0,
-        y: 40,
-        duration: 0.7,
-        stagger: 0.1,
-        ease: "power3.out",
-        delay: 0.1,
-      });
-    });
-  }
 
   // Animación del video con parallax
   gsap.from(".video-container", {
@@ -527,11 +487,17 @@ onMounted(async () => {
   } else {
     console.warn("⚠️ .panel-track no encontrado en el DOM");
   }
+
+  updateTeamScrollTrigger();
+  window.addEventListener('resize', updateTeamScrollTrigger);
+  setTimeout(() => { window.ScrollTrigger && window.ScrollTrigger.refresh && window.ScrollTrigger.refresh(); }, 200);
 });
 
 onBeforeUnmount(() => {
   window.removeEventListener("scroll", handleScroll);
   ScrollTrigger.getAll().forEach((t) => t.kill());
+  window.removeEventListener('resize', updateTeamScrollTrigger);
+  if (teamScrollTrigger) teamScrollTrigger.kill();
 });
 
 function backToTopEnter(el, done) {
@@ -568,6 +534,48 @@ function backToTopLeave(el, done) {
     ease: "back.in(1.7)",
     onComplete: done,
   });
+}
+
+function scrollTeamToStart() {
+  const st = window.ScrollTrigger && window.ScrollTrigger.getById && window.ScrollTrigger.getById('teamPin');
+  if (st) {
+    window.scrollTo({ top: st.start, behavior: 'smooth' });
+  } else {
+    const section = document.getElementById('team');
+    if (section) window.scrollTo({ top: section.offsetTop, behavior: 'smooth' });
+  }
+}
+
+function scrollTeamToEnd() {
+  const st = window.ScrollTrigger && window.ScrollTrigger.getById && window.ScrollTrigger.getById('teamPin');
+  if (st) {
+    window.scrollTo({ top: st.end, behavior: 'smooth' });
+  } else {
+    const section = document.getElementById('team');
+    if (section) window.scrollTo({ top: section.offsetTop + section.offsetHeight - window.innerHeight, behavior: 'smooth' });
+  }
+}
+
+function sectionEnter(el, done) {
+  gsap.fromTo(
+    el,
+    { opacity: 0, y: 40 },
+    { opacity: 1, y: 0, duration: 0.7, ease: "power3.out", onComplete: done }
+  );
+}
+function sectionLeave(el, done) {
+  gsap.to(el, { opacity: 0, y: 40, duration: 0.5, ease: "power2.in", onComplete: done });
+}
+
+function featuresEnter(el, done) {
+  gsap.fromTo(
+    el,
+    { opacity: 0, y: 40 },
+    { opacity: 1, y: 0, duration: 0.7, ease: "power3.out", onComplete: done }
+  );
+}
+function featuresLeave(el, done) {
+  gsap.to(el, { opacity: 0, y: 40, duration: 0.5, ease: "power2.in", onComplete: done });
 }
 </script>
 
@@ -709,6 +717,46 @@ function backToTopLeave(el, done) {
         </div>
       </section>
 
+      <!-- Team Section con scroll horizontal GSAP hijack -->
+      <section id="team" class="relative w-full overflow-x-hidden py-24 bg-black">
+        <div class="container mx-auto px-4">
+          <SectionTitle>
+            <template #title>Meet the Team</template>
+            <template #subtitle>The minds behind our AI solutions.</template>
+          </SectionTitle>
+        </div>
+        <div class="relative max-w-full">
+          <button @click="() => {}" class="team-nav-btn left-4">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" /></svg>
+          </button>
+          <button @click="() => {}" class="team-nav-btn right-4">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" /></svg>
+          </button>
+          <div class="team-horizontal-scroll relative w-full min-h-[500px]">
+            <div class="team-panel-track flex gap-10" ref="teamTrack">
+              <div class="hidden md:block" style="width: 96px;"></div>
+              <div class="block md:hidden" style="width: 48px;"></div>
+              <div v-for="(member, idx) in visibleTeam" :key="member.name"
+                :class="[
+                  'team-member-card bg-[#18181b] rounded-3xl shadow-xl flex flex-col items-center justify-center p-8 relative mx-auto min-w-[320px] max-w-sm w-[380px] flex-shrink-0',
+                  idx === 0 ? 'pl-0' : '',
+                  idx === team.length - 1 ? 'pr-0' : ''
+                ]"
+              >
+                <div class="avatar mb-6">
+                  <img :src="`https://randomuser.me/api/portraits/men/${Math.floor(Math.random()*50)}.jpg`" alt="avatar" class="w-28 h-28 rounded-full object-cover border-4 border-violet-500 shadow-lg" />
+                </div>
+                <h3 class="text-2xl font-bold text-white mb-1 team-name">{{ member.name }}</h3>
+                <p class="text-violet-400 font-semibold mb-2 team-role">{{ member.role }}</p>
+                <p class="text-gray-200 text-center text-base mb-2 team-desc max-w-xs md:max-w-sm">{{ member.desc }}</p>
+              </div>
+              <div class="hidden md:block" style="width: 96px;"></div>
+              <div class="block md:hidden" style="width: 48px;"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
       <!-- FAQ Section -->
       <transition @enter="sectionEnter" @leave="sectionLeave">
         <section id="faq" class="py-20 bg-black">
@@ -804,38 +852,6 @@ function backToTopLeave(el, done) {
           </SectionTitle>
           <div class="mt-8 inline-block">
             <ButtonAnimate />
-          </div>
-        </section>
-      </transition>
-
-      <!-- Team Section con scroll nativo y flechas overlay -->
-      <transition @enter="sectionEnter" @leave="sectionLeave">
-        <section id="team" class="relative w-full overflow-x-hidden py-24 bg-black">
-          <div class="container mx-auto px-4">
-            <SectionTitle>
-              <template #title>Meet the Team</template>
-              <template #subtitle>The minds behind our AI solutions.</template>
-            </SectionTitle>
-          </div>
-          <div class="relative max-w-full">
-            <button @click="scrollTeamToStart" class="absolute left-2 top-1/2 -translate-y-1/2 z-10 bg-violet-600 text-white rounded-full w-12 h-12 flex items-center justify-center shadow-lg hover:bg-violet-700 transition focus:outline-none">
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" /></svg>
-            </button>
-            <button @click="scrollTeamToEnd" class="absolute right-2 top-1/2 -translate-y-1/2 z-10 bg-violet-600 text-white rounded-full w-12 h-12 flex items-center justify-center shadow-lg hover:bg-violet-700 transition focus:outline-none">
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" /></svg>
-            </button>
-            <div ref="teamScrollRef" class="team-horizontal-scroll relative w-full overflow-x-auto flex gap-8 scroll-smooth py-4" style="height: auto; min-height: 0;">
-              <div class="flex gap-8">
-                <div v-for="member in team" :key="member.name" class="team-member-card bg-[#18181b] rounded-3xl shadow-xl flex flex-col items-center justify-center p-8 relative mx-auto min-w-[280px] max-w-xs w-[320px] flex-shrink-0">
-                  <div class="avatar mb-6">
-                    <img :src="`https://randomuser.me/api/portraits/men/${Math.floor(Math.random()*50)}.jpg`" alt="avatar" class="w-28 h-28 rounded-full object-cover border-4 border-violet-500 shadow-lg" />
-                  </div>
-                  <h3 class="text-2xl font-bold text-white mb-1 team-name">{{ member.name }}</h3>
-                  <p class="text-violet-400 font-semibold mb-2 team-role">{{ member.role }}</p>
-                  <p class="text-gray-200 text-center text-base mb-2 team-desc max-w-xs md:max-w-sm">{{ member.desc }}</p>
-                </div>
-              </div>
-            </div>
           </div>
         </section>
       </transition>
@@ -1387,5 +1403,29 @@ section:not(:first-child):not(:last-child)::before {
 }
 .animate-scroll-x {
   animation: scroll-x 24s linear infinite;
+}
+
+.team-nav-btn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 20;
+  background: rgba(124, 58, 237, 0.18);
+  color: #fff;
+  border: none;
+  border-radius: 9999px;
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 12px 0 rgba(124, 58, 237, 0.12);
+  opacity: 0.5;
+  transition: opacity 0.2s, background 0.2s, box-shadow 0.2s;
+}
+.team-nav-btn:hover {
+  opacity: 1;
+  background: rgba(124, 58, 237, 0.35);
+  box-shadow: 0 4px 24px 0 rgba(124, 58, 237, 0.18);
 }
 </style>
