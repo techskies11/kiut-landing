@@ -5,6 +5,7 @@ import ParticleBackground from "./components/ParticleBackground.vue";
 import gsap from "gsap";
 import { ScrollToPlugin } from "gsap/ScrollToPlugin";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import SectionTitle from "./components/SectionTitle.vue";
 
 gsap.registerPlugin(ScrollToPlugin, ScrollTrigger);
 
@@ -145,6 +146,8 @@ const scrollBtn = ref(null);
 const underline = ref(null);
 const cards = ref([]);
 
+const teamScrollRef = ref(null);
+
 function typeEffect() {
   const current = words[wordIndex];
   charIndex += isDeleting ? -1 : 1;
@@ -211,34 +214,8 @@ function hoverOut(i) {
 function handleScroll() {
   if (window.scrollY > 300 && !showScrollTop.value) {
     showScrollTop.value = true;
-    nextTick(() => {
-      gsap.fromTo(
-        scrollBtn.value,
-        { opacity: 0, scale: 0, y: 20 },
-        { opacity: 1, scale: 1, y: 0, duration: 1.4, ease: "back.out(1.5)" }
-      );
-      gsap.to(scrollBtn.value, {
-        y: -6,
-        duration: 1.5,
-        repeat: -1,
-        yoyo: true,
-        ease: "sine.inOut",
-        delay: 0.5,
-      });
-    });
   } else if (window.scrollY <= 300 && showScrollTop.value) {
-    gsap.to(scrollBtn.value, {
-      opacity: 0,
-      scale: 0,
-      duration: 0.2,
-      ease: "power2.in",
-      opacity: 0,
-      scale: 0,
-      y: 20,
-      duration: 0.3,
-      ease: "power1.inOut",
-      onComplete: () => (showScrollTop.value = false),
-    });
+    showScrollTop.value = false;
   }
 }
 
@@ -333,6 +310,39 @@ window.addEventListener('resize', () => {
   teamSlides.value = getTeamSlides();
 });
 
+function scrollTeamToStart() {
+  if (teamScrollRef.value) {
+    teamScrollRef.value.scrollTo({ left: 0, behavior: "smooth" });
+  }
+}
+function scrollTeamToEnd() {
+  if (teamScrollRef.value) {
+    teamScrollRef.value.scrollTo({ left: teamScrollRef.value.scrollWidth, behavior: "smooth" });
+  }
+}
+
+function sectionEnter(el, done) {
+  gsap.fromTo(
+    el,
+    { opacity: 0, y: 40 },
+    { opacity: 1, y: 0, duration: 0.7, ease: "power3.out", onComplete: done }
+  );
+}
+function sectionLeave(el, done) {
+  gsap.to(el, { opacity: 0, y: 40, duration: 0.5, ease: "power2.in", onComplete: done });
+}
+
+function featuresEnter(el, done) {
+  gsap.fromTo(
+    el,
+    { opacity: 0, y: 40 },
+    { opacity: 1, y: 0, duration: 0.7, ease: "power3.out", onComplete: done }
+  );
+}
+function featuresLeave(el, done) {
+  gsap.to(el, { opacity: 0, y: 40, duration: 0.5, ease: "power2.in", onComplete: done });
+}
+
 onMounted(async () => {
   typeEffect();
   gsap.to(cursor.value, {
@@ -345,19 +355,6 @@ onMounted(async () => {
   gsap.to(underline.value, { scaleX: 1, duration: 0.6, ease: "power3.out" });
 
   await nextTick();
-  gsap.from(".feature-card", {
-    scrollTrigger: {
-      trigger: "#features",
-      start: "top 80%",
-      toggleActions: "play none none none",
-    },
-    opacity: 0,
-    y: 20,
-    duration: 0.7,
-    ease: "power3.out",
-    stagger: 0.12,
-    clearProps: "all",
-  });
 
   gsap.from(".feature-ball", {
     scrollTrigger: {
@@ -536,6 +533,42 @@ onBeforeUnmount(() => {
   window.removeEventListener("scroll", handleScroll);
   ScrollTrigger.getAll().forEach((t) => t.kill());
 });
+
+function backToTopEnter(el, done) {
+  gsap.fromTo(
+    el,
+    { opacity: 0, scale: 0.3, y: 40 },
+    {
+      opacity: 1,
+      scale: 1,
+      y: 0,
+      duration: 0.5,
+      ease: "back.out(1.7)",
+      onComplete: done,
+    }
+  );
+  // Animación flotante
+  gsap.to(el, {
+    y: -8,
+    duration: 2,
+    repeat: -1,
+    yoyo: true,
+    ease: "sine.inOut",
+    delay: 0.5,
+  });
+}
+
+function backToTopLeave(el, done) {
+  gsap.killTweensOf(el); // Limpia animaciones previas
+  gsap.to(el, {
+    opacity: 0,
+    scale: 0.3,
+    y: 40,
+    duration: 0.4,
+    ease: "back.in(1.7)",
+    onComplete: done,
+  });
+}
 </script>
 
 <template>
@@ -551,400 +584,251 @@ onBeforeUnmount(() => {
 
     <main class="flex-1 bg-black">
       <!-- Hero Section -->
-      <section
-        class="bg-black text-white pt-24 md:py-28 px-4 sm:px-6 text-center flex flex-col items-center justify-center min-h-[90vh] w-full overflow-hidden relative"
-      >
-        <!-- Efectos de partículas flotantes -->
-        <ParticleBackground />
-        
-        <!-- Gradiente animado de fondo -->
-        <div class="absolute inset-0 bg-gradient-radial from-violet-500/10 via-transparent to-transparent animate-pulse"></div>
-        
-        <div class="w-full max-w-screen-md px-4 relative z-10">
-          <h1
-            class="gsap-hero text-4xl sm:text-5xl md:text-7xl font-bold leading-tight mb-4"
-          >
-            <span class="block">The new evolution of</span>
-
-            <!-- Typing con cursor -->
-            <span class="inline-block min-w-[11ch] text-violet-500 typing">
-              {{ typing
-              }}<span ref="cursor" class="inline-block opacity-0">|</span>
-            </span>
-
-            <span class="block">for airlines.</span>
-          </h1>
-        </div>
-
-        <p
-          class="hero-desc text-gray-400 text-xl md:text-[1.25rem] leading-relaxed tracking-wide max-w-2xl mx-auto mt-6 sm:mt-8 mb-10 px-4 sm:px-0 relative z-10"
+      <transition @enter="sectionEnter" @leave="sectionLeave">
+        <section
+          class="bg-black text-white pt-24 md:py-28 px-4 sm:px-6 text-center flex flex-col items-center justify-center min-h-[90vh] w-full overflow-hidden relative"
         >
-          Our AI solution transforms customer experiences and boosts sales
-          through <strong class="text-white font-medium">WhatsApp</strong> —
-          soon expanding to
-          <strong class="text-white font-medium">Telegram</strong>,
-          <strong class="text-white font-medium">WeChat</strong>, and
-          <strong class="text-white font-medium">iMessage</strong>.
-        </p>
-
-        <div
-          class="hero-cta flex flex-col sm:flex-row gap-4 px-4 justify-center mt-6 relative z-10"
-        >
-          <a
-            href="https://wa.me/5491130261625"
-            target="_blank"
-            class="px-8 py-3.5 bg-violet-600 text-white rounded-xl hover:bg-violet-700 transition-all duration-300 text-base font-semibold shadow-lg hover:shadow-violet-500/25 h-12 flex items-center justify-center min-w-[200px] transform hover:scale-105"
-          >
-            Chat with Agent AI
-          </a>
-          <ButtonAnimate />
-        </div>
-
-        <div class="arrow mt-16 text-gray-500 relative z-10">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            class="w-8 h-8 mx-auto"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M19 9l-7 7-7-7"
-            />
-          </svg>
-        </div>
-      </section>
-
-      <!-- videoiframe -->
-
-      <section class="pb-32 pt-20 relative w-full flex justify-center bg-black">
-        <div
-          class="video-container rounded-lg border bg-card shadow-xl overflow-hidden w-full max-w-4xl"
-        >
-          <div class="aspect-video">
-            <iframe
-              class="w-full h-full"
-              src="https://www.youtube.com/embed/sX2DjnrrJYM"
-              title="Meet OnService.AI Concierge, the First AI Solution for Airlines' E-Commerce and Customer Service"
-              frameborder="0"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-              referrerpolicy="strict-origin-when-cross-origin"
-              allowfullscreen
+          <!-- Efectos de partículas flotantes -->
+          <ParticleBackground />
+          
+          <!-- Gradiente animado de fondo -->
+          <div class="absolute inset-0 bg-gradient-radial from-violet-500/10 via-transparent to-transparent animate-pulse"></div>
+          
+          <div class="w-full max-w-screen-md px-4 relative z-10">
+            <h1
+              class="gsap-hero text-4xl sm:text-5xl md:text-7xl font-bold leading-tight mb-4"
             >
-            </iframe>
+              <span class="block">The new evolution of</span>
+
+              <!-- Typing con cursor -->
+              <span class="inline-block min-w-[11ch] text-violet-500 typing">
+                {{ typing
+                }}<span ref="cursor" class="inline-block opacity-0">|</span>
+              </span>
+
+              <span class="block">for airlines.</span>
+            </h1>
           </div>
-        </div>
-      </section>
 
-      <!-- horizontal scroll -->
-      <!-- <section class="horizontal-scroll relative w-full overflow-x-hidden">
-        <div class="panel-container flex">
-          <div class="panel-track flex w-[300vw]">
-            <div
-              class="panel w-screen h-screen bg-gradient-to-br from-violet-700 via-purple-800 to-black text-white flex items-center justify-center px-8"
-            >
-              <div class="max-w-xl text-center">
-                <img
-                  src="/conversation.png"
-                  alt="Chat onboarding"
-                  class="mx-auto mb-6 w-40 h-40"
-                />
-                <h2 class="text-3xl font-bold mb-4">
-                  Automated chat onboarding
-                </h2>
-                <p class="text-lg text-gray-300">
-                  Guide your users with smart flows powered by AI. Start
-                  conversations in seconds.
-                </p>
-              </div>
-            </div>
-
-            <div
-              class="panel w-screen h-screen bg-black text-white flex items-center justify-center px-8"
-            >
-              <div class="max-w-xl text-center">
-                <img
-                  src="/bot.png"
-                  alt="Intefrations"
-                  class="mx-auto mb-6 w-40 h-40"
-                />
-                <h2 class="text-3xl font-bold mb-4">
-                  Integrates with your tools
-                </h2>
-                <p class="text-lg text-gray-300">
-                  Connect to WhatsApp, Telegram, iMessage, CRMs, and more
-                  without writing code.
-                </p>
-              </div>
-            </div>
-
-            <div
-              class="panel w-screen h-screen bg-gradient-to-br from-black to-violet-600 text-white flex items-center justify-center px-8"
-            >
-              <div class="max-w-xl text-center">
-                <img
-                  src="/clipboard.png"
-                  alt="Metrics"
-                  class="mx-auto mb-6 w-40 h-40"
-                />
-                <h2 class="text-3xl font-bold mb-4">Real-time metrics</h2>
-                <p class="text-lg text-gray-300">
-                  Track performance, satisfaction and conversion in one
-                  dashboard.
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section> -->
-
-      <!-- clients? dont show -->
-      <section class="py-20 md:py-28" v-if="false">
-        <div class="container flex flex-col items-center text-center">
-          <h1
-            class="text-3xl md:text-6xl font-semibold tracking-tight mb-12 max-w-4xl"
+          <p
+            class="hero-desc text-gray-400 text-xl md:text-[1.25rem] leading-relaxed tracking-wide max-w-2xl mx-auto mt-6 sm:mt-8 mb-10 px-4 sm:px-0 relative z-10"
           >
-            Trusted by leading companies to elevate customer service.
-          </h1>
-          <div class="flex gap-4 items-center mt-4">
-            <div class="scroll-container w-full max-w-5xl">
-              <div class="scroll-content">
-                <img
-                  class="h-28 mr-8 opacity-50 hover:opacity-100 transition-all cursor-pointer"
-                  src="/aeromexico.png"
-                  alt="Aeromexico"
-                  @click="openLink('https://www.aeromexico.com')"
-                />
-                <img
-                  class="h-28 mr-8 opacity-50 hover:opacity-100 transition-all cursor-pointer"
-                  src="/avianca.png"
-                  alt="Avianca"
-                  @click="openLink('https://www.avianca.com')"
-                />
-                <img
-                  class="h-28 mr-8 opacity-50 hover:opacity-100 transition-all cursor-pointer"
-                  src="/clic.png"
-                  alt="Clic"
-                  @click="openLink('https://clicair.co/')"
-                />
-                <img
-                  class="h-28 mr-8 opacity-50 hover:opacity-100 transition-all cursor-pointer"
-                  src="/aeromexico.png"
-                  alt="Aeromexico"
-                  @click="openLink('https://www.aeromexico.com')"
-                />
-                <img
-                  class="h-28 mr-8 opacity-50 hover:opacity-100 transition-all cursor-pointer"
-                  src="/avianca.png"
-                  alt="Avianca"
-                  @click="openLink('https://www.avianca.com')"
-                />
-                <img
-                  class="h-28 mr-8 opacity-50 hover:opacity-100 transition-all cursor-pointer"
-                  src="/clic.png"
-                  alt="Clic"
-                  @click="openLink('https://clicair.co/')"
-                />
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
+            Our AI solution transforms customer experiences and boosts sales
+            through <strong class="text-white font-medium">WhatsApp</strong> —
+            soon expanding to
+            <strong class="text-white font-medium">Telegram</strong>,
+            <strong class="text-white font-medium">WeChat</strong>, and
+            <strong class="text-white font-medium">iMessage</strong>.
+          </p>
 
-      <!-- Features Section -->
+          <div
+            class="hero-cta flex flex-col sm:flex-row gap-4 px-4 justify-center mt-6 relative z-10"
+          >
+            <a
+              href="https://wa.me/5491130261625"
+              target="_blank"
+              class="px-8 py-3.5 bg-violet-600 text-white rounded-xl hover:bg-violet-700 transition-all duration-300 text-base font-semibold shadow-lg hover:shadow-violet-500/25 h-12 flex items-center justify-center min-w-[200px] transform hover:scale-105"
+            >
+              Chat with Agent AI
+            </a>
+            <ButtonAnimate />
+          </div>
+
+          <div class="arrow mt-16 text-gray-500 relative z-10">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="w-8 h-8 mx-auto"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M19 9l-7 7-7-7"
+              />
+            </svg>
+          </div>
+        </section>
+      </transition>
+
+      <!-- Video Section (sin título, solo video, responsivo) -->
+      <transition @enter="sectionEnter" @leave="sectionLeave">
+        <section class="pb-32 pt-20 relative w-full flex justify-center bg-black">
+          <div class="video-container rounded-lg border bg-card shadow-xl overflow-hidden w-full max-w-4xl aspect-video flex items-center justify-center">
+            <iframe class="w-full h-full aspect-video" src="https://www.youtube.com/embed/sX2DjnrrJYM" title="Meet OnService.AI Concierge, the First AI Solution for Airlines' E-Commerce and Customer Service" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+          </div>
+        </section>
+      </transition>
+
+      <!-- Features Section (sin animación de entrada/salida) -->
       <section id="features" class="py-20 bg-black overflow-hidden">
         <div class="container mx-auto px-4">
-          <!-- Título con pequeño underline animado -->
-          <div class="text-center mb-16 relative">
-            <h2 class="text-3xl md:text-4xl font-semibold mb-2">
-              Powerful Features
-            </h2>
-            <div
-              class="mx-auto mt-1 h-1 w-24 bg-violet-600 origin-left scale-x-0"
-              ref="underline"
-            ></div>
-            <p class="text-xl text-muted-foreground max-w-2xl mx-auto mt-4">
-              OnService.AI comes packed with features designed to make your life
-              easier and more productive.
-            </p>
-          </div>
-
-          <!-- Grid de tarjetas -->
+          <SectionTitle>
+            <template #title>Powerful Features</template>
+            <template #subtitle>
+              OnService.AI comes packed with features designed to make your life easier and more productive.
+            </template>
+          </SectionTitle>
           <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-            <div
-              v-for="(feature, i) in features"
-              :key="i"
-              class="feature-card relative rounded-2xl p-20 pt-24 mt-12 bg-[#111] !text-white cursor-pointer group"
-              @mouseenter="hoverIn(i)"
-              @mouseleave="hoverOut(i)"
-            >
-              <!-- Efecto de brillo -->
+            <div v-for="(feature, i) in features" :key="i" class="feature-card relative rounded-2xl p-20 pt-24 mt-12 bg-[#111] !text-white cursor-pointer group transition-all duration-300 hover:scale-105" @mouseenter="hoverIn(i)" @mouseleave="hoverOut(i)">
               <div class="feature-glow absolute inset-0 bg-gradient-to-r from-violet-500/20 via-purple-500/20 to-violet-500/20 opacity-0 transition-opacity duration-300"></div>
-              
-              <!-- Fondo circular degradado -->
-              <div
-                class="feature-ball absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-1/2 h-20 w-20 rounded-full bg-gradient-to-br from-violet-700 to-purple-500 opacity-20 pointer-events-none"
-              ></div>
-
-              <!-- Icono -->
-              <div
-                class="feature-icon absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-1/2 h-20 w-20 rounded-full bg-gradient-to-br from-violet-700 to-purple-500 flex items-center justify-center pointer-events-none transition-all duration-300"
-              >
-                <img
-                  :src="feature.icon"
-                  :alt="feature.title"
-                  class="h-10 w-10 filter brightness-0 invert-100"
-                />
+              <div class="feature-ball absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-1/2 h-20 w-20 rounded-full bg-gradient-to-br from-violet-700 to-purple-500 opacity-20 pointer-events-none"></div>
+              <div class="feature-icon absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-1/2 h-20 w-20 rounded-full bg-gradient-to-br from-violet-700 to-purple-500 flex items-center justify-center pointer-events-none transition-all duration-300">
+                <img :src="feature.icon" :alt="feature.title" class="h-10 w-10 filter brightness-0 invert-100" />
               </div>
+              <h3 class="relative z-10 text-xl font-semibold mb-2 group-hover:text-violet-300 transition-colors duration-300">{{ feature.title }}</h3>
+              <p class="relative z-10 text-gray-300 group-hover:text-gray-200 transition-colors duration-300">{{ feature.desc }}</p>
+            </div>
+          </div>
+        </div>
+      </section>
 
-              <!-- Texto -->
-              <h3 class="relative z-10 text-xl font-semibold mb-2 group-hover:text-violet-300 transition-colors duration-300">
-                {{ feature.title }}
-              </h3>
-              <p class="relative z-10 text-gray-300 group-hover:text-gray-200 transition-colors duration-300">
-                {{ feature.desc }}
-              </p>
+      <!-- Clients/Companies Section: scroll horizontal automático tipo diapositivas -->
+      <section class="py-20 md:py-28">
+        <div class="container flex flex-col items-center text-center">
+          <SectionTitle>
+            <template #title>Trusted by Leading Companies</template>
+            <template #subtitle>Elevating customer service for top brands.</template>
+          </SectionTitle>
+          <div class="relative w-full max-w-5xl overflow-x-hidden">
+            <div class="scroll-content flex items-center gap-12 animate-scroll-x px-8">
+              <template v-for="repeat in 2">
+                <img v-for="(logo, idx) in [
+                  {src: 'https://upload.wikimedia.org/wikipedia/commons/2/2d/Aeromexico_logo.svg', alt: 'Aeromexico', url: 'https://www.aeromexico.com'},
+                  {src: 'https://upload.wikimedia.org/wikipedia/commons/2/2e/Avianca_Logo_2021.svg', alt: 'Avianca', url: 'https://www.avianca.com'},
+                  {src: 'https://upload.wikimedia.org/wikipedia/commons/2/2b/Delta_logo.svg', alt: 'Delta', url: 'https://www.delta.com'},
+                  {src: 'https://upload.wikimedia.org/wikipedia/commons/6/6b/Lufthansa_Logo_2018.svg', alt: 'Lufthansa', url: 'https://www.lufthansa.com'},
+                  {src: 'https://upload.wikimedia.org/wikipedia/commons/6/6a/United_Airlines_Logo.svg', alt: 'United', url: 'https://www.united.com'},
+                  {src: 'https://upload.wikimedia.org/wikipedia/commons/6/6a/American_Airlines_logo_2013.svg', alt: 'American Airlines', url: 'https://www.aa.com'},
+                ]" :key="logo.alt + idx + '-' + repeat" :src="logo.src" :alt="logo.alt" class="h-16 md:h-20 opacity-80 hover:opacity-100 transition-all cursor-pointer bg-white rounded-xl shadow-md px-8 py-3 object-contain" @click="openLink(logo.url)" />
+              </template>
             </div>
           </div>
         </div>
       </section>
 
       <!-- FAQ Section -->
-      <section id="faq" class="py-20 bg-black">
-        <div class="container mx-auto px-4">
-          <div class="text-center mb-16">
-            <h2 class="text-3xl md:text-4xl font-semibold mb-4 text-white">
-              Frequently Asked Questions
-            </h2>
-            <p class="text-xl text-muted-foreground max-w-2xl mx-auto">
-              Got questions? We've got answers.
-            </p>
-          </div>
-
-          <div class="grid grid-cols-1 gap-4 max-w-3xl mx-auto">
-            <div
-              v-for="n in 6"
-              :key="n"
-              class="faq-item border rounded-lg p-6 shadow-violet-700 hover:shadow-sm transition-all duration-300 cursor-pointer"
-              @click="toggleFAQ(n)"
-            >
-              <header class="flex justify-between items-center">
-                <h3 class="text-lg font-medium text-white">
-                  <!-- tus preguntas originales aquí -->
-                  {{
-                    [
-                      "How does OnService.AI differ from other AI assistants?",
-                      "Can I integrate OnService.AI with my existing tools?",
-                      "Is my data secure with OnService.AI?",
-                      "What happens if I exceed my message limit?",
-                      "Can I use OnService.AI offline?",
-                      "How do I cancel my subscription?",
-                    ][n - 1]
-                  }}
-                </h3>
-                <img
-                  src="/arrow.svg"
-                  alt="Toggle"
-                  class="w-5 h-5 text-white transition-transform duration-300"
-                  :class="{ 'rotate-180': questions[n] }"
-                />
-              </header>
-
-              <!-- loader de 3 puntitos -->
+      <transition @enter="sectionEnter" @leave="sectionLeave">
+        <section id="faq" class="py-20 bg-black">
+          <div class="container mx-auto px-4">
+            <SectionTitle>
+              <template #title>Frequently Asked Questions</template>
+              <template #subtitle>Got questions? We've got answers.</template>
+            </SectionTitle>
+            <div class="grid grid-cols-1 gap-4 max-w-3xl mx-auto">
               <div
-                v-if="loading[n]"
-                class="faq-loader flex items-center justify-center mt-4 h-6"
+                v-for="n in 6"
+                :key="n"
+                class="faq-item border rounded-lg p-6 shadow-violet-700 hover:shadow-sm transition-all duration-300 cursor-pointer"
+                @click="toggleFAQ(n)"
               >
-                <span
-                  class="dot mx-1 inline-block w-2 h-2 bg-white rounded-full"
-                ></span>
-                <span
-                  class="dot mx-1 inline-block w-2 h-2 bg-white rounded-full"
-                ></span>
-                <span
-                  class="dot mx-1 inline-block w-2 h-2 bg-white rounded-full"
-                ></span>
-              </div>
+                <header class="flex justify-between items-center">
+                  <h3 class="text-lg font-medium text-white">
+                    {{
+                      [
+                        "How does OnService.AI differ from other AI assistants?",
+                        "Can I integrate OnService.AI with my existing tools?",
+                        "Is my data secure with OnService.AI?",
+                        "What happens if I exceed my message limit?",
+                        "Can I use OnService.AI offline?",
+                        "How do I cancel my subscription?",
+                      ][n - 1]
+                    }}
+                  </h3>
+                  <img
+                    src="/arrow.svg"
+                    alt="Toggle"
+                    class="w-5 h-5 text-white transition-transform duration-300"
+                    :class="{ 'rotate-180': questions[n] }"
+                  />
+                </header>
 
-              <!-- Transition GSAP -->
-              <transition @enter="faqEnter" @leave="faqLeave">
-                <p
-                  v-show="questions[n]"
-                  class="text-muted-foreground mt-4 overflow-hidden"
+                <!-- loader de 3 puntitos -->
+                <div
+                  v-if="loading[n]"
+                  class="faq-loader flex items-center justify-center mt-4 h-6"
                 >
-                  <!-- tus respuestas originales aquí -->
-                  {{
-                    [
-                      "OnService.AI uses a proprietary language model specifically trained to understand context better and provide more natural, helpful responses. It also learns from your interactions to become more personalized over time.",
-                      "Yes! OnService.AI offers API access on our Enterprise plan, allowing you to integrate it with your existing workflows, apps, and services. We also offer pre-built integrations with popular platforms.",
-                      "Absolutely. We use end-to-end encryption for all conversations, and your data is never used to train our models without your explicit permission. We also offer enterprise-grade security features for businesses.",
-                      "On the Free plan, once you reach your daily limit, you'll need to wait until the next day to send more messages. You can also upgrade to the Pro plan for unlimited messages at any time.",
-                      "The Pro and Enterprise plans include desktop and mobile apps that can function with limited capabilities while offline. Full functionality requires an internet connection.",
-                      "You can cancel your subscription at any time from your account settings. If you cancel, you'll still have access to your plan until the end of your current billing period.",
-                    ][n - 1]
-                  }}
-                </p>
-              </transition>
+                  <span
+                    class="dot mx-1 inline-block w-2 h-2 bg-white rounded-full"
+                  ></span>
+                  <span
+                    class="dot mx-1 inline-block w-2 h-2 bg-white rounded-full"
+                  ></span>
+                  <span
+                    class="dot mx-1 inline-block w-2 h-2 bg-white rounded-full"
+                  ></span>
+                </div>
+
+                <!-- Transition GSAP -->
+                <transition @enter="faqEnter" @leave="faqLeave">
+                  <p
+                    v-show="questions[n]"
+                    class="text-muted-foreground mt-4 overflow-hidden"
+                  >
+                    {{
+                      [
+                        "OnService.AI uses a proprietary language model specifically trained to understand context better and provide more natural, helpful responses. It also learns from your interactions to become more personalized over time.",
+                        "Yes! OnService.AI offers API access on our Enterprise plan, allowing you to integrate it with your existing workflows, apps, and services. We also offer pre-built integrations with popular platforms.",
+                        "Absolutely. We use end-to-end encryption for all conversations, and your data is never used to train our models without your explicit permission. We also offer enterprise-grade security features for businesses.",
+                        "On the Free plan, once you reach your daily limit, you'll need to wait until the next day to send more messages. You can also upgrade to the Pro plan for unlimited messages at any time.",
+                        "The Pro and Enterprise plans include desktop and mobile apps that can function with limited capabilities while offline. Full functionality requires an internet connection.",
+                        "You can cancel your subscription at any time from your account settings. If you cancel, you'll still have access to your plan until the end of your current billing period.",
+                      ][n - 1]
+                    }}
+                  </p>
+                </transition>
+              </div>
             </div>
           </div>
-        </div>
-      </section>
+        </section>
+      </transition>
 
       <!-- CTA Section -->
-      <section
-        class="cta-section relative overflow-hidden bg-gradient-to-br from-[#1b0c34] via-[#2d0e59] to-[#381171] px-8 py-24 md:py-32 text-center"
-      >
-        <div
-          class="pointer-events-none absolute -left-20 -top-20 h-72 w-72 rounded-full bg-purple-500/40 blur-3xl"
-        ></div>
-        <div
-          class="pointer-events-none absolute -bottom-20 -right-20 h-72 w-72 rounded-full bg-violet-600/30 blur-3xl"
-        ></div>
-        <h2 class="text-4xl md:text-5xl font-bold text-white">
-          Ready to experience the future of AI chat?
-        </h2>
-        <p class="mx-auto mt-4 max-w-xl text-base text-gray-300">
-          Join thousands of users already boosting their customer service with
-          OnService.AI.
-        </p>
-        <div class="mt-8 inline-block">
-          <ButtonAnimate />
-        </div>
-      </section>
-
-      <!-- Team Section -->
-      <section id="team" class="relative w-full overflow-x-hidden py-32 bg-black">
-        <div class="container mx-auto px-4">
-          <div class="text-center mb-16 relative">
-            <h2 class="text-3xl md:text-4xl font-semibold mb-2 text-white">
-              Meet the Team
-            </h2>
-            <div class="mx-auto mt-1 h-1 w-24 bg-violet-600 origin-left scale-x-100"></div>
-            <p class="text-xl text-muted-foreground max-w-2xl mx-auto mt-4">
-              The minds behind our AI solutions.
-            </p>
+      <transition @enter="sectionEnter" @leave="sectionLeave">
+        <section
+          class="cta-section relative overflow-hidden bg-gradient-to-br from-[#1b0c34] via-[#2d0e59] to-[#381171] px-8 py-24 md:py-32 text-center"
+        >
+          <div
+            class="pointer-events-none absolute -left-20 -top-20 h-72 w-72 rounded-full bg-purple-500/40 blur-3xl"
+          ></div>
+          <div
+            class="pointer-events-none absolute -bottom-20 -right-20 h-72 w-72 rounded-full bg-violet-600/30 blur-3xl"
+          ></div>
+          <SectionTitle>
+            <template #title>Ready to experience the future of AI chat?</template>
+            <template #subtitle>
+              Join thousands of users already boosting their customer service with OnService.AI.
+            </template>
+          </SectionTitle>
+          <div class="mt-8 inline-block">
+            <ButtonAnimate />
           </div>
-        </div>
-        <div class="team-horizontal-scroll relative w-full">
-          <div class="team-panel-track flex">
-            <div
-              v-for="(slide, sidx) in teamSlides"
-              :key="'slide-' + sidx"
-              class="team-panel-slide flex-shrink-0 w-screen min-w-[100vw] h-[80vh] flex items-center justify-center px-4 relative"
-            >
-              <div class="absolute inset-0 z-0 bg-gradient-to-br from-violet-900/40 via-black/60 to-violet-800/30 blur-2xl"></div>
-              <div class="flex flex-col md:flex-row gap-8 w-full h-full items-center justify-center z-10">
-                <div
-                  v-for="(member, idx) in slide"
-                  :key="member.name"
-                  class="team-member-card flex-1 max-w-md bg-[#18181b] rounded-3xl shadow-xl flex flex-col items-center justify-center p-8 relative mx-auto"
-                >
-                  <!-- Avatar randomuser -->
+        </section>
+      </transition>
+
+      <!-- Team Section con scroll nativo y flechas overlay -->
+      <transition @enter="sectionEnter" @leave="sectionLeave">
+        <section id="team" class="relative w-full overflow-x-hidden py-24 bg-black">
+          <div class="container mx-auto px-4">
+            <SectionTitle>
+              <template #title>Meet the Team</template>
+              <template #subtitle>The minds behind our AI solutions.</template>
+            </SectionTitle>
+          </div>
+          <div class="relative max-w-full">
+            <button @click="scrollTeamToStart" class="absolute left-2 top-1/2 -translate-y-1/2 z-10 bg-violet-600 text-white rounded-full w-12 h-12 flex items-center justify-center shadow-lg hover:bg-violet-700 transition focus:outline-none">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" /></svg>
+            </button>
+            <button @click="scrollTeamToEnd" class="absolute right-2 top-1/2 -translate-y-1/2 z-10 bg-violet-600 text-white rounded-full w-12 h-12 flex items-center justify-center shadow-lg hover:bg-violet-700 transition focus:outline-none">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" /></svg>
+            </button>
+            <div ref="teamScrollRef" class="team-horizontal-scroll relative w-full overflow-x-auto flex gap-8 scroll-smooth py-4" style="height: auto; min-height: 0;">
+              <div class="flex gap-8">
+                <div v-for="member in team" :key="member.name" class="team-member-card bg-[#18181b] rounded-3xl shadow-xl flex flex-col items-center justify-center p-8 relative mx-auto min-w-[280px] max-w-xs w-[320px] flex-shrink-0">
                   <div class="avatar mb-6">
-                    <img :src="`https://randomuser.me/api/portraits/men/${(sidx*3+idx)%50}.jpg`" alt="avatar" class="w-28 h-28 rounded-full object-cover border-4 border-violet-500 shadow-lg" />
+                    <img :src="`https://randomuser.me/api/portraits/men/${Math.floor(Math.random()*50)}.jpg`" alt="avatar" class="w-28 h-28 rounded-full object-cover border-4 border-violet-500 shadow-lg" />
                   </div>
                   <h3 class="text-2xl font-bold text-white mb-1 team-name">{{ member.name }}</h3>
                   <p class="text-violet-400 font-semibold mb-2 team-role">{{ member.role }}</p>
@@ -953,31 +837,36 @@ onBeforeUnmount(() => {
               </div>
             </div>
           </div>
-        </div>
-      </section>
+        </section>
+      </transition>
     </main>
     <!-- back to top -->
-    <div
-      v-if="showScrollTop"
-      ref="scrollBtn"
-      @click="scrollToTop"
-      class="fixed bottom-8 right-8 z-50 flex h-12 w-12 cursor-pointer items-center justify-center rounded-full bg-violet-600 shadow-xl hover:bg-violet-700 scroll-to-top-btn transition-all duration-300 hover:scale-110"
+    <transition
+      @enter="backToTopEnter"
+      @leave="backToTopLeave"
     >
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        class="h-6 w-6 text-white"
-        fill="none"
-        viewBox="0 0 24 24"
-        stroke="currentColor"
+      <div
+        v-if="showScrollTop"
+        ref="scrollBtn"
+        @click="scrollToTop"
+        class="fixed bottom-8 right-8 z-50 flex h-12 w-12 cursor-pointer items-center justify-center rounded-full bg-violet-600 shadow-xl hover:bg-violet-700 scroll-to-top-btn transition-all duration-300 hover:scale-110"
       >
-        <path
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          stroke-width="2"
-          d="M5 15l7-7 7 7"
-        />
-      </svg>
-    </div>
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          class="h-6 w-6 text-white"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M5 15l7-7 7 7"
+          />
+        </svg>
+      </div>
+    </transition>
 
     <footer class="bg-[#09090b] text-gray-400 pt-16 pb-10">
       <div class="container mx-auto px-4">
@@ -1358,6 +1247,48 @@ section:not(:first-child):not(:last-child)::before {
 .scroll-to-top-btn {
   backdrop-filter: blur(10px);
   border: 1px solid rgba(139, 92, 246, 0.2);
+  background-color: #7c3aed; /* bg-violet-600 */
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  will-change: transform, box-shadow;
+}
+.scroll-to-top-btn:hover {
+  background-color: #6d28d9; /* bg-violet-700 */
+  box-shadow: 0 12px 40px rgba(139, 92, 246, 0.4);
+  transform: translateY(-2px) scale(1.05);
+}
+.scroll-to-top-btn:active {
+  transform: translateY(0) scale(0.95);
+  transition: all 0.1s ease;
+}
+
+/* Efecto de pulso sutil */
+.scroll-to-top-btn::before {
+  content: '';
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  right: -2px;
+  bottom: -2px;
+  background: linear-gradient(135deg, rgba(139, 92, 246, 0.3), rgba(168, 85, 247, 0.3));
+  border-radius: 50%;
+  z-index: -1;
+  opacity: 0;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0% {
+    opacity: 0;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.5;
+    transform: scale(1.1);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1.2);
+  }
 }
 
 /* Animaciones de entrada mejoradas */
@@ -1448,5 +1379,13 @@ section:not(:first-child):not(:last-child)::before {
     max-width: 90vw;
     min-width: 0;
   }
+}
+
+@keyframes scroll-x {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+.animate-scroll-x {
+  animation: scroll-x 24s linear infinite;
 }
 </style>
