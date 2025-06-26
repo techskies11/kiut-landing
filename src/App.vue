@@ -1,10 +1,12 @@
 <script setup>
 import { onMounted, onBeforeUnmount, ref, nextTick } from "vue";
 import ButtonAnimate from "./components/ButtonAnimate.vue";
+import ParticleBackground from "./components/ParticleBackground.vue";
 import gsap from "gsap";
 import { ScrollToPlugin } from "gsap/ScrollToPlugin";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 
-gsap.registerPlugin(ScrollToPlugin);
+gsap.registerPlugin(ScrollToPlugin, ScrollTrigger);
 
 const words = [
   "customer support",
@@ -20,6 +22,119 @@ const words = [
   "baggage queries",
 ];
 
+const questions = ref({
+  1: false,
+  2: false,
+  3: false,
+  4: false,
+  5: false,
+  6: false,
+});
+const loading = ref({
+  1: false,
+  2: false,
+  3: false,
+  4: false,
+  5: false,
+  6: false,
+});
+
+const features = [
+  {
+    icon: "/bot.png",
+    title: "Virtual Agent",
+    desc: "Friendly AI chat agent on your favorite platforms.",
+  },
+  {
+    icon: "/conversation.png",
+    title: "Quick Answers",
+    desc: "Instant responses to FAQs, boosting satisfaction.",
+  },
+  {
+    icon: "/upselling.png",
+    title: "Smart Upselling",
+    desc: "Suggest relevant ancillaries at the perfect moment.",
+  },
+  {
+    icon: "/speech-bubble.png",
+    title: "Natural Conversations",
+    desc: "Context-aware, free-form chat—no rigid trees here.",
+  },
+  {
+    icon: "/customer-support.png",
+    title: "24/7 Support",
+    desc: "Around-the-clock service in multiple languages.",
+  },
+  {
+    icon: "/clipboard.png",
+    title: "Task Automation",
+    desc: "Automate FAQs and free your staff for complex cases.",
+  },
+];
+
+const team = [
+  {
+    name: "Sofía Torres",
+    role: "AI Lead",
+    desc: "Leads the AI strategy and model development for all our products.",
+  },
+  {
+    name: "Lucas Fernández",
+    role: "Frontend Developer",
+    desc: "Builds beautiful and performant user interfaces for our clients.",
+  },
+  {
+    name: "Martina Gómez",
+    role: "Backend Developer",
+    desc: "Designs and maintains robust, scalable backend systems.",
+  },
+  {
+    name: "Julián Rivas",
+    role: "Prompt Engineer",
+    desc: "Crafts and optimizes prompts for our AI models to maximize performance.",
+  },
+  {
+    name: "Valentina Ruiz",
+    role: "UX/UI Designer",
+    desc: "Ensures our products are intuitive, accessible, and visually stunning.",
+  },
+  {
+    name: "Tomás Herrera",
+    role: "DevOps Engineer",
+    desc: "Automates deployments and keeps our infrastructure running smoothly.",
+  },
+  {
+    name: "Camila Duarte",
+    role: "Data Scientist",
+    desc: "Analyzes data and extracts insights to drive product improvements.",
+  },
+  {
+    name: "Ignacio Pérez",
+    role: "QA Engineer",
+    desc: "Guarantees the quality and reliability of our software releases.",
+  },
+  {
+    name: "Florencia Vidal",
+    role: "Product Manager",
+    desc: "Coordinates the team and aligns product vision with business goals.",
+  },
+  {
+    name: "Emilia Castro",
+    role: "Full Stack Developer",
+    desc: "Bridges frontend and backend to deliver seamless experiences.",
+  },
+  {
+    name: "Ramiro López",
+    role: "AI Researcher",
+    desc: "Explores new AI techniques and keeps us at the cutting edge.",
+  },
+  {
+    name: "Gabriela Molina",
+    role: "Customer Success",
+    desc: "Ensures our clients get the most value from our solutions.",
+  },
+];
+
 let wordIndex = 0;
 let charIndex = 0;
 let isDeleting = false;
@@ -27,6 +142,8 @@ const typing = ref("");
 const cursor = ref(null);
 const showScrollTop = ref(false);
 const scrollBtn = ref(null);
+const underline = ref(null);
+const cards = ref([]);
 
 function typeEffect() {
   const current = words[wordIndex];
@@ -41,6 +158,54 @@ function typeEffect() {
   }
 
   setTimeout(typeEffect, isDeleting ? 50 : 100);
+}
+
+function hoverIn(i) {
+  gsap.to(cards.value[i], {
+    scale: 1.05,
+    rotation: 1,
+    duration: 0.4,
+    ease: "power2.out",
+  });
+  
+  // Agregar efecto de brillo
+  gsap.to(cards.value[i].querySelector('.feature-glow'), {
+    opacity: 1,
+    duration: 0.3,
+    ease: "power2.out",
+  });
+  
+  // Animar el icono
+  gsap.to(cards.value[i].querySelector('.feature-icon'), {
+    scale: 1.1,
+    rotation: 5,
+    duration: 0.3,
+    ease: "back.out(1.7)",
+  });
+}
+
+function hoverOut(i) {
+  gsap.to(cards.value[i], {
+    scale: 1,
+    rotation: 0,
+    duration: 0.4,
+    ease: "power2.inOut",
+  });
+  
+  // Quitar efecto de brillo
+  gsap.to(cards.value[i].querySelector('.feature-glow'), {
+    opacity: 0,
+    duration: 0.3,
+    ease: "power2.in",
+  });
+  
+  // Resetear el icono
+  gsap.to(cards.value[i].querySelector('.feature-icon'), {
+    scale: 1,
+    rotation: 0,
+    duration: 0.3,
+    ease: "power2.inOut",
+  });
 }
 
 function handleScroll() {
@@ -85,15 +250,177 @@ const openLink = (url) => {
   window.open(url, "_blank");
 };
 
-onMounted(() => {
+function faqEnter(el, done) {
+  // Asegúrate de ocultar overflow
+  el.style.overflow = "hidden";
+  // Capturamos la altura y paddings finales
+  const finalHeight = el.scrollHeight;
+  const style = getComputedStyle(el);
+  const padTop = parseFloat(style.paddingTop);
+  const padBot = parseFloat(style.paddingBottom);
+
+  gsap.fromTo(
+    el,
+    {
+      height: 0,
+      opacity: 0,
+      paddingTop: 0,
+      paddingBottom: 0,
+    },
+    {
+      height: finalHeight,
+      opacity: 1,
+      paddingTop: padTop,
+      paddingBottom: padBot,
+      duration: 0.5,
+      ease: "power2.out",
+      onComplete: () => {
+        // limpiamos estilos para que sea responsivo
+        el.style.height = "auto";
+        el.style.overflow = "";
+        el.style.paddingTop = "";
+        el.style.paddingBottom = "";
+        done();
+      },
+    }
+  );
+}
+
+function faqLeave(el, done) {
+  el.style.overflow = "hidden";
+  // Animamos de vuelta a 0
+  gsap.to(el, {
+    height: 0,
+    opacity: 0,
+    paddingTop: 0,
+    paddingBottom: 0,
+    duration: 0.4,
+    ease: "power2.in",
+    onComplete: done,
+  });
+}
+
+function toggleFAQ(n) {
+  if (questions.value[n]) {
+    // si ya estaba abierto, cerramos sin loader
+    questions.value[n] = false;
+    return;
+  }
+  loading.value[n] = true;
+  // esperamos 800ms simulando "pensar"
+  setTimeout(async () => {
+    loading.value[n] = false;
+    // dejamos que Vue renderice el <p> antes de animar
+    await nextTick();
+    questions.value[n] = true;
+  }, 800);
+}
+
+// Utilidad para dividir el array de team en slides de 3 (web) o 1 (mobile)
+function getTeamSlides() {
+  const isMobile = window.innerWidth < 768;
+  const perSlide = isMobile ? 1 : 3;
+  const slides = [];
+  for (let i = 0; i < team.length; i += perSlide) {
+    slides.push(team.slice(i, i + perSlide));
+  }
+  return slides;
+}
+
+const teamSlides = ref(getTeamSlides());
+
+window.addEventListener('resize', () => {
+  teamSlides.value = getTeamSlides();
+});
+
+onMounted(async () => {
   typeEffect();
-  // Cursor parpadeante
   gsap.to(cursor.value, {
     opacity: 1,
     duration: 0.6,
     ease: "power1.inOut",
     repeat: -1,
     yoyo: true,
+  });
+  gsap.to(underline.value, { scaleX: 1, duration: 0.6, ease: "power3.out" });
+
+  await nextTick();
+  gsap.from(".feature-card", {
+    scrollTrigger: {
+      trigger: "#features",
+      start: "top 80%",
+      toggleActions: "play none none none",
+    },
+    opacity: 0,
+    y: 20,
+    duration: 0.7,
+    ease: "power3.out",
+    stagger: 0.12,
+    clearProps: "all",
+  });
+
+  gsap.from(".feature-ball", {
+    scrollTrigger: {
+      trigger: "#features",
+      start: "top 80%",
+      toggleActions: "play none none none",
+    },
+    y: -40,
+    opacity: 0,
+    duration: 0.9,
+    ease: "back.out(1.7)",
+    stagger: 0.12,
+    clearProps: "all",
+  });
+
+  // GSAP horizontal swipe tipo slide para el team
+  const panels = document.querySelectorAll(".team-panel-slide");
+  const track = document.querySelector(".team-panel-track");
+  if (panels.length && track) {
+    gsap.to(track, {
+      xPercent: -100 * (panels.length - 1),
+      ease: "none",
+      scrollTrigger: {
+        trigger: ".team-horizontal-scroll",
+        start: "top top",
+        end: () => `+=${window.innerWidth * panels.length}`,
+        pin: true,
+        scrub: 1,
+        anticipatePin: 1,
+        snap: 1 / (panels.length - 1),
+      },
+    });
+    // Animación de entrada para cada slide
+    panels.forEach((panel, i) => {
+      gsap.from(panel.querySelectorAll('.team-name, .team-role, .team-desc, .avatar'), {
+        scrollTrigger: {
+          trigger: panel,
+          containerAnimation: ScrollTrigger.getById('teamSwipe'),
+          start: "left center",
+        },
+        opacity: 0,
+        y: 40,
+        duration: 0.7,
+        stagger: 0.1,
+        ease: "power3.out",
+        delay: 0.1,
+      });
+    });
+  }
+
+  // Animación del video con parallax
+  gsap.from(".video-container", {
+    scrollTrigger: {
+      trigger: ".video-container",
+      start: "top center+=100",
+      end: "bottom center-=100",
+      scrub: 1,
+    },
+    y: 100,
+    opacity: 0,
+    scale: 0.95,
+    duration: 1,
+    ease: "power2.out",
   });
 
   // Timeline para animar el Hero completo
@@ -128,7 +455,7 @@ onMounted(() => {
     );
   gsap.to(".arrow", {
     y: -8,
-    duration: 1.2, 
+    duration: 1.2,
     ease: "sine.inOut",
     repeat: -1,
     yoyo: true,
@@ -136,8 +463,50 @@ onMounted(() => {
   });
 
   window.addEventListener("scroll", handleScroll);
-  onBeforeUnmount(() => {
-    window.removeEventListener("scroll", handleScroll);
+
+  // Animación del título y subtítulo del FAQ mejorada
+  gsap.from("#faq .text-center > *", {
+    scrollTrigger: {
+      trigger: "#faq .text-center",
+      start: "top 90%",
+      toggleActions: "play none none reverse",
+    },
+    y: 30,
+    opacity: 0,
+    duration: 0.8,
+    stagger: 0.15,
+    ease: "power3.out",
+  });
+
+  // Animación de cada pregunta (fade-in + slide) mejorada
+  gsap.utils.toArray("#faq .faq-item").forEach((item, index) => {
+    gsap.from(item, {
+      scrollTrigger: {
+        trigger: item,
+        start: "top 95%",
+        toggleActions: "play none none reverse",
+      },
+      y: 30,
+      opacity: 0,
+      duration: 0.6,
+      delay: index * 0.1,
+      ease: "power3.out",
+    });
+  });
+
+  // Animación del CTA section con parallax
+  gsap.from(".cta-section", {
+    scrollTrigger: {
+      trigger: ".cta-section",
+      start: "top center+=100",
+      end: "bottom center-=100",
+      scrub: 1,
+    },
+    y: 50,
+    opacity: 0,
+    scale: 0.98,
+    duration: 1,
+    ease: "power2.out",
   });
 
   gsap.from(".gsap-hero", {
@@ -163,15 +532,9 @@ onMounted(() => {
   }
 });
 
-// Questions
-const questions = ref({
-  1: false,
-  2: false,
-  3: false,
-  4: false,
-  5: false,
-  6: false,
-  7: false,
+onBeforeUnmount(() => {
+  window.removeEventListener("scroll", handleScroll);
+  ScrollTrigger.getAll().forEach((t) => t.kill());
 });
 </script>
 
@@ -179,19 +542,25 @@ const questions = ref({
   <div class="flex min-h-screen flex-col bg-black">
     <!-- Header -->
     <header
-      class="fixed top-0 left-0 w-full z-50 bg-gradient-to-b from-black/80 to-transparent backdrop-blur-md"
+      class="fixed top-0 left-0 w-full z-50 glass-header transition-all duration-300"
     >
       <div class="flex h-20 items-center justify-between px-4 md:px-6">
-        <img src="/logo.png" alt="OnService" class="h-10" />
+        <img src="/logo.png" alt="OnService" class="h-10 hover:scale-105 transition-transform duration-300" />
       </div>
     </header>
 
     <main class="flex-1 bg-black">
       <!-- Hero Section -->
       <section
-        class="bg-black text-white pt-24 md:py-28 px-4 sm:px-6 text-center flex flex-col items-center justify-center min-h-[90vh] w-full overflow-hidden"
+        class="bg-black text-white pt-24 md:py-28 px-4 sm:px-6 text-center flex flex-col items-center justify-center min-h-[90vh] w-full overflow-hidden relative"
       >
-        <div class="w-full max-w-screen-md px-4">
+        <!-- Efectos de partículas flotantes -->
+        <ParticleBackground />
+        
+        <!-- Gradiente animado de fondo -->
+        <div class="absolute inset-0 bg-gradient-radial from-violet-500/10 via-transparent to-transparent animate-pulse"></div>
+        
+        <div class="w-full max-w-screen-md px-4 relative z-10">
           <h1
             class="gsap-hero text-4xl sm:text-5xl md:text-7xl font-bold leading-tight mb-4"
           >
@@ -208,7 +577,7 @@ const questions = ref({
         </div>
 
         <p
-          class="hero-desc text-gray-400 text-xl md:text-[1.25rem] leading-relaxed tracking-wide max-w-2xl mx-auto mt-6 sm:mt-8 mb-10 px-4 sm:px-0"
+          class="hero-desc text-gray-400 text-xl md:text-[1.25rem] leading-relaxed tracking-wide max-w-2xl mx-auto mt-6 sm:mt-8 mb-10 px-4 sm:px-0 relative z-10"
         >
           Our AI solution transforms customer experiences and boosts sales
           through <strong class="text-white font-medium">WhatsApp</strong> —
@@ -219,19 +588,19 @@ const questions = ref({
         </p>
 
         <div
-          class="hero-cta flex flex-col sm:flex-row gap-4 px-4 justify-center mt-6"
+          class="hero-cta flex flex-col sm:flex-row gap-4 px-4 justify-center mt-6 relative z-10"
         >
           <a
             href="https://wa.me/5491130261625"
             target="_blank"
-            class="px-8 py-3.5 bg-violet-600 text-white rounded-xl hover:bg-violet-700 transition text-base font-semibold shadow-md h-12 flex items-center justify-center min-w-[200px]"
+            class="px-8 py-3.5 bg-violet-600 text-white rounded-xl hover:bg-violet-700 transition-all duration-300 text-base font-semibold shadow-lg hover:shadow-violet-500/25 h-12 flex items-center justify-center min-w-[200px] transform hover:scale-105"
           >
             Chat with Agent AI
           </a>
           <ButtonAnimate />
         </div>
 
-        <div class="arrow mt-16 text-gray-500">
+        <div class="arrow mt-16 text-gray-500 relative z-10">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             class="w-8 h-8 mx-auto"
@@ -253,7 +622,7 @@ const questions = ref({
 
       <section class="pb-32 pt-20 relative w-full flex justify-center bg-black">
         <div
-          class="rounded-lg border bg-card shadow-xl overflow-hidden w-full max-w-4xl"
+          class="video-container rounded-lg border bg-card shadow-xl overflow-hidden w-full max-w-4xl"
         >
           <div class="aspect-video">
             <iframe
@@ -386,296 +755,139 @@ const questions = ref({
       </section>
 
       <!-- Features Section -->
-      <section id="features" class="py-20 bg-black">
-        <div class="container">
-          <div class="text-center mb-16">
-            <h2 class="text-3xl md:text-4xl font-semibold mb-4">
+      <section id="features" class="py-20 bg-black overflow-hidden">
+        <div class="container mx-auto px-4">
+          <!-- Título con pequeño underline animado -->
+          <div class="text-center mb-16 relative">
+            <h2 class="text-3xl md:text-4xl font-semibold mb-2">
               Powerful Features
             </h2>
-            <p class="text-xl text-muted-foreground max-w-2xl mx-auto">
+            <div
+              class="mx-auto mt-1 h-1 w-24 bg-violet-600 origin-left scale-x-0"
+              ref="underline"
+            ></div>
+            <p class="text-xl text-muted-foreground max-w-2xl mx-auto mt-4">
               OnService.AI comes packed with features designed to make your life
               easier and more productive.
             </p>
           </div>
-          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            <div
-              class="relative rounded-xl p-6 bg-[#0A0A0A] text-white overflow-hidden"
-            >
-              <div
-                class="absolute inset-0 bg-gradient-to-tr from-purple-900/10 via-transparent to-transparent opacity-70 pointer-events-none"
-              ></div>
-              <div class="relative z-10 flex flex-col items-center">
-                <div class="mb-4">
-                  <img
-                    src="/bot.png"
-                    alt="Virtual Agent"
-                    class="h-10 w-10 invert-100"
-                  />
-                </div>
-                <h3 class="text-xl font-semibold">Virtual Agent</h3>
-                <p class="mt-2 text-gray-300">
-                  Virtual agent available via the most popular chat platforms,
-                  with a friendly interface for conversations in a natural
-                  language.
-                </p>
-              </div>
-            </div>
-            <div
-              class="relative rounded-xl p-6 bg-[#0A0A0A] text-white overflow-hidden"
-            >
-              <div
-                class="absolute inset-0 bg-gradient-to-tr from-purple-900/10 via-transparent to-transparent opacity-70 pointer-events-none"
-              ></div>
-              <div class="relative z-10 flex flex-col items-center">
-                <div class="mb-4">
-                  <img
-                    src="/conversation.png"
-                    alt="Quick Answers"
-                    class="h-10 w-10 invert-100"
-                  />
-                </div>
-                <h3 class="text-xl font-semibold">Quick Answers</h3>
-                <p class="mt-2 text-gray-300">
-                  Answers the most frequent questions about fares and
-                  reservations efficiently, optimizing response times.
-                </p>
-              </div>
-            </div>
 
+          <!-- Grid de tarjetas -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
             <div
-              class="relative rounded-xl p-6 bg-[#0A0A0A] text-white overflow-hidden"
+              v-for="(feature, i) in features"
+              :key="i"
+              class="feature-card relative rounded-2xl p-20 pt-24 mt-12 bg-[#111] !text-white cursor-pointer group"
+              @mouseenter="hoverIn(i)"
+              @mouseleave="hoverOut(i)"
             >
+              <!-- Efecto de brillo -->
+              <div class="feature-glow absolute inset-0 bg-gradient-to-r from-violet-500/20 via-purple-500/20 to-violet-500/20 opacity-0 transition-opacity duration-300"></div>
+              
+              <!-- Fondo circular degradado -->
               <div
-                class="absolute inset-0 bg-gradient-to-tr from-purple-900/10 via-transparent to-transparent opacity-70 pointer-events-none"
+                class="feature-ball absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-1/2 h-20 w-20 rounded-full bg-gradient-to-br from-violet-700 to-purple-500 opacity-20 pointer-events-none"
               ></div>
-              <div class="relative z-10 flex flex-col items-center">
-                <div class="mb-4">
-                  <img
-                    src="/upselling.png"
-                    alt="Smart Upselling"
-                    class="h-10 w-10 invert-100"
-                  />
-                </div>
-                <h3 class="text-xl font-semibold">Smart Upselling</h3>
-                <p class="mt-2 text-gray-300">
-                  Smart upsell of relevant ancillary services for the customer
-                  in queries for flight availability, fares, reservation,
-                  check-in.
-                </p>
-              </div>
-            </div>
 
-            <div
-              class="relative rounded-xl p-6 bg-[#0A0A0A] text-white overflow-hidden"
-            >
+              <!-- Icono -->
               <div
-                class="absolute inset-0 bg-gradient-to-tr from-purple-900/10 via-transparent to-transparent opacity-70 pointer-events-none"
-              ></div>
-              <div class="relative z-10 flex flex-col items-center">
-                <div class="mb-4">
-                  <img
-                    src="/speech-bubble.png"
-                    alt="Natural Conversations"
-                    class="h-10 w-10 invert-100"
-                  />
-                </div>
-                <h3 class="text-xl font-semibold">Natural Conversations</h3>
-                <p class="mt-2 text-gray-300">
-                  It is designed to provide a seamless experience. It is not
-                  limited to a set decision tree, the customer can make specific
-                  queries.
-                </p>
+                class="feature-icon absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-1/2 h-20 w-20 rounded-full bg-gradient-to-br from-violet-700 to-purple-500 flex items-center justify-center pointer-events-none transition-all duration-300"
+              >
+                <img
+                  :src="feature.icon"
+                  :alt="feature.title"
+                  class="h-10 w-10 filter brightness-0 invert-100"
+                />
               </div>
-            </div>
 
-            <div
-              class="relative rounded-xl p-6 bg-[#0A0A0A] text-white overflow-hidden"
-            >
-              <div
-                class="absolute inset-0 bg-gradient-to-tr from-purple-900/10 via-transparent to-transparent opacity-70 pointer-events-none"
-              ></div>
-              <div class="relative z-10 flex flex-col items-center">
-                <div class="mb-4">
-                  <img
-                    src="/customer-support.png"
-                    alt="24/7 Support"
-                    class="h-10 w-10 invert-100"
-                  />
-                </div>
-                <h3 class="text-xl font-semibold">24/7 Support</h3>
-                <p class="mt-2 text-gray-300">
-                  Expands customer service beyond business hours. Also, multiple
-                  languages are available based on your markets.
-                </p>
-              </div>
-            </div>
-
-            <div
-              class="relative rounded-xl p-6 bg-[#0A0A0A] text-white overflow-hidden"
-            >
-              <div
-                class="absolute inset-0 bg-gradient-to-tr from-purple-900/10 via-transparent to-transparent opacity-70 pointer-events-none"
-              ></div>
-              <div class="relative z-10 flex flex-col items-center">
-                <div class="mb-4">
-                  <img
-                    src="/clipboard.png"
-                    alt="Task Automation"
-                    class="h-10 w-10 invert-100"
-                  />
-                </div>
-                <h3 class="text-xl font-semibold">Task Automation</h3>
-                <p class="mt-2 text-gray-300">
-                  Allows the automation of frequently asked questions so that
-                  your most qualified staff deals with complex cases.
-                </p>
-              </div>
+              <!-- Texto -->
+              <h3 class="relative z-10 text-xl font-semibold mb-2 group-hover:text-violet-300 transition-colors duration-300">
+                {{ feature.title }}
+              </h3>
+              <p class="relative z-10 text-gray-300 group-hover:text-gray-200 transition-colors duration-300">
+                {{ feature.desc }}
+              </p>
             </div>
           </div>
         </div>
       </section>
 
       <!-- FAQ Section -->
-      <section id="faq" class="py-20">
-        <div class="container">
+      <section id="faq" class="py-20 bg-black">
+        <div class="container mx-auto px-4">
           <div class="text-center mb-16">
-            <h2 class="text-3xl md:text-4xl font-semibold mb-4">
+            <h2 class="text-3xl md:text-4xl font-semibold mb-4 text-white">
               Frequently Asked Questions
             </h2>
             <p class="text-xl text-muted-foreground max-w-2xl mx-auto">
               Got questions? We've got answers.
             </p>
           </div>
-          <div class="grid grid-cols-1 gap-2 max-w-4xl mx-auto">
-            <div
-              class="border rounded-lg p-6 shadow-violet-700 hover:shadow-sm transition-all duration-300 cursor-pointer text-left"
-              @click="questions[1] = !questions[1]"
-            >
-              <header class="flex justify-between items-center">
-                <h3 class="text-lg font-medium">
-                  How does OnService.AI differ from other AI assistants?
-                </h3>
-                <img
-                  src="/arrow.svg"
-                  alt="Arrow"
-                  class="w-4 h-4 transition-all duration-300"
-                  :class="{ 'rotate-180': questions[1] }"
-                />
-              </header>
-              <p v-if="questions[1]" class="text-muted-foreground mt-4">
-                OnService.AI uses a proprietary language model specifically
-                trained to understand context better and provide more natural,
-                helpful responses. It also learns from your interactions to
-                become more personalized over time.
-              </p>
-            </div>
 
+          <div class="grid grid-cols-1 gap-4 max-w-3xl mx-auto">
             <div
-              class="border rounded-lg p-6 shadow-violet-700 hover:shadow-sm transition-all duration-300 cursor-pointer text-left"
-              @click="questions[2] = !questions[2]"
+              v-for="n in 6"
+              :key="n"
+              class="faq-item border rounded-lg p-6 shadow-violet-700 hover:shadow-sm transition-all duration-300 cursor-pointer"
+              @click="toggleFAQ(n)"
             >
               <header class="flex justify-between items-center">
-                <h3 class="text-lg font-medium">
-                  Can I integrate OnService.AI with my existing tools?
+                <h3 class="text-lg font-medium text-white">
+                  <!-- tus preguntas originales aquí -->
+                  {{
+                    [
+                      "How does OnService.AI differ from other AI assistants?",
+                      "Can I integrate OnService.AI with my existing tools?",
+                      "Is my data secure with OnService.AI?",
+                      "What happens if I exceed my message limit?",
+                      "Can I use OnService.AI offline?",
+                      "How do I cancel my subscription?",
+                    ][n - 1]
+                  }}
                 </h3>
                 <img
                   src="/arrow.svg"
-                  alt="Arrow"
-                  class="w-4 h-4 transition-all duration-300"
-                  :class="{ 'rotate-180': questions[2] }"
+                  alt="Toggle"
+                  class="w-5 h-5 text-white transition-transform duration-300"
+                  :class="{ 'rotate-180': questions[n] }"
                 />
               </header>
-              <p v-if="questions[2]" class="text-muted-foreground mt-4">
-                Yes! OnService.AI offers API access on our Enterprise plan,
-                allowing you to integrate it with your existing workflows, apps,
-                and services. We also offer pre-built integrations with popular
-                platforms.
-              </p>
-            </div>
-            <div
-              class="border rounded-lg p-6 shadow-violet-700 hover:shadow-sm transition-all duration-300 cursor-pointer text-left"
-              @click="questions[3] = !questions[3]"
-            >
-              <header class="flex justify-between items-center">
-                <h3 class="text-lg font-medium">
-                  Is my data secure with OnService.AI?
-                </h3>
-                <img
-                  src="/arrow.svg"
-                  alt="Arrow"
-                  class="w-4 h-4 transition-all duration-300"
-                  :class="{ 'rotate-180': questions[3] }"
-                />
-              </header>
-              <p v-if="questions[3]" class="text-muted-foreground mt-4">
-                Absolutely. We use end-to-end encryption for all conversations,
-                and your data is never used to train our models without your
-                explicit permission. We also offer enterprise-grade security
-                features for businesses.
-              </p>
-            </div>
-            <div
-              class="border rounded-lg p-6 shadow-violet-700 hover:shadow-sm transition-all duration-300 cursor-pointer text-left"
-              @click="questions[4] = !questions[4]"
-            >
-              <header class="flex justify-between items-center">
-                <h3 class="text-lg font-medium">
-                  What happens if I exceed my message limit?
-                </h3>
-                <img
-                  src="/arrow.svg"
-                  alt="Arrow"
-                  class="w-4 h-4 transition-all duration-300"
-                  :class="{ 'rotate-180': questions[4] }"
-                />
-              </header>
-              <p v-if="questions[4]" class="text-muted-foreground mt-4">
-                On the Free plan, once you reach your daily limit, you'll need
-                to wait until the next day to send more messages. You can also
-                upgrade to the Pro plan for unlimited messages at any time.
-              </p>
-            </div>
-            <div
-              class="border rounded-lg p-6 shadow-violet-700 hover:shadow-sm transition-all duration-300 cursor-pointer text-left"
-              @click="questions[5] = !questions[5]"
-            >
-              <header class="flex justify-between items-center">
-                <h3 class="text-lg font-medium">
-                  Can I use OnService.AI offline?
-                </h3>
-                <img
-                  src="/arrow.svg"
-                  alt="Arrow"
-                  class="w-4 h-4 transition-all duration-300"
-                  :class="{ 'rotate-180': questions[5] }"
-                />
-              </header>
-              <p v-if="questions[5]" class="text-muted-foreground mt-4">
-                The Pro and Enterprise plans include desktop and mobile apps
-                that can function with limited capabilities while offline. Full
-                functionality requires an internet connection.
-              </p>
-            </div>
-            <div
-              class="border rounded-lg p-6 shadow-violet-700 hover:shadow-sm transition-all duration-300 cursor-pointer text-left"
-              @click="questions[6] = !questions[6]"
-            >
-              <header class="flex justify-between items-center">
-                <h3 class="text-lg font-medium">
-                  How do I cancel my subscription?
-                </h3>
-                <img
-                  src="/arrow.svg"
-                  alt="Arrow"
-                  class="w-4 h-4 transition-all duration-300"
-                  :class="{ 'rotate-180': questions[6] }"
-                />
-              </header>
-              <p v-if="questions[6]" class="text-muted-foreground mt-4">
-                You can cancel your subscription at any time from your account
-                settings. If you cancel, you'll still have access to your plan
-                until the end of your current billing period.
-              </p>
+
+              <!-- loader de 3 puntitos -->
+              <div
+                v-if="loading[n]"
+                class="faq-loader flex items-center justify-center mt-4 h-6"
+              >
+                <span
+                  class="dot mx-1 inline-block w-2 h-2 bg-white rounded-full"
+                ></span>
+                <span
+                  class="dot mx-1 inline-block w-2 h-2 bg-white rounded-full"
+                ></span>
+                <span
+                  class="dot mx-1 inline-block w-2 h-2 bg-white rounded-full"
+                ></span>
+              </div>
+
+              <!-- Transition GSAP -->
+              <transition @enter="faqEnter" @leave="faqLeave">
+                <p
+                  v-show="questions[n]"
+                  class="text-muted-foreground mt-4 overflow-hidden"
+                >
+                  <!-- tus respuestas originales aquí -->
+                  {{
+                    [
+                      "OnService.AI uses a proprietary language model specifically trained to understand context better and provide more natural, helpful responses. It also learns from your interactions to become more personalized over time.",
+                      "Yes! OnService.AI offers API access on our Enterprise plan, allowing you to integrate it with your existing workflows, apps, and services. We also offer pre-built integrations with popular platforms.",
+                      "Absolutely. We use end-to-end encryption for all conversations, and your data is never used to train our models without your explicit permission. We also offer enterprise-grade security features for businesses.",
+                      "On the Free plan, once you reach your daily limit, you'll need to wait until the next day to send more messages. You can also upgrade to the Pro plan for unlimited messages at any time.",
+                      "The Pro and Enterprise plans include desktop and mobile apps that can function with limited capabilities while offline. Full functionality requires an internet connection.",
+                      "You can cancel your subscription at any time from your account settings. If you cancel, you'll still have access to your plan until the end of your current billing period.",
+                    ][n - 1]
+                  }}
+                </p>
+              </transition>
             </div>
           </div>
         </div>
@@ -683,7 +895,7 @@ const questions = ref({
 
       <!-- CTA Section -->
       <section
-        class="relative overflow-hidden bg-gradient-to-br from-[#1b0c34] via-[#2d0e59] to-[#381171] px-8 py-24 md:py-32 text-center"
+        class="cta-section relative overflow-hidden bg-gradient-to-br from-[#1b0c34] via-[#2d0e59] to-[#381171] px-8 py-24 md:py-32 text-center"
       >
         <div
           class="pointer-events-none absolute -left-20 -top-20 h-72 w-72 rounded-full bg-purple-500/40 blur-3xl"
@@ -702,13 +914,54 @@ const questions = ref({
           <ButtonAnimate />
         </div>
       </section>
+
+      <!-- Team Section -->
+      <section id="team" class="relative w-full overflow-x-hidden py-32 bg-black">
+        <div class="container mx-auto px-4">
+          <div class="text-center mb-16 relative">
+            <h2 class="text-3xl md:text-4xl font-semibold mb-2 text-white">
+              Meet the Team
+            </h2>
+            <div class="mx-auto mt-1 h-1 w-24 bg-violet-600 origin-left scale-x-100"></div>
+            <p class="text-xl text-muted-foreground max-w-2xl mx-auto mt-4">
+              The minds behind our AI solutions.
+            </p>
+          </div>
+        </div>
+        <div class="team-horizontal-scroll relative w-full">
+          <div class="team-panel-track flex">
+            <div
+              v-for="(slide, sidx) in teamSlides"
+              :key="'slide-' + sidx"
+              class="team-panel-slide flex-shrink-0 w-screen min-w-[100vw] h-[80vh] flex items-center justify-center px-4 relative"
+            >
+              <div class="absolute inset-0 z-0 bg-gradient-to-br from-violet-900/40 via-black/60 to-violet-800/30 blur-2xl"></div>
+              <div class="flex flex-col md:flex-row gap-8 w-full h-full items-center justify-center z-10">
+                <div
+                  v-for="(member, idx) in slide"
+                  :key="member.name"
+                  class="team-member-card flex-1 max-w-md bg-[#18181b] rounded-3xl shadow-xl flex flex-col items-center justify-center p-8 relative mx-auto"
+                >
+                  <!-- Avatar randomuser -->
+                  <div class="avatar mb-6">
+                    <img :src="`https://randomuser.me/api/portraits/men/${(sidx*3+idx)%50}.jpg`" alt="avatar" class="w-28 h-28 rounded-full object-cover border-4 border-violet-500 shadow-lg" />
+                  </div>
+                  <h3 class="text-2xl font-bold text-white mb-1 team-name">{{ member.name }}</h3>
+                  <p class="text-violet-400 font-semibold mb-2 team-role">{{ member.role }}</p>
+                  <p class="text-gray-200 text-center text-base mb-2 team-desc max-w-xs md:max-w-sm">{{ member.desc }}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
     </main>
     <!-- back to top -->
     <div
       v-if="showScrollTop"
       ref="scrollBtn"
       @click="scrollToTop"
-      class="fixed bottom-8 right-8 z-50 flex h-12 w-12 cursor-pointer items-center justify-center rounded-full bg-violet-600 shadow-xl hover:bg-violet-700"
+      class="fixed bottom-8 right-8 z-50 flex h-12 w-12 cursor-pointer items-center justify-center rounded-full bg-violet-600 shadow-xl hover:bg-violet-700 scroll-to-top-btn transition-all duration-300 hover:scale-110"
     >
       <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -954,6 +1207,31 @@ section:not(:first-child):not(:last-child)::before {
   );
 }
 
+@keyframes blink {
+  0%,
+  100% {
+    opacity: 0.2;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+.faq-loader .dot {
+  opacity: 0.2;
+  animation: blink 1s infinite ease-in-out;
+}
+
+.faq-loader .dot:nth-child(1) {
+  animation-delay: 0s;
+}
+.faq-loader .dot:nth-child(2) {
+  animation-delay: 0.2s;
+}
+.faq-loader .dot:nth-child(3) {
+  animation-delay: 0.4s;
+}
+
 @keyframes scroll {
   from {
     transform: translateX(0);
@@ -983,5 +1261,192 @@ section:not(:first-child):not(:last-child)::before {
 .v-enter-from,
 .v-leave-to {
   opacity: 0;
+}
+
+.feature-card {
+  transition: all 0.3s ease;
+  border: 1px solid rgba(139, 92, 246, 0.1);
+}
+
+.feature-card:hover {
+  border-color: rgba(139, 92, 246, 0.3);
+  box-shadow: 
+    0 4px 20px rgba(124, 58, 237, 0.3),
+    0 0 0 1px rgba(139, 92, 246, 0.1);
+}
+
+.faq-loader .dot {
+  opacity: 0.2;
+}
+
+/* Partículas flotantes */
+.floating-particle {
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  background: linear-gradient(45deg, #8b5cf6, #a855f7);
+  border-radius: 50%;
+  opacity: 0.6;
+  animation: float 6s ease-in-out infinite;
+}
+
+.particle-1 {
+  top: 20%;
+  left: 10%;
+  animation-delay: 0s;
+  animation-duration: 8s;
+}
+
+.particle-2 {
+  top: 60%;
+  left: 80%;
+  animation-delay: 2s;
+  animation-duration: 10s;
+}
+
+.particle-3 {
+  top: 80%;
+  left: 20%;
+  animation-delay: 4s;
+  animation-duration: 7s;
+}
+
+.particle-4 {
+  top: 30%;
+  left: 70%;
+  animation-delay: 1s;
+  animation-duration: 9s;
+}
+
+.particle-5 {
+  top: 70%;
+  left: 60%;
+  animation-delay: 3s;
+  animation-duration: 6s;
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px) translateX(0px);
+    opacity: 0.6;
+  }
+  25% {
+    transform: translateY(-20px) translateX(10px);
+    opacity: 0.8;
+  }
+  50% {
+    transform: translateY(-10px) translateX(-5px);
+    opacity: 0.4;
+  }
+  75% {
+    transform: translateY(-30px) translateX(15px);
+    opacity: 0.9;
+  }
+}
+
+/* Gradiente radial */
+.bg-gradient-radial {
+  background: radial-gradient(circle at center, var(--tw-gradient-stops));
+}
+
+/* Efecto de typing mejorado */
+.typing {
+  position: relative;
+}
+
+/* Mejoras en el scroll to top */
+.scroll-to-top-btn {
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(139, 92, 246, 0.2);
+}
+
+/* Animaciones de entrada mejoradas */
+@keyframes slideInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.slide-in-up {
+  animation: slideInUp 0.6s ease-out;
+}
+
+/* Efecto de glassmorphism para el header */
+.glass-header {
+  backdrop-filter: blur(20px);
+  background: rgba(0, 0, 0, 0.8);
+  border-bottom: 1px solid rgba(139, 92, 246, 0.1);
+}
+
+/* Team horizontal scroll styles */
+.team-horizontal-scroll {
+  position: relative;
+  width: 100vw;
+  max-width: 100vw;
+  overflow-x: hidden;
+  min-height: 500px;
+}
+.team-panel-track {
+  display: flex;
+  will-change: transform;
+}
+.team-panel-slide {
+  min-width: 100vw;
+  width: 100vw;
+  height: 80vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: visible;
+}
+.team-panel-slide::-webkit-scrollbar {
+  display: none;
+}
+.team-panel-slide {
+  scrollbar-width: none;
+}
+.avatar svg {
+  animation: avatar-bounce 2.2s infinite cubic-bezier(.68,-0.55,.27,1.55);
+}
+@keyframes avatar-bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-12px); }
+}
+
+/* Team member card styles */
+.team-member-card {
+  background: rgba(24, 24, 27, 0.95);
+  box-shadow: 0 4px 32px 0 rgba(124, 58, 237, 0.08);
+  border: 1.5px solid rgba(139, 92, 246, 0.15);
+  min-height: 420px;
+  min-width: 0;
+  transition: box-shadow 0.3s, border 0.3s;
+}
+.team-member-card:hover {
+  box-shadow: 0 8px 40px 0 rgba(124, 58, 237, 0.18);
+  border-color: #a78bfa;
+}
+@media (min-width: 768px) {
+  .team-panel-slide > .flex {
+    flex-direction: row;
+    gap: 2rem;
+  }
+}
+@media (max-width: 767px) {
+  .team-panel-slide > .flex {
+    flex-direction: column;
+    gap: 2rem;
+  }
+  .team-member-card {
+    max-width: 90vw;
+    min-width: 0;
+  }
 }
 </style>
