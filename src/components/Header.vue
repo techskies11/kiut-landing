@@ -1,28 +1,52 @@
 <template>
-  <header class="fixed top-0 left-0 w-full z-50 flex justify-center pt-5 md:pt-7 pointer-events-none">
-    <nav class="relative z-10 flex items-center px-2 py-1.5 md:px-4 md:py-2 rounded-full bg-black/50 backdrop-blur-xl shadow-lg border border-white/10 pointer-events-auto floating-nav">
-      <!-- Logo dentro del fondo flotante, alineado a la izquierda -->
-      <a href="#hero" class="flex items-center h-10 md:h-12 pr-4 mr-2 md:mr-6 border-r border-white/10 focus:outline-none" aria-label="OnService Home">
-        <img src="/logo.png" alt="OnService logo" class="h-9 md:h-11 w-auto transition-all duration-200" />
+  <header class="fixed top-0 left-0 w-full z-50 flex justify-center mt-3 md:mt-4 px-4 md:px-8 pointer-events-none">
+    <nav class="relative z-10 flex items-center py-1 md:py-1.5 rounded-2xl bg-black/60 backdrop-blur-xl shadow-md border border-white/10 pointer-events-auto floating-nav w-full max-w-5xl">
+      <!-- Logo -->
+      <a href="#hero" class="flex items-center h-8 md:h-10 pr-2 mr-2 md:mr-4 border-r border-white/10 focus:outline-none" aria-label="OnService Home">
+        <img src="/logo.png" alt="OnService logo" class="h-7 md:h-8 w-auto transition-all duration-200" />
       </a>
-      <ul class="flex gap-4 lg:gap-8 text-white/90 text-base font-medium">
-        <li v-for="item in navItems" :key="item.label" class="relative group">
-          <a :href="item.href"
-             :class="[
-               'px-4 py-2 rounded-xl transition focus:outline-none focus:ring-2 focus:ring-violet-400 font-semibold flex flex-col items-center',
-               isActive(item.href) ? 'active-link' : 'nav-hover'
-             ]"
-             @click.prevent="setActive(item.href)">
-            <span class="relative z-10">{{ item.label }}</span>
-            <span v-if="isActive(item.href)" class="active-underline"></span>
-            <span v-else class="hover-underline group-hover:opacity-100"></span>
-          </a>
-        </li>
-      </ul>
-      <div class="flex-1"></div>
-      <a href="#contact" class="ml-4 px-6 py-2 rounded-xl font-semibold shadow-lg border-0 focus:outline-none focus:ring-2 focus:ring-violet-400 btn-contacto-gradient">
-        Contacto
-      </a>
+      <!-- Desktop nav -->
+      <div class="flex-1 flex justify-center">
+        <ul class="hidden md:flex gap-2 lg:gap-4 text-white/90 text-base font-medium">
+          <li v-for="item in navItems" :key="item.label" class="relative group">
+            <a :href="item.href"
+               :class="[
+                 'px-2.5 py-1.5 rounded-lg transition font-semibold flex flex-col items-center',
+                 isActive(item.href) ? 'active-link' : 'nav-hover'
+               ]"
+               @click.prevent="setActive(item.href)">
+              <span class="relative z-10 flex items-center gap-1">
+                <span v-if="isActive(item.href)" class="inline-block w-1.5 h-1.5 rounded-full bg-gradient-to-r from-violet-400 to-cyan-400 mr-1"></span>
+                {{ item.label }}
+              </span>
+              <span v-if="isActive(item.href)" class="active-underline"></span>
+              <span v-else class="hover-underline group-hover:opacity-100"></span>
+            </a>
+          </li>
+        </ul>
+      </div>
+      <!-- Desktop contacto -->
+      <a href="#contact" class="hidden md:inline-block ml-2 px-4 py-1.5 rounded-lg font-semibold shadow-md border-0 btn-contacto-gradient text-sm mr-2 md:mr-4">Contacto</a>
+      <!-- Mobile hamburger -->
+      <button class="md:hidden ml-auto z-20 flex items-center justify-center w-12 h-12 rounded-full bg-black/60 shadow-lg hover:bg-black/80 transition-all focus:outline-none focus:ring-2 focus:ring-violet-400" @click="menuOpen = !menuOpen" aria-label="Abrir menú">
+        <svg v-if="!menuOpen" xmlns="http://www.w3.org/2000/svg" class="w-7 h-7 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M4 8h16M4 16h16" />
+        </svg>
+        <svg v-else xmlns="http://www.w3.org/2000/svg" class="w-7 h-7 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+        </svg>
+      </button>
+      <!-- Mobile menu -->
+      <transition name="slide-down">
+        <div v-if="menuOpen" class="fixed inset-0 z-40 flex flex-col items-center justify-start pt-24 bg-black/70 backdrop-blur-xl" @click.self="menuOpen = false">
+          <nav class="w-full max-w-xs mx-auto bg-black/80 rounded-2xl shadow-2xl p-6 flex flex-col gap-4 animate-fade-in-menu">
+            <a v-for="item in navItems" :key="item.label" :href="item.href" @click.prevent="handleMobileNav(item.href)" class="block text-lg font-semibold text-white py-3 px-4 rounded-xl text-center transition-all hover:bg-violet-700/30 focus:outline-none focus:ring-2 focus:ring-violet-400">
+              {{ item.label }}
+            </a>
+            <a href="#contact" @click.prevent="handleMobileNav('#contact')" class="mt-2 px-6 py-3 rounded-xl font-semibold shadow-lg border-0 btn-contacto-gradient text-lg text-center">Contacto</a>
+          </nav>
+        </div>
+      </transition>
     </nav>
   </header>
 </template>
@@ -41,14 +65,22 @@ const navItems = [
 
 const activeSection = ref(null);
 const atTop = ref(true);
+const menuOpen = ref(false);
 
 function setActive(href) {
   activeSection.value = href;
-  window.location.hash = href;
+  const el = document.querySelector(href);
+  if (el) {
+    const y = el.getBoundingClientRect().top + window.scrollY - 64;
+    window.scrollTo({ top: y, behavior: 'smooth' });
+  } else {
+    window.location.hash = href;
+  }
 }
 
-function onHashChange() {
-  activeSection.value = window.location.hash || null;
+function handleMobileNav(href) {
+  setActive(href);
+  menuOpen.value = false;
 }
 
 function isActive(href) {
@@ -63,7 +95,7 @@ function onScroll() {
     const section = document.querySelector(navItems[i].href);
     if (section) {
       const rect = section.getBoundingClientRect();
-      if (rect.top <= 120) {
+      if (rect.top <= 80) {
         activeSection.value = navItems[i].href;
         found = true;
         break;
@@ -76,34 +108,49 @@ function onScroll() {
 }
 
 onMounted(() => {
-  window.addEventListener('hashchange', onHashChange);
+  window.addEventListener('hashchange', () => { menuOpen.value = false; });
   window.addEventListener('scroll', onScroll, { passive: true });
   nextTick(onScroll);
 });
 onBeforeUnmount(() => {
-  window.removeEventListener('hashchange', onHashChange);
   window.removeEventListener('scroll', onScroll);
 });
 </script>
 
 <style scoped>
 .floating-nav {
-  box-shadow: 0 4px 24px 0 rgba(30, 41, 59, 0.12);
-  border-radius: 2.5rem;
-  background: rgba(17, 24, 39, 0.50);
-  backdrop-filter: blur(18px);
-  border: 1.5px solid rgba(139, 92, 246, 0.10);
+  box-shadow: 0 2px 12px 0 rgba(30, 41, 59, 0.10);
+  border-radius: 1.2rem;
+  background: rgba(17, 24, 39, 0.45);
+  backdrop-filter: blur(14px);
+  border: 1.2px solid rgba(139, 92, 246, 0.10);
   margin-top: 0;
-  transition: box-shadow 0.3s, background 0.3s, border 0.3s;
-  align-items: center;
-  min-width: 0;
+  padding-left: 0;
+  padding-right: 0;
 }
-@media (max-width: 768px) {
+@media (min-width: 768px) {
   .floating-nav {
-    padding-left: 0.15rem;
-    padding-right: 0.15rem;
-    border-radius: 1.2rem;
+    padding-left: 0;
+    padding-right: 0;
   }
+}
+.slide-down-enter-active, .slide-down-leave-active {
+  transition: opacity 0.3s, transform 0.4s cubic-bezier(.4,0,.2,1);
+}
+.slide-down-enter-from, .slide-down-leave-to {
+  opacity: 0;
+  transform: translateY(-32px);
+}
+.slide-down-enter-to, .slide-down-leave-from {
+  opacity: 1;
+  transform: translateY(0);
+}
+.animate-fade-in-menu {
+  animation: fadeInMenu 0.5s cubic-bezier(.4,0,.2,1);
+}
+@keyframes fadeInMenu {
+  from { opacity: 0; transform: scale(0.98) translateY(-16px); }
+  to { opacity: 1; transform: scale(1) translateY(0); }
 }
 .active-link {
   background: transparent !important;
@@ -160,19 +207,25 @@ onBeforeUnmount(() => {
   background: linear-gradient(90deg, #7c3aed 0%, #38bdf8 100%);
   color: #fff;
   font-weight: 700;
-  box-shadow: 0 2px 16px 0 rgba(139, 92, 246, 0.18);
+  box-shadow: 0 1px 8px 0 rgba(139, 92, 246, 0.10);
   border: none;
   transition: box-shadow 0.18s, filter 0.18s;
   filter: brightness(1);
 }
 .btn-contacto-gradient:hover, .btn-contacto-gradient:focus {
   filter: brightness(1.08) saturate(1.2);
-  box-shadow: 0 4px 32px 0 rgba(56, 189, 248, 0.18);
+  box-shadow: 0 2px 16px 0 rgba(56, 189, 248, 0.13);
 }
 img[alt="OnService logo"] {
   border-radius: 0.6rem;
   box-shadow: none;
   padding: 0;
   margin-left: 0;
+}
+@media (min-width: 768px) {
+  .nav-hover:focus, .active-link:focus, .btn-contacto-gradient:focus {
+    outline: none !important;
+    box-shadow: none !important;
+  }
 }
 </style> 

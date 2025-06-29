@@ -9,7 +9,7 @@
       </div>
       <div class="editor-block">
         <div class="editor-gutter">
-          <span v-for="(line, idx) in visibleLines" :key="'gutter-' + idx" class="gutter-line">{{ idx + 1 }}</span>
+          <span v-for="idx in typingLineIdx + 1" :key="'gutter-' + idx" class="gutter-line">{{ idx }}</span>
         </div>
         <div class="editor-code" tabindex="0">
           <div v-for="(line, idx) in visibleLines" :key="'code-' + idx" class="editor-line">
@@ -319,6 +319,35 @@ watch(() => [props.tab, props.exampleIdx, props.prompts], () => {
   .code-block-glass.code-block-terminal {
     padding-top: 1.1rem;
     padding-bottom: 2.5rem;
+  }
+}
+@media (max-width: 768px) {
+  .code-block-container {
+    min-width: 0 !important;
+    max-width: 98vw !important;
+    width: 100% !important;
+    margin: 0 auto !important;
+    justify-content: center !important;
+    align-items: center !important;
+  }
+  .code-block-glass.code-block-terminal {
+    min-width: 0 !important;
+    max-width: 98vw !important;
+    width: 100% !important;
+    padding: 0.7rem 0.3rem 1.1rem 0.3rem !important;
+    min-height: 140px !important;
+    height: auto !important;
+    max-height: 220px !important;
+    margin: 0 auto !important;
+  }
+  .editor-gutter {
+    min-width: 1.5em !important;
+    text-align: right !important;
+    padding-right: 0.4em !important;
+    font-size: 12px !important;
+  }
+  .editor-line {
+    min-height: 1.1em !important;
   }
 }
 </style> 
