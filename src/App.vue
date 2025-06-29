@@ -1,27 +1,9 @@
 <script setup>
-import { onMounted, onBeforeUnmount, ref, nextTick, computed } from "vue";
-import ButtonAnimate from "./components/ButtonAnimate.vue";
-import ParticleBackground from "./components/ParticleBackground.vue";
-import gsap from "gsap";
-import { ScrollToPlugin } from "gsap/ScrollToPlugin";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
-import SectionTitle from "./components/SectionTitle.vue";
-
-gsap.registerPlugin(ScrollToPlugin, ScrollTrigger);
-
-const words = [
-  "customer support",
-  "flight reservations",
-  "e-commerce",
-  "travel assistance",
-  "ticket changes",
-  "AI chat agents",
-  "boarding services",
-  "flight check-ins",
-  "24/7 support",
-  "loyalty programs",
-  "baggage queries",
-];
+import { ref, nextTick, computed, Transition, watch, onMounted, onBeforeUnmount } from "vue";
+import Header from "./components/Header.vue";
+import CircuitBackground from "./components/CircuitBackground.vue";
+import CodePromptBlock from "./components/CodePromptBlock.vue";
+import AgentResponseBlock from "./components/AgentResponseBlock.vue";
 
 const questions = ref({
   1: false,
@@ -338,166 +320,286 @@ function updateTeamScrollTrigger() {
   }
 }
 
-onMounted(async () => {
-  typeEffect();
-  gsap.to(cursor.value, {
-    opacity: 1,
-    duration: 0.6,
-    ease: "power1.inOut",
-    repeat: -1,
-    yoyo: true,
-  });
-  gsap.to(underline.value, { scaleX: 1, duration: 0.6, ease: "power3.out" });
-
-  await nextTick();
-
-  gsap.from(".feature-ball", {
-    scrollTrigger: {
-      trigger: "#features",
-      start: "top 80%",
-      toggleActions: "play none none none",
-    },
-    y: -40,
-    opacity: 0,
-    duration: 0.9,
-    ease: "back.out(1.7)",
-    stagger: 0.12,
-    clearProps: "all",
-  });
-
-  // Animación del video con parallax
-  gsap.from(".video-container", {
-    scrollTrigger: {
-      trigger: ".video-container",
-      start: "top center+=100",
-      end: "bottom center-=100",
-      scrub: 1,
-    },
-    y: 100,
-    opacity: 0,
-    scale: 0.95,
-    duration: 1,
-    ease: "power2.out",
-  });
-
-  // Timeline para animar el Hero completo
-  const tl = gsap.timeline();
-  tl.from(".gsap-hero span.block", {
-    opacity: 0,
-    y: 40,
-    duration: 0.8,
-    stagger: 0.2,
-    ease: "power3.out",
-  })
-    .from(
-      ".hero-desc",
-      { opacity: 0, y: 20, duration: 0.6, ease: "power3.out" },
-      "-=0.4"
-    )
-    .from(
-      ".hero-cta",
-      {
-        opacity: 0,
-        scale: 0.8,
-        duration: 0.6,
-        ease: "back.out(1.4)",
-        stagger: 0.2,
-      },
-      "-=0.4"
-    )
-    .from(
-      ".arrow",
-      { opacity: 0, y: 20, duration: 0.6, ease: "power2.out" },
-      "-=0.4"
-    );
-  gsap.to(".arrow", {
-    y: -8,
-    duration: 1.2,
-    ease: "sine.inOut",
-    repeat: -1,
-    yoyo: true,
-    delay: 1.5,
-  });
-
-  window.addEventListener("scroll", handleScroll);
-
-  // Animación del título y subtítulo del FAQ mejorada
-  gsap.from("#faq .text-center > *", {
-    scrollTrigger: {
-      trigger: "#faq .text-center",
-      start: "top 90%",
-      toggleActions: "play none none reverse",
-    },
-    y: 30,
-    opacity: 0,
-    duration: 0.8,
-    stagger: 0.15,
-    ease: "power3.out",
-  });
-
-  // Animación de cada pregunta (fade-in + slide) mejorada
-  gsap.utils.toArray("#faq .faq-item").forEach((item, index) => {
-    gsap.from(item, {
-      scrollTrigger: {
-        trigger: item,
-        start: "top 95%",
-        toggleActions: "play none none reverse",
-      },
-      y: 30,
-      opacity: 0,
-      duration: 0.6,
-      delay: index * 0.1,
-      ease: "power3.out",
-    });
-  });
-
-  // Animación del CTA section con parallax
-  gsap.from(".cta-section", {
-    scrollTrigger: {
-      trigger: ".cta-section",
-      start: "top center+=100",
-      end: "bottom center-=100",
-      scrub: 1,
-    },
-    y: 50,
-    opacity: 0,
-    scale: 0.98,
-    duration: 1,
-    ease: "power2.out",
-  });
-
-  gsap.from(".gsap-hero", {
-    opacity: 0,
-    y: 60,
-    duration: 1.2,
-    ease: "power3.out",
-  });
-
-  gsap.from("header", {
-    y: -80,
-    opacity: 0,
-    duration: 0.8,
-    ease: "power2.out",
-  });
-
-  const container = document.querySelector(".panel-track");
-
-  if (container) {
-    console.log(container, "container");
-  } else {
-    console.warn("⚠️ .panel-track no encontrado en el DOM");
+// Ejemplos sincronizados para prompts y respuestas
+const prompts = {
+  airline: {
+    label: 'Aerolínea',
+    examples: [
+      [
+        '✈️ # System Prompt',
+        'Eres AeroBot, tu asistente virtual de aerolíneas.',
+        'Tono cordial y profesional.',
+        'Responde en español claro.',
+        'Ayuda con reservas, check-in y vuelos.',
+        '# Ejemplo',
+        '$ User: "¿Puedo cambiar mi vuelo?"'
+      ],
+      [
+        '🛫 # System Prompt',
+        'Hola, soy AeroBot, asistente digital de la aerolínea.',
+        'Responde con amabilidad y precisión.',
+        'Brinda información sobre equipaje y reservas.',
+        '# Ejemplo',
+        '$ User: "¿Cuánto equipaje puedo llevar en cabina?"'
+      ],
+      [
+        '✈️ # System Prompt',
+        'AeroBot, asistente de vuelos.',
+        'Tono profesional y empático.',
+        'Responde dudas sobre horarios y servicios.',
+        '# Ejemplo',
+        '$ User: "¿El vuelo AM123 está demorado?"'
+      ],
+      [
+        '🛬 # System Prompt',
+        'Eres AeroBot, experto en atención al pasajero.',
+        'Responde en español neutro.',
+        'Ayuda con selección de asientos y embarque.',
+        '# Ejemplo',
+        '$ User: "¿Puedo seleccionar mi asiento online?"'
+      ],
+      [
+        '✈️ # System Prompt',
+        'AeroBot, asistente de aerolínea.',
+        'Tono cercano y resolutivo.',
+        'Brinda soporte para servicios especiales.',
+        '# Ejemplo',
+        '$ User: "¿Cómo solicito asistencia especial para mi vuelo?"'
+      ]
+    ]
+  },
+  travel: {
+    label: 'Viajes',
+    examples: [
+      [
+        '🌍 # System Prompt',
+        'Eres TravelGuru, experto en viajes internacionales.',
+        'Tono amigable y claro.',
+        'Recomienda destinos y tips de viaje.',
+        '# Ejemplo',
+        '$ User: "¿Necesito visa para viajar a Brasil?"'
+      ],
+      [
+        '🧳 # System Prompt',
+        'TravelGuru, tu asesor de vacaciones.',
+        'Tono cercano y entusiasta.',
+        'Sugiere destinos y actividades.',
+        '# Ejemplo',
+        '$ User: "¿Qué destino recomendás para vacaciones en invierno?"'
+      ],
+      [
+        '🌏 # System Prompt',
+        'Eres TravelGuru, guía de viajes.',
+        'Tono informativo y cordial.',
+        'Ayuda a reservar tours y excursiones.',
+        '# Ejemplo',
+        '$ User: "¿Cómo reservo un tour en París?"'
+      ],
+      [
+        '🗾 # System Prompt',
+        'TravelGuru, experto en cultura y turismo.',
+        'Tono claro y detallista.',
+        'Responde sobre mejores épocas para viajar.',
+        '# Ejemplo',
+        '$ User: "¿Cuál es la mejor época para visitar Japón?"'
+      ],
+      [
+        '🚗 # System Prompt',
+        'Eres TravelGuru, asistente de viajes.',
+        'Tono práctico y directo.',
+        'Brinda información sobre alquiler de autos.',
+        '# Ejemplo',
+        '$ User: "¿Qué documentos necesito para alquilar un auto en Europa?"'
+      ]
+    ]
+  },
+  it: {
+    label: 'Soporte IT',
+    examples: [
+      [
+        '💻 # System Prompt',
+        'Eres ITBot, soporte técnico de la empresa.',
+        'Tono técnico y resolutivo.',
+        'Ayuda con acceso a sistemas y correo.',
+        '# Ejemplo',
+        '$ User: "No puedo acceder a mi correo corporativo."'
+      ],
+      [
+        '🔒 # System Prompt',
+        'ITBot, tu asistente de tecnología.',
+        'Tono profesional y paciente.',
+        'Guía para configurar VPN y acceso remoto.',
+        '# Ejemplo',
+        '$ User: "¿Cómo configuro la VPN en mi laptop?"'
+      ],
+      [
+        '🖥️ # System Prompt',
+        'Eres ITBot, experto en soporte digital.',
+        'Tono claro y directo.',
+        'Responde sobre sistemas y tickets.',
+        '# Ejemplo',
+        '$ User: "¿El sistema de tickets está caído?"'
+      ],
+      [
+        '🔑 # System Prompt',
+        'ITBot, asistente de soporte.',
+        'Tono resolutivo y cordial.',
+        'Ayuda a restablecer contraseñas.',
+        '# Ejemplo',
+        '$ User: "¿Cómo restablezco mi contraseña?"'
+      ],
+      [
+        '💾 # System Prompt',
+        'Eres ITBot, soporte informático.',
+        'Tono técnico y claro.',
+        'Brinda ayuda sobre instalaciones de software.',
+        '# Ejemplo',
+        '$ User: "¿Puedo instalar software en mi equipo?"'
+      ]
+    ]
   }
+};
 
-  updateTeamScrollTrigger();
-  window.addEventListener('resize', updateTeamScrollTrigger);
-  setTimeout(() => { window.ScrollTrigger && window.ScrollTrigger.refresh && window.ScrollTrigger.refresh(); }, 200);
+const agentResponses = {
+  airline: [
+    [
+      'User: "¿Puedo cambiar mi vuelo?"',
+      'Agent: "¡Por supuesto! ¿Podrías indicarme tu número de reserva?"',
+      'User: "Es 123456."',
+      'Agent: "Gracias. Verificando... Tu tarifa permite un cambio con costo adicional. ¿Deseas continuar?"'
+    ],
+    [
+      'User: "¿Cuánto equipaje puedo llevar en cabina?"',
+      'Agent: "Puedes llevar una pieza de hasta 10kg en cabina. ¿Te gustaría saber sobre equipaje en bodega?"'
+    ],
+    [
+      'User: "¿El vuelo AM123 está demorado?"',
+      'Agent: "El vuelo AM123 está programado para salir a tiempo. ¿Necesitas información de la puerta de embarque?"'
+    ],
+    [
+      'User: "¿Puedo seleccionar mi asiento online?"',
+      'Agent: "Sí, puedes seleccionar tu asiento desde la web o la app hasta 24h antes del vuelo."'
+    ],
+    [
+      'User: "¿Cómo solicito asistencia especial para mi vuelo?"',
+      'Agent: "Claro, puedo ayudarte a solicitar asistencia especial. ¿Requieres silla de ruedas o asistencia en el embarque?"'
+    ]
+  ],
+  travel: [
+    [
+      'User: "¿Necesito visa para viajar a Brasil?"',
+      'Agent: "No necesitas visa para viajes turísticos menores a 90 días si eres ciudadano argentino."'
+    ],
+    [
+      'User: "¿Qué destino recomendás para vacaciones en invierno?"',
+      'Agent: "Bariloche es ideal para esquí y paisajes nevados. ¿Te gustaría info de hoteles o actividades?"'
+    ],
+    [
+      'User: "¿Cómo reservo un tour en París?"',
+      'Agent: "Puedo ayudarte a reservar tours en París. ¿Prefieres museos, gastronomía o paseos guiados?"'
+    ],
+    [
+      'User: "¿Cuál es la mejor época para visitar Japón?"',
+      'Agent: "La primavera (marzo-abril) es famosa por los cerezos en flor. ¿Te gustaría recomendaciones de ciudades?"'
+    ],
+    [
+      'User: "¿Qué documentos necesito para alquilar un auto en Europa?"',
+      'Agent: "Necesitarás tu pasaporte, licencia de conducir internacional y una tarjeta de crédito."'
+    ]
+  ],
+  it: [
+    [
+      'User: "No puedo acceder a mi correo corporativo."',
+      'Agent: "¿Recibes algún mensaje de error al intentar ingresar?"',
+      'User: "Sí, dice contraseña incorrecta."',
+      'Agent: "Te ayudo a restablecerla. ¿Prefieres recibir el enlace por email o SMS?"'
+    ],
+    [
+      'User: "¿Cómo configuro la VPN en mi laptop?"',
+      'Agent: "Debes descargar el cliente VPN desde el portal interno y seguir la guía paso a paso. ¿Te la envío?"'
+    ],
+    [
+      'User: "¿El sistema de tickets está caído?"',
+      'Agent: "No se reportan incidentes. ¿Qué error ves al intentar ingresar?"'
+    ],
+    [
+      'User: "¿Cómo restablezco mi contraseña?"',
+      'Agent: "Puedes restablecerla desde el portal de autoservicio o te envío un enlace. ¿Qué prefieres?"'
+    ],
+    [
+      'User: "¿Puedo instalar software en mi equipo?"',
+      'Agent: "Depende del software. ¿Cuál necesitas instalar? Te ayudo con el proceso o la autorización."'
+    ]
+  ]
+};
+
+const agentTab = ref('airline');
+const promptTyping = ref(true);
+const responseTyping = ref(true);
+const currentExampleIdx = ref(0);
+
+// --- AUTOAVANCE DE EJEMPLO ---
+const autoAdvanceTimeout = ref(null);
+const showPromptAndResponse = ref(true);
+
+watch([
+  promptTyping,
+  responseTyping,
+  agentTab,
+  currentExampleIdx
+], ([isPromptTyping, isResponseTyping, tab, idx], [oldPrompt, oldResponse, oldTab, oldIdx]) => {
+  clearTimeout(autoAdvanceTimeout.value);
+  // Solo avanza si ambas animaciones terminaron y hay más ejemplos
+  if (!isPromptTyping && !isResponseTyping && prompts[tab].examples.length > 1) {
+    autoAdvanceTimeout.value = setTimeout(() => {
+      if (!promptTyping.value && !responseTyping.value && agentTab.value === tab) {
+        // No ocultar los bloques antes del cambio, solo avanzar el ejemplo
+        currentExampleIdx.value = (currentExampleIdx.value + 1) % prompts[tab].examples.length;
+      }
+    }, 4000); // 4 segundos de espera
+  }
 });
 
-onBeforeUnmount(() => {
-  window.removeEventListener("scroll", handleScroll);
-  ScrollTrigger.getAll().forEach((t) => t.kill());
-  window.removeEventListener('resize', updateTeamScrollTrigger);
-  if (teamScrollTrigger) teamScrollTrigger.kill();
+function onPromptTyping(val) {
+  promptTyping.value = val;
+}
+
+function onResponseTyping(val) {
+  responseTyping.value = val;
+}
+
+function onTabChange(tab) {
+  agentTab.value = tab;
+  currentExampleIdx.value = 0;
+}
+
+const promptBlockHeight = ref(null);
+const promptBlockRef = ref(null);
+
+function updatePromptBlockHeight() {
+  if (promptBlockRef.value) {
+    promptBlockHeight.value = promptBlockRef.value.offsetHeight;
+  }
+}
+
+onMounted(() => {
+  // typeEffect(); // Si no se usa, eliminar también esta línea
+  // Elimino gsap y cualquier animación vieja
+});
+
+watch([
+  () => agentTab.value,
+  () => currentExampleIdx.value,
+  promptTyping,
+], () => {
+  nextTick(() => {
+    updatePromptBlockHeight();
+  });
+});
+
+onMounted(() => {
+  // typeEffect(); // Si no se usa, eliminar también esta línea
+  // Elimino gsap y cualquier animación vieja
 });
 
 function backToTopEnter(el, done) {
@@ -581,395 +683,190 @@ function featuresLeave(el, done) {
 
 <template>
   <div class="flex min-h-screen flex-col bg-black">
-    <!-- Header -->
-    <header
-      class="fixed top-0 left-0 w-full z-50 glass-header transition-all duration-300"
-    >
-      <div class="flex h-20 items-center justify-between px-4 md:px-6">
-        <img src="/logo.png" alt="OnService" class="h-10 hover:scale-105 transition-transform duration-300" />
-      </div>
-    </header>
-
-    <main class="flex-1 bg-black">
-      <!-- Hero Section -->
-      <transition @enter="sectionEnter" @leave="sectionLeave">
-        <section
-          class="bg-black text-white pt-24 md:py-28 px-4 sm:px-6 text-center flex flex-col items-center justify-center min-h-[90vh] w-full overflow-hidden relative"
-        >
-          <!-- Efectos de partículas flotantes -->
-          <ParticleBackground />
-          
-          <!-- Gradiente animado de fondo -->
-          <div class="absolute inset-0 bg-gradient-radial from-violet-500/10 via-transparent to-transparent animate-pulse"></div>
-          
-          <div class="w-full max-w-screen-md px-4 relative z-10">
-            <h1
-              class="gsap-hero text-4xl sm:text-5xl md:text-7xl font-bold leading-tight mb-4"
-            >
-              <span class="block">The new evolution of</span>
-
-              <!-- Typing con cursor -->
-              <span class="inline-block min-w-[11ch] text-violet-500 typing">
-                {{ typing
-                }}<span ref="cursor" class="inline-block opacity-0">|</span>
-              </span>
-
-              <span class="block">for airlines.</span>
+    <Header />
+    <main class="flex-1 bg-black pt-24 md:pt-28">
+      <!-- HERO con fondo animado tipo circuito -->
+      <section id="hero" class="relative w-full flex flex-col md:flex-row items-start justify-center px-4 md:px-10 py-28 gap-8 bg-black overflow-hidden min-h-[600px]">
+        <CircuitBackground class="absolute inset-0 w-full h-full pointer-events-none z-0" />
+        <div class="flex-1 flex flex-col items-start justify-center max-w-2xl z-10 min-w-[320px] md:min-w-[420px]">
+          <div class="glass-hero-panel mx-auto px-6 py-8 md:px-10 md:py-10 rounded-2xl shadow-lg border border-white/10 backdrop-blur-md bg-black/40 w-full max-w-xl flex flex-col items-center text-center">
+            <h1 class="text-4xl md:text-6xl font-bold text-white leading-tight">
+              La nueva generación de <span class="text-violet-400">IA</span> para tu empresa
             </h1>
+            <p class="text-lg md:text-xl text-gray-300 my-14">
+              Soluciones de inteligencia artificial para potenciar ventas, soporte y operaciones.
+            </p>
+            <div class="flex gap-4 mb-2 justify-center w-full">
+              <a href="#contact" class="px-8 py-3.5 rounded-xl font-semibold shadow-lg border-0 focus:outline-none focus:ring-2 focus:ring-violet-400 btn-contacto-gradient text-base min-w-[170px] text-center">Solicitar demo</a>
+              <a href="https://playground.kiut.ai" target="_blank" rel="noopener" class="px-8 py-3.5 rounded-xl font-semibold border border-violet-500 text-violet-200 bg-black/60 hover:bg-violet-900/20 transition text-base min-w-[170px] text-center">Probar playground</a>
+            </div>
           </div>
-
-          <p
-            class="hero-desc text-gray-400 text-xl md:text-[1.25rem] leading-relaxed tracking-wide max-w-2xl mx-auto mt-6 sm:mt-8 mb-10 px-4 sm:px-0 relative z-10"
-          >
-            Our AI solution transforms customer experiences and boosts sales
-            through <strong class="text-white font-medium">WhatsApp</strong> —
-            soon expanding to
-            <strong class="text-white font-medium">Telegram</strong>,
-            <strong class="text-white font-medium">WeChat</strong>, and
-            <strong class="text-white font-medium">iMessage</strong>.
-          </p>
-
-          <div
-            class="hero-cta flex flex-col sm:flex-row gap-4 px-4 justify-center mt-6 relative z-10"
-          >
-            <a
-              href="https://wa.me/5491130261625"
-              target="_blank"
-              class="px-8 py-3.5 bg-violet-600 text-white rounded-xl hover:bg-violet-700 transition-all duration-300 text-base font-semibold shadow-lg hover:shadow-violet-500/25 h-12 flex items-center justify-center min-w-[200px] transform hover:scale-105"
-            >
-              Chat with Agent AI
-            </a>
-            <ButtonAnimate />
-          </div>
-
-          <div class="arrow mt-16 text-gray-500 relative z-10">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              class="w-8 h-8 mx-auto"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M19 9l-7 7-7-7"
+        </div>
+        <div class="flex-1 flex flex-col items-start justify-center w-full max-w-xl z-10 min-w-[320px] md:min-w-[420px]">
+          <div class="prompt-chat-stack" style="gap: 2rem; align-items: stretch; width: 100%; max-width: 560px; margin: 0 auto;">
+            <div ref="promptBlockRef" style="width: 100%;">
+              <CodePromptBlock
+                :tab="agentTab"
+                :example-idx="currentExampleIdx"
+                :prompts="prompts"
+                @tab-change="onTabChange"
+                @typing="onPromptTyping"
               />
-            </svg>
+            </div>
+            <Transition name="fade-slide">
+              <AgentResponseBlock
+                v-if="!promptTyping"
+                class="w-full"
+                :responses="agentResponses[agentTab]"
+                :typing="true"
+                :tab="agentTab"
+                :example-idx="currentExampleIdx"
+                @typing="onResponseTyping"
+                :sync-height="promptBlockHeight"
+              />
+            </Transition>
           </div>
-        </section>
-      </transition>
+        </div>
+      </section>
 
-      <!-- Video Section (sin título, solo video, responsivo) -->
-      <transition @enter="sectionEnter" @leave="sectionLeave">
-        <section class="pb-32 pt-20 relative w-full flex justify-center bg-black">
-          <div class="video-container rounded-lg border bg-card shadow-xl overflow-hidden w-full max-w-4xl aspect-video flex items-center justify-center">
-            <iframe class="w-full h-full aspect-video" src="https://www.youtube.com/embed/sX2DjnrrJYM" title="Meet OnService.AI Concierge, the First AI Solution for Airlines' E-Commerce and Customer Service" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+      <!-- Clientes -->
+      <section id="clients" class="py-20 bg-black">
+        <div class="container mx-auto px-4 text-center">
+          <h2 class="text-3xl md:text-4xl font-bold text-white mb-8">Confían en nosotros</h2>
+          <!-- Logos de clientes (dummy) -->
+          <div class="flex flex-wrap justify-center items-center gap-10 opacity-80">
+            <img src="/aeromexico.png" alt="Aeromexico" class="h-12" />
+            <img src="/avianca.png" alt="Avianca" class="h-12" />
+            <img src="/clic.png" alt="Clic" class="h-12" />
+            <img src="/vite.svg" alt="Vite" class="h-12" />
+            <img src="/logo.png" alt="OnService" class="h-12" />
           </div>
-        </section>
-      </transition>
+        </div>
+      </section>
 
-      <!-- Features Section (sin animación de entrada/salida) -->
-      <section id="features" class="py-20 bg-black overflow-hidden">
+      <!-- Tecnologías IA -->
+      <section id="ai-tech" class="py-20 bg-gradient-to-b from-black via-[#18181b] to-black">
+        <div class="container mx-auto px-4 text-center">
+          <h2 class="text-3xl md:text-4xl font-bold text-white mb-8">Tecnologías de IA</h2>
+          <div class="flex flex-wrap justify-center gap-6">
+            <span class="px-6 py-3 rounded-xl bg-violet-700/20 text-violet-300 font-semibold text-lg">GPT-4</span>
+            <span class="px-6 py-3 rounded-xl bg-violet-700/20 text-violet-300 font-semibold text-lg">Stable Diffusion</span>
+            <span class="px-6 py-3 rounded-xl bg-violet-700/20 text-violet-300 font-semibold text-lg">LangChain</span>
+            <span class="px-6 py-3 rounded-xl bg-violet-700/20 text-violet-300 font-semibold text-lg">RAG</span>
+            <span class="px-6 py-3 rounded-xl bg-violet-700/20 text-violet-300 font-semibold text-lg">Whisper</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Casos de uso -->
+      <section id="usecases" class="py-20 bg-black">
         <div class="container mx-auto px-4">
-          <SectionTitle>
-            <template #title>Powerful Features</template>
-            <template #subtitle>
-              OnService.AI comes packed with features designed to make your life easier and more productive.
-            </template>
-          </SectionTitle>
-          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-            <div v-for="(feature, i) in features" :key="i" class="feature-card relative rounded-2xl p-20 pt-24 mt-12 bg-[#111] !text-white cursor-pointer group transition-all duration-300 hover:scale-105" @mouseenter="hoverIn(i)" @mouseleave="hoverOut(i)">
-              <div class="feature-glow absolute inset-0 bg-gradient-to-r from-violet-500/20 via-purple-500/20 to-violet-500/20 opacity-0 transition-opacity duration-300"></div>
-              <div class="feature-ball absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-1/2 h-20 w-20 rounded-full bg-gradient-to-br from-violet-700 to-purple-500 opacity-20 pointer-events-none"></div>
-              <div class="feature-icon absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-1/2 h-20 w-20 rounded-full bg-gradient-to-br from-violet-700 to-purple-500 flex items-center justify-center pointer-events-none transition-all duration-300">
-                <img :src="feature.icon" :alt="feature.title" class="h-10 w-10 filter brightness-0 invert-100" />
-              </div>
-              <h3 class="relative z-10 text-xl font-semibold mb-2 group-hover:text-violet-300 transition-colors duration-300">{{ feature.title }}</h3>
-              <p class="relative z-10 text-gray-300 group-hover:text-gray-200 transition-colors duration-300">{{ feature.desc }}</p>
+          <h2 class="text-3xl md:text-4xl font-bold text-white mb-8 text-center">Casos de uso</h2>
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div class="rounded-2xl bg-[#18181b] p-8 shadow-lg text-white">
+              <h3 class="text-xl font-semibold mb-2">Soporte automatizado 24/7</h3>
+              <p class="text-gray-300">Responde consultas de clientes en tiempo real, en cualquier canal.</p>
+            </div>
+            <div class="rounded-2xl bg-[#18181b] p-8 shadow-lg text-white">
+              <h3 class="text-xl font-semibold mb-2">Ventas asistidas por IA</h3>
+              <p class="text-gray-300">Detecta oportunidades y sugiere productos en el momento justo.</p>
+            </div>
+            <div class="rounded-2xl bg-[#18181b] p-8 shadow-lg text-white">
+              <h3 class="text-xl font-semibold mb-2">Automatización de procesos</h3>
+              <p class="text-gray-300">Reduce tareas repetitivas y mejora la eficiencia operativa.</p>
             </div>
           </div>
         </div>
       </section>
 
-      <!-- Clients/Companies Section: scroll horizontal automático tipo diapositivas -->
-      <section class="py-20 md:py-28">
-        <div class="container flex flex-col items-center text-center">
-          <SectionTitle>
-            <template #title>Trusted by Leading Companies</template>
-            <template #subtitle>Elevating customer service for top brands.</template>
-          </SectionTitle>
-          <div class="relative w-full max-w-5xl overflow-x-hidden">
-            <div class="scroll-content flex items-center gap-12 animate-scroll-x px-8">
-              <template v-for="repeat in 2">
-                <img v-for="(logo, idx) in [
-                  {src: 'https://upload.wikimedia.org/wikipedia/commons/2/2d/Aeromexico_logo.svg', alt: 'Aeromexico', url: 'https://www.aeromexico.com'},
-                  {src: 'https://upload.wikimedia.org/wikipedia/commons/2/2e/Avianca_Logo_2021.svg', alt: 'Avianca', url: 'https://www.avianca.com'},
-                  {src: 'https://upload.wikimedia.org/wikipedia/commons/2/2b/Delta_logo.svg', alt: 'Delta', url: 'https://www.delta.com'},
-                  {src: 'https://upload.wikimedia.org/wikipedia/commons/6/6b/Lufthansa_Logo_2018.svg', alt: 'Lufthansa', url: 'https://www.lufthansa.com'},
-                  {src: 'https://upload.wikimedia.org/wikipedia/commons/6/6a/United_Airlines_Logo.svg', alt: 'United', url: 'https://www.united.com'},
-                  {src: 'https://upload.wikimedia.org/wikipedia/commons/6/6a/American_Airlines_logo_2013.svg', alt: 'American Airlines', url: 'https://www.aa.com'},
-                ]" :key="logo.alt + idx + '-' + repeat" :src="logo.src" :alt="logo.alt" class="h-16 md:h-20 opacity-80 hover:opacity-100 transition-all cursor-pointer bg-white rounded-xl shadow-md px-8 py-3 object-contain" @click="openLink(logo.url)" />
-              </template>
+      <!-- Métricas -->
+      <section id="metrics" class="py-20 bg-gradient-to-b from-black via-[#18181b] to-black">
+        <div class="container mx-auto px-4 text-center">
+          <h2 class="text-3xl md:text-4xl font-bold text-white mb-8">Resultados en números</h2>
+          <div class="flex flex-wrap justify-center gap-12">
+            <div class="flex flex-col items-center">
+              <span class="text-5xl font-bold text-violet-400">+98%</span>
+              <span class="text-gray-300 mt-2">Satisfacción de clientes</span>
+            </div>
+            <div class="flex flex-col items-center">
+              <span class="text-5xl font-bold text-violet-400">-40%</span>
+              <span class="text-gray-300 mt-2">Costos operativos</span>
+            </div>
+            <div class="flex flex-col items-center">
+              <span class="text-5xl font-bold text-violet-400">+3x</span>
+              <span class="text-gray-300 mt-2">Ventas por canal digital</span>
             </div>
           </div>
         </div>
       </section>
 
-      <!-- Team Section con scroll horizontal GSAP hijack -->
-      <section id="team" class="relative w-full overflow-x-hidden py-24 bg-black">
-        <div class="container mx-auto px-4">
-          <SectionTitle>
-            <template #title>Meet the Team</template>
-            <template #subtitle>The minds behind our AI solutions.</template>
-          </SectionTitle>
-        </div>
-        <div class="relative max-w-full">
-          <button @click="() => {}" class="team-nav-btn left-4">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" /></svg>
-          </button>
-          <button @click="() => {}" class="team-nav-btn right-4">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" /></svg>
-          </button>
-          <div class="team-horizontal-scroll relative w-full min-h-[500px]">
-            <div class="team-panel-track flex gap-10" ref="teamTrack">
-              <div class="hidden md:block" style="width: 96px;"></div>
-              <div class="block md:hidden" style="width: 48px;"></div>
-              <div v-for="(member, idx) in visibleTeam" :key="member.name"
-                :class="[
-                  'team-member-card bg-[#18181b] rounded-3xl shadow-xl flex flex-col items-center justify-center p-8 relative mx-auto min-w-[320px] max-w-sm w-[380px] flex-shrink-0',
-                  idx === 0 ? 'pl-0' : '',
-                  idx === team.length - 1 ? 'pr-0' : ''
-                ]"
-              >
-                <div class="avatar mb-6">
-                  <img :src="`https://randomuser.me/api/portraits/men/${Math.floor(Math.random()*50)}.jpg`" alt="avatar" class="w-28 h-28 rounded-full object-cover border-4 border-violet-500 shadow-lg" />
-                </div>
-                <h3 class="text-2xl font-bold text-white mb-1 team-name">{{ member.name }}</h3>
-                <p class="text-violet-400 font-semibold mb-2 team-role">{{ member.role }}</p>
-                <p class="text-gray-200 text-center text-base mb-2 team-desc max-w-xs md:max-w-sm">{{ member.desc }}</p>
-              </div>
-              <div class="hidden md:block" style="width: 96px;"></div>
-              <div class="block md:hidden" style="width: 48px;"></div>
+      <!-- Pricing (sin precios) -->
+      <section id="pricing" class="py-20 bg-black">
+        <div class="container mx-auto px-4 text-center">
+          <h2 class="text-3xl md:text-4xl font-bold text-white mb-8">Planes y características</h2>
+          <div class="flex flex-wrap justify-center gap-8">
+            <div class="rounded-2xl bg-[#18181b] p-10 shadow-lg text-white max-w-xs w-full flex flex-col items-center">
+              <h3 class="text-xl font-semibold mb-4">Starter</h3>
+              <ul class="text-gray-300 text-left mb-6 space-y-2">
+                <li>✔️ Chatbot IA multicanal</li>
+                <li>✔️ Integración básica</li>
+                <li>✔️ Soporte por email</li>
+              </ul>
+              <button class="px-6 py-2 rounded-xl bg-violet-600 text-white font-semibold shadow-lg hover:bg-violet-700 transition-all duration-300">Solicitar info</button>
+            </div>
+            <div class="rounded-2xl bg-[#18181b] p-10 shadow-lg text-white max-w-xs w-full flex flex-col items-center border-2 border-violet-600">
+              <h3 class="text-xl font-semibold mb-4">Pro</h3>
+              <ul class="text-gray-300 text-left mb-6 space-y-2">
+                <li>✔️ Todo lo de Starter</li>
+                <li>✔️ Integraciones avanzadas</li>
+                <li>✔️ Soporte prioritario</li>
+                <li>✔️ Analítica avanzada</li>
+              </ul>
+              <button class="px-6 py-2 rounded-xl bg-violet-600 text-white font-semibold shadow-lg hover:bg-violet-700 transition-all duration-300">Solicitar info</button>
+            </div>
+            <div class="rounded-2xl bg-[#18181b] p-10 shadow-lg text-white max-w-xs w-full flex flex-col items-center">
+              <h3 class="text-xl font-semibold mb-4">Enterprise</h3>
+              <ul class="text-gray-300 text-left mb-6 space-y-2">
+                <li>✔️ Todo lo de Pro</li>
+                <li>✔️ Integraciones personalizadas</li>
+                <li>✔️ SLA dedicado</li>
+                <li>✔️ Consultoría IA</li>
+              </ul>
+              <button class="px-6 py-2 rounded-xl bg-violet-600 text-white font-semibold shadow-lg hover:bg-violet-700 transition-all duration-300">Solicitar info</button>
             </div>
           </div>
         </div>
       </section>
 
-      <!-- FAQ Section -->
-      <transition @enter="sectionEnter" @leave="sectionLeave">
-        <section id="faq" class="py-20 bg-black">
-          <div class="container mx-auto px-4">
-            <SectionTitle>
-              <template #title>Frequently Asked Questions</template>
-              <template #subtitle>Got questions? We've got answers.</template>
-            </SectionTitle>
-            <div class="grid grid-cols-1 gap-4 max-w-3xl mx-auto">
-              <div
-                v-for="n in 6"
-                :key="n"
-                class="faq-item border rounded-lg p-6 shadow-violet-700 hover:shadow-sm transition-all duration-300 cursor-pointer"
-                @click="toggleFAQ(n)"
-              >
-                <header class="flex justify-between items-center">
-                  <h3 class="text-lg font-medium text-white">
-                    {{
-                      [
-                        "How does OnService.AI differ from other AI assistants?",
-                        "Can I integrate OnService.AI with my existing tools?",
-                        "Is my data secure with OnService.AI?",
-                        "What happens if I exceed my message limit?",
-                        "Can I use OnService.AI offline?",
-                        "How do I cancel my subscription?",
-                      ][n - 1]
-                    }}
-                  </h3>
-                  <img
-                    src="/arrow.svg"
-                    alt="Toggle"
-                    class="w-5 h-5 text-white transition-transform duration-300"
-                    :class="{ 'rotate-180': questions[n] }"
-                  />
-                </header>
-
-                <!-- loader de 3 puntitos -->
-                <div
-                  v-if="loading[n]"
-                  class="faq-loader flex items-center justify-center mt-4 h-6"
-                >
-                  <span
-                    class="dot mx-1 inline-block w-2 h-2 bg-white rounded-full"
-                  ></span>
-                  <span
-                    class="dot mx-1 inline-block w-2 h-2 bg-white rounded-full"
-                  ></span>
-                  <span
-                    class="dot mx-1 inline-block w-2 h-2 bg-white rounded-full"
-                  ></span>
-                </div>
-
-                <!-- Transition GSAP -->
-                <transition @enter="faqEnter" @leave="faqLeave">
-                  <p
-                    v-show="questions[n]"
-                    class="text-muted-foreground mt-4 overflow-hidden"
-                  >
-                    {{
-                      [
-                        "OnService.AI uses a proprietary language model specifically trained to understand context better and provide more natural, helpful responses. It also learns from your interactions to become more personalized over time.",
-                        "Yes! OnService.AI offers API access on our Enterprise plan, allowing you to integrate it with your existing workflows, apps, and services. We also offer pre-built integrations with popular platforms.",
-                        "Absolutely. We use end-to-end encryption for all conversations, and your data is never used to train our models without your explicit permission. We also offer enterprise-grade security features for businesses.",
-                        "On the Free plan, once you reach your daily limit, you'll need to wait until the next day to send more messages. You can also upgrade to the Pro plan for unlimited messages at any time.",
-                        "The Pro and Enterprise plans include desktop and mobile apps that can function with limited capabilities while offline. Full functionality requires an internet connection.",
-                        "You can cancel your subscription at any time from your account settings. If you cancel, you'll still have access to your plan until the end of your current billing period.",
-                      ][n - 1]
-                    }}
-                  </p>
-                </transition>
-              </div>
+      <!-- Equipo (dummy, como antes) -->
+      <section id="team" class="py-20 bg-gradient-to-b from-black via-[#18181b] to-black">
+        <div class="container mx-auto px-4 text-center">
+          <h2 class="text-3xl md:text-4xl font-bold text-white mb-8">Nuestro equipo</h2>
+          <div class="flex flex-wrap justify-center gap-8">
+            <div v-for="i in 6" :key="i" class="rounded-2xl bg-[#18181b] p-8 shadow-lg text-white max-w-xs w-full flex flex-col items-center">
+              <div class="w-24 h-24 rounded-full bg-violet-700 mb-4"></div>
+              <h3 class="text-xl font-semibold mb-1">Nombre Apellido</h3>
+              <p class="text-violet-400 font-semibold mb-2">Rol</p>
+              <p class="text-gray-300 text-center">Breve descripción del integrante del equipo y su aporte.</p>
             </div>
           </div>
-        </section>
-      </transition>
+        </div>
+      </section>
 
-      <!-- CTA Section -->
-      <transition @enter="sectionEnter" @leave="sectionLeave">
-        <section
-          class="cta-section relative overflow-hidden bg-gradient-to-br from-[#1b0c34] via-[#2d0e59] to-[#381171] px-8 py-24 md:py-32 text-center"
-        >
-          <div
-            class="pointer-events-none absolute -left-20 -top-20 h-72 w-72 rounded-full bg-purple-500/40 blur-3xl"
-          ></div>
-          <div
-            class="pointer-events-none absolute -bottom-20 -right-20 h-72 w-72 rounded-full bg-violet-600/30 blur-3xl"
-          ></div>
-          <SectionTitle>
-            <template #title>Ready to experience the future of AI chat?</template>
-            <template #subtitle>
-              Join thousands of users already boosting their customer service with OnService.AI.
-            </template>
-          </SectionTitle>
-          <div class="mt-8 inline-block">
-            <ButtonAnimate />
+      <!-- Imágenes IA (dummy) -->
+      <section id="ia-images" class="py-20 bg-black">
+        <div class="container mx-auto px-4 text-center">
+          <h2 class="text-3xl md:text-4xl font-bold text-white mb-8">Imágenes generadas por IA</h2>
+          <div class="flex flex-wrap justify-center gap-8">
+            <img src="https://placehold.co/400x300?text=IA+Image+1" alt="IA 1" class="rounded-2xl shadow-lg w-64 h-40 object-cover" />
+            <img src="https://placehold.co/400x300?text=IA+Image+2" alt="IA 2" class="rounded-2xl shadow-lg w-64 h-40 object-cover" />
+            <img src="https://placehold.co/400x300?text=IA+Image+3" alt="IA 3" class="rounded-2xl shadow-lg w-64 h-40 object-cover" />
           </div>
-        </section>
-      </transition>
+        </div>
+      </section>
     </main>
-    <!-- back to top -->
-    <transition
-      @enter="backToTopEnter"
-      @leave="backToTopLeave"
-    >
-      <div
-        v-if="showScrollTop"
-        ref="scrollBtn"
-        @click="scrollToTop"
-        class="fixed bottom-8 right-8 z-50 flex h-12 w-12 cursor-pointer items-center justify-center rounded-full bg-violet-600 shadow-xl hover:bg-violet-700 scroll-to-top-btn transition-all duration-300 hover:scale-110"
-      >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          class="h-6 w-6 text-white"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-        >
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M5 15l7-7 7 7"
-          />
-        </svg>
-      </div>
-    </transition>
-
-    <footer class="bg-[#09090b] text-gray-400 pt-16 pb-10">
-      <div class="container mx-auto px-4">
-        <!-- 3 columnas: Logo/Descripción – Quick Links – Contacto -->
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-          <!-- Columna 1: Logo + Descripción + Terminos/Privacidad -->
-          <div class="flex flex-col items-center md:items-start">
-            <img src="/logo.png" alt="OnService.AI" class="h-10 mb-4" />
-            <p class="text-sm text-center md:text-left mb-4">
-              The next generation of AI chat assistants, designed to help you
-              achieve more.
-            </p>
-            <div
-              class="flex flex-col sm:flex-row items-center sm:items-start gap-2 sm:gap-4"
-            >
-              <a href="/privacy" class="hover:text-white text-sm"
-                >Privacy Policy</a
-              >
-              <a href="/terms" class="hover:text-white text-sm"
-                >Terms of Service</a
-              >
-            </div>
-          </div>
-
-          <!-- Columna 2: Quick Links -->
-          <div class="flex flex-col items-center">
-            <h4 class="text-white font-semibold mb-4">Quick Links</h4>
-            <ul class="space-y-2 text-sm">
-              <li><a href="#features" class="hover:text-white">Features</a></li>
-              <li><a href="#faq" class="hover:text-white">FAQ</a></li>
-              <li><a href="#pricing" class="hover:text-white">Pricing</a></li>
-              <li>
-                <a href="#demo" class="hover:text-white">Schedule a Demo</a>
-              </li>
-            </ul>
-          </div>
-
-          <!-- Columna 3: Contacto -->
-          <div class="flex flex-col items-center md:items-end">
-            <h4 class="text-white font-semibold mb-4">Contact Us</h4>
-            <p class="text-sm mb-2">
-              Email:
-              <a href="mailto:hello@onservice.ai" class="hover:text-white">
-                hello@onservice.ai
-              </a>
-            </p>
-            <p class="text-sm mb-2">
-              Phone:
-              <a href="tel:+5491130261625" class="hover:text-white">
-                +54 9 11 3026 1625
-              </a>
-            </p>
-            <p class="text-sm text-center md:text-right">
-              16192 Coastal Highway<br />
-              Lewes, DE 19958
-            </p>
-          </div>
-        </div>
-
-        <!-- Divider -->
-        <div class="mt-12 border-t border-white/10"></div>
-
-        <!-- Bottom row: copyright + compañía + redes -->
-        <div
-          class="mt-6 flex flex-col md:flex-row items-center justify-between text-xs space-y-2 md:space-y-0"
-        >
-          <p>
-            © {{ new Date().getFullYear() }} OnService.AI. All rights reserved.
-          </p>
-          <p>AI Travel Technologies Inc.</p>
-          <div class="flex space-x-4">
-            <a
-              href="https://linkedin.com/company/onservice"
-              class="hover:text-white"
-              >LinkedIn</a
-            >
-            <a href="https://twitter.com/onservice" class="hover:text-white"
-              >Twitter</a
-            >
-          </div>
-        </div>
-      </div>
-    </footer>
   </div>
 </template>
-
-<script></script>
 
 <style>
 :root {
@@ -1427,5 +1324,64 @@ section:not(:first-child):not(:last-child)::before {
   opacity: 1;
   background: rgba(124, 58, 237, 0.35);
   box-shadow: 0 4px 24px 0 rgba(124, 58, 237, 0.18);
+}
+
+.btn-contacto-gradient {
+  background: linear-gradient(90deg, #7c3aed 0%, #38bdf8 100%);
+  color: #fff;
+  font-weight: 700;
+  box-shadow: 0 2px 16px 0 rgba(139, 92, 246, 0.18);
+  border: none;
+  transition: box-shadow 0.18s, filter 0.18s;
+  filter: brightness(1);
+}
+.btn-contacto-gradient:hover, .btn-contacto-gradient:focus {
+  filter: brightness(1.08) saturate(1.2);
+  box-shadow: 0 4px 32px 0 rgba(56, 189, 248, 0.18);
+}
+
+.glass-hero-panel {
+  background: rgba(17, 18, 28, 0.40);
+  backdrop-filter: blur(8px) saturate(1.1);
+  -webkit-backdrop-filter: blur(8px) saturate(1.1);
+  border: 1.5px solid rgba(139, 92, 246, 0.10);
+  box-shadow: 0 4px 24px 0 rgba(124, 58, 237, 0.08);
+  z-index: 10;
+}
+
+.fade-slide-enter-active, .fade-slide-leave-active {
+  transition: opacity 0.4s, transform 0.4s;
+}
+.fade-slide-enter-from, .fade-slide-leave-to {
+  opacity: 0;
+  transform: translateY(24px);
+}
+.fade-slide-enter-to, .fade-slide-leave-from {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.prompt-chat-stack {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2rem;
+  width: 100%;
+  max-width: 560px;
+  margin: 0 auto;
+}
+.code-block-container,
+.agent-chat-outer-glass {
+  min-width: 320px;
+  max-width: 520px;
+  width: 100%;
+  min-height: 340px;
+  height: 340px;
+  margin: 0;
+  padding: 0;
+}
+.agent-chat-glass.glass-hero-panel {
+  justify-content: flex-start !important;
+  padding-bottom: 1.1rem !important;
 }
 </style>
