@@ -26,7 +26,7 @@
 </template>
 
 <script setup>
-import { ref, watch, onMounted, computed } from 'vue';
+import { ref, watch, onMounted, computed, onBeforeUnmount } from 'vue';
 const emit = defineEmits(['tab-change', 'typing']);
 
 const props = defineProps({
@@ -52,12 +52,18 @@ const currentPrompt = computed(() => props.prompts[props.tab]);
 const currentExampleIdx = computed(() => props.exampleIdx ?? 0);
 
 function setTab(tabKey) {
+  clearTimeout(typingTimeout);
+  clearTimeout(typingLoopTimeout);
+  typingTimeout = null;
+  typingLoopTimeout = null;
   emit('tab-change', tabKey);
 }
 
 function startTyping() {
   clearTimeout(typingTimeout);
   clearTimeout(typingLoopTimeout);
+  typingTimeout = null;
+  typingLoopTimeout = null;
   visibleLines.value = [];
   typingLineIdx.value = -1;
   typingCharIdx.value = -1;
@@ -131,6 +137,13 @@ onMounted(() => {
 
 watch(() => [props.tab, props.exampleIdx, props.prompts], () => {
   startTyping();
+}, { flush: 'pre' });
+
+onBeforeUnmount(() => {
+  clearTimeout(typingTimeout);
+  clearTimeout(typingLoopTimeout);
+  typingTimeout = null;
+  typingLoopTimeout = null;
 });
 </script>
 
@@ -148,12 +161,12 @@ watch(() => [props.tab, props.exampleIdx, props.prompts], () => {
   box-shadow: 0 8px 32px 0 rgba(124, 58, 237, 0.18);
   border: 1.5px solid rgba(139, 92, 246, 0.13);
   border-radius: 1.5rem;
-  padding: 1.1rem 1.5rem 2rem 1.5rem;
+  padding: 0.7rem 1rem 1.1rem 1rem;
   min-width: 560px;
   max-width: 560px;
-  min-height: 360px;
-  height: 360px;
-  max-height: 360px;
+  min-height: 180px;
+  height: auto;
+  max-height: 320px;
   z-index: 10;
   position: relative;
   display: flex;
@@ -211,12 +224,14 @@ watch(() => [props.tab, props.exampleIdx, props.prompts], () => {
   border: 2px solid #7c3aed;
   border-radius: 1.1rem;
   box-shadow: 0 2px 12px 0 rgba(124, 58, 237, 0.08);
-  padding: 1.1rem 1.5rem;
+  padding: 0.7rem 1rem;
   margin-top: 0.7rem;
   margin-bottom: 0.2rem;
   width: 100%;
-  height: 320px;
-  overflow: hidden;
+  height: auto;
+  min-height: 120px;
+  max-height: 240px;
+  overflow: auto;
   transition: box-shadow 0.18s, border 0.18s;
 }
 .editor-block:hover {
@@ -306,6 +321,17 @@ watch(() => [props.tab, props.exampleIdx, props.prompts], () => {
     max-width: 98vw;
     padding-left: 0.7rem;
     padding-right: 0.7rem;
+    min-height: 120px;
+    height: auto;
+    max-height: 220px;
+  }
+  .editor-block {
+    font-size: 12px;
+    line-height: 1.13;
+    min-height: 80px;
+    max-height: 160px;
+    height: auto;
+    padding: 0.5rem 0.5rem;
   }
   .editor-gutter, .editor-code {
     font-size: 12px;

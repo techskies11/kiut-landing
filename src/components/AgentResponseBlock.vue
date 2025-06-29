@@ -11,14 +11,14 @@
       </div>
       <div v-else ref="chatContainer" class="chat-messages chat-scrollable">
         <div v-for="(msg, idx) in renderedMessages" :key="'msg-' + idx" :class="['chat-row', msg.role === 'Agent' ? 'chat-agent' : 'chat-user']">
-          <div :class="['chat-bubble', msg.role === 'Agent' ? 'agent' : 'user']">
-            <template v-if="msg.role === 'Agent'">
+          <div :class="['chat-bubble', msg.role === 'Agent' ? 'agent' : 'user', msg.role === 'user' && idx === renderedMessages.length - 1 ? 'last' : '']">
+            <span v-if="msg.role === 'user'" class="chat-badge user-badge">User</span>
+            <span v-else-if="msg.role === 'Agent'" class="chat-badge agent-badge">Agent</span>
+            <span class="chat-text" v-if="msg.role === 'Agent'">
               <span v-if="msg.partial">{{ msg.text }}<span v-if="showCursor && idx === typingMsgIdx && typingCharIdx > 0" class="editor-cursor">|</span></span>
               <span v-else v-html="colorize(msg.text)"></span>
-            </template>
-            <template v-else>
-              <span v-html="colorize(msg.text)"></span>
-            </template>
+            </span>
+            <span class="chat-text" v-else v-html="colorize(msg.text)"></span>
           </div>
         </div>
       </div>
@@ -28,6 +28,7 @@
 
 <script setup>
 import { ref, watch, onMounted, computed, nextTick } from 'vue';
+import { onBeforeUnmount } from 'vue';
 const props = defineProps({
   responses: Array, // array de arrays de strings
   typing: Boolean,
@@ -80,6 +81,7 @@ function startThinking() {
 }
 function stopThinking() {
   clearInterval(dotInterval);
+  dotInterval = null;
   dotIdx.value = 1;
 }
 
@@ -94,6 +96,8 @@ function scrollToBottom() {
 function startTyping() {
   clearTimeout(typingTimeout);
   clearTimeout(autoNextTimeout);
+  typingTimeout = null;
+  autoNextTimeout = null;
   visibleMessages.value = [];
   typingMsgIdx.value = -1;
   typingCharIdx.value = -1;
@@ -151,6 +155,8 @@ function startTyping() {
 function nextExample() {
   clearTimeout(typingTimeout);
   clearTimeout(autoNextTimeout);
+  typingTimeout = null;
+  autoNextTimeout = null;
   if (props.responses.length > 1) {
     const nextIdx = (props.exampleIdx + 1) % props.responses.length;
     emit('example-change', nextIdx);
@@ -170,6 +176,7 @@ function colorize(text) {
 
 watch(() => props.tabKey, () => {
   clearTimeout(autoNextTimeout);
+  autoNextTimeout = null;
   if (!props.loading) startTyping();
 });
 
@@ -177,6 +184,7 @@ watch(() => props.loading, (val) => {
   if (val) {
     startThinking();
     clearTimeout(autoNextTimeout);
+    autoNextTimeout = null;
   } else {
     stopThinking();
     startTyping();
@@ -190,6 +198,15 @@ onMounted(() => {
     visibleMessages.value = parseMessages(props.responses[0]);
     showCursor.value = false;
   }
+});
+
+onBeforeUnmount(() => {
+  clearTimeout(typingTimeout);
+  clearTimeout(autoNextTimeout);
+  clearInterval(dotInterval);
+  typingTimeout = null;
+  autoNextTimeout = null;
+  dotInterval = null;
 });
 </script>
 
@@ -257,30 +274,48 @@ onMounted(() => {
   justify-content: flex-start;
 }
 .chat-bubble {
-  max-width: 90%;
+  max-width: 80%;
   padding: 0.5rem 1.2rem;
   border-radius: 1.1rem;
   font-size: 15px;
   font-family: 'Fira Mono', 'Menlo', 'Consolas', monospace;
-  box-shadow: 0 2px 12px 0 rgba(34, 197, 94, 0.08);
+  box-shadow: 0 2px 12px 0 rgba(124, 58, 237, 0.13), 0 1.5px 8px 0 #7c3aed22;
   background: rgba(36, 36, 44, 0.85);
   color: #e5e7eb;
   word-break: break-word;
   line-height: 1.22;
   position: relative;
   border: none;
-  transition: background 0.18s;
+  transition: background 0.18s, box-shadow 0.18s;
   margin: 0;
+  opacity: 0;
+  transform: translateY(16px);
+  animation: fadeInMsg 0.5s cubic-bezier(.4,1.6,.6,1) forwards;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.2rem;
+  text-align: left;
+}
+@keyframes fadeInMsg {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 .chat-bubble.user {
-  background: linear-gradient(90deg, #312e81 0%, #38bdf8 100%);
+  background: #7c3aed;
   color: #fff;
   align-self: flex-end;
+  box-shadow: 0 2px 16px 0 #7c3aed55, 0 1.5px 8px 0 #7c3aed22;
+}
+.chat-bubble.user.last {
+  box-shadow: 0 0 16px 2px #a78bfa99, 0 2px 16px 0 #7c3aed55;
+  border: 1.5px solid #a78bfa;
 }
 .chat-bubble.agent {
   background: linear-gradient(90deg, #23272e 0%, #444950 100%);
   color: #e5e7eb;
   align-self: flex-start;
+  box-shadow: 0 2px 12px 0 #7c3aed22;
 }
 .thinking-dots {
   display: inline-block;
@@ -289,20 +324,62 @@ onMounted(() => {
 .dot {
   opacity: 0.2;
   font-size: 1.2em;
-  transition: opacity 0.18s;
+  transition: opacity 0.18s, color 0.18s;
+  color: #a78bfa;
 }
 .dot.active {
   opacity: 1;
+  color: #7c3aed;
 }
 .editor-cursor {
-  color: #22c55e;
+  color: #a78bfa;
   font-weight: bold;
-  animation: blink 1s steps(1) infinite;
+  animation: blink-violet 1s steps(1) infinite;
   margin-left: 0.1em;
 }
-@keyframes blink {
-  0%, 100% { opacity: 0; }
-  50% { opacity: 1; }
+@keyframes blink-violet {
+  0%, 100% { opacity: 0; color: #a78bfa; }
+  50% { opacity: 1; color: #7c3aed; }
+}
+.chat-icon {
+  font-size: 1.15em;
+  margin-top: 1px;
+  flex-shrink: 0;
+  opacity: 0.85;
+  user-select: none;
+}
+.user-icon {
+  color: #a78bfa;
+}
+.agent-icon {
+  color: #38bdf8;
+}
+.chat-text {
+  display: block;
+  width: 100%;
+  text-align: left;
+  word-break: break-word;
+}
+.chat-badge {
+  display: inline-block;
+  font-size: 0.78em;
+  font-weight: 600;
+  padding: 0.13em 0.7em;
+  border-radius: 0.7em;
+  margin-bottom: 0.18em;
+  letter-spacing: 0.01em;
+  opacity: 0.92;
+  user-select: none;
+}
+.user-badge {
+  background: #a78bfa22;
+  color: #a78bfa;
+  border: 1px solid #a78bfa55;
+}
+.agent-badge {
+  background: #38bdf822;
+  color: #38bdf8;
+  border: 1px solid #38bdf855;
 }
 @media (max-width: 900px) {
   .agent-chat-outer-glass,

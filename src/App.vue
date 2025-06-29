@@ -4,6 +4,8 @@ import Header from "./components/Header.vue";
 import CircuitBackground from "./components/CircuitBackground.vue";
 import CodePromptBlock from "./components/CodePromptBlock.vue";
 import AgentResponseBlock from "./components/AgentResponseBlock.vue";
+import UseCasesTabs from './components/UseCasesTabs.vue';
+import ParticleBackground from "./components/ParticleBackground.vue";
 
 const questions = ref({
   1: false,
@@ -118,6 +120,10 @@ const team = [
   },
 ];
 
+// Memoización de arrays grandes
+const memoizedTeam = computed(() => team);
+const memoizedFeatures = computed(() => features);
+
 let wordIndex = 0;
 let charIndex = 0;
 let isDeleting = false;
@@ -130,22 +136,29 @@ const cards = ref([]);
 
 const teamTrack = ref(null);
 let teamScrollTrigger = null;
+let resizeTimeout = null;
 
 function getTeamSlides() {
   const isMobile = window.innerWidth < 768;
   const perSlide = isMobile ? 1 : 3;
   const slides = [];
-  for (let i = 0; i < team.length; i += perSlide) {
-    slides.push(team.slice(i, i + perSlide));
+  for (let i = 0; i < memoizedTeam.value.length; i += perSlide) {
+    slides.push(memoizedTeam.value.slice(i, i + perSlide));
   }
   return slides;
 }
 
 const teamSlides = ref(getTeamSlides());
 
-window.addEventListener('resize', () => {
-  teamSlides.value = getTeamSlides();
-});
+// Debounced resize handler
+function debouncedResize() {
+  clearTimeout(resizeTimeout);
+  resizeTimeout = setTimeout(() => {
+    teamSlides.value = getTeamSlides();
+  }, 150);
+}
+
+window.addEventListener('resize', debouncedResize);
 
 const prompts = {
   airline: {
@@ -520,6 +533,8 @@ onMounted(() => {
 });
 onBeforeUnmount(() => {
   clearInterval(autoSlideInterval);
+  clearTimeout(resizeTimeout);
+  window.removeEventListener('resize', debouncedResize);
 });
 
 const iaModels = [
@@ -697,7 +712,7 @@ onBeforeUnmount(() => {
             <div class="overflow-hidden w-full">
               <ul class="flex transition-transform duration-700" :style="{ transform: `translateX(-${currentSlide * 100}%)` }">
                 <li v-for="(logo, idx) in clientLogos" :key="logo.src" class="flex flex-col items-center justify-center min-w-full py-6">
-                  <img :src="logo.src" :alt="logo.alt" class="h-16 mx-auto mb-4" :class="logo.badge ? 'drop-shadow-lg' : ''" />
+                  <img :src="logo.src" :alt="logo.alt" class="h-16 mx-auto mb-4" :class="logo.badge ? 'drop-shadow-lg' : ''" loading="lazy" />
                   <span v-if="logo.badge" class="text-xs text-amber-400 font-semibold mt-2">{{ logo.label }}</span>
                 </li>
               </ul>
@@ -713,8 +728,8 @@ onBeforeUnmount(() => {
       </section>
 
       <!-- Tecnologías IA -->
-      <section id="ai-tech" class="relative py-24 bg-gradient-to-b from-black via-[#18181b] to-black overflow-hidden">
-        <CircuitBackground class="absolute inset-0 w-full h-full pointer-events-none z-0" />
+      <section id="ai-tech" class="relative py-24 overflow-hidden">
+        <ParticleBackground class="absolute inset-0 w-full h-full z-0" />
         <div class="container mx-auto px-4 text-center relative z-10">
           <h2 class="text-3xl md:text-4xl font-bold text-white mb-20">Tecnologías y Cloud
             <span class="block h-1 w-full max-w-[220px] min-w-[64px] mx-auto mt-2 bg-gradient-to-r from-violet-500 via-cyan-400 to-blue-400 rounded-full animate-underline"></span>
@@ -722,7 +737,7 @@ onBeforeUnmount(() => {
           <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-6 md:gap-8 max-w-5xl mx-auto mb-20">
             <div v-for="tech in techs" :key="tech.name" class="tech-card group relative flex flex-col items-center justify-center p-6 rounded-2xl glass-tech shadow-xl transition-all duration-300 cursor-pointer">
               <a :href="tech.link" target="_blank" rel="noopener" class="flex flex-col items-center justify-center w-full h-full">
-                <img :src="tech.logo" :alt="tech.name" class="h-12 w-12 object-contain mb-3 transition-all duration-300 group-hover:scale-110" />
+                <img :src="tech.logo" :alt="tech.name" class="h-12 w-12 object-contain mb-3 transition-all duration-300 group-hover:scale-110" loading="lazy" />
                 <span class="text-sm text-white/80 font-medium">{{ tech.name }}</span>
               </a>
             </div>
@@ -746,7 +761,7 @@ onBeforeUnmount(() => {
                   idx === selectedModelIdx
                     ? 'bg-gradient-to-r from-violet-600 via-cyan-500 to-blue-400 text-white shadow-2xl scale-105 border-l-4 border-cyan-400 animate-gradient-border'
                     : 'bg-[#23233a] text-white/70 hover:bg-violet-800/40 hover:scale-105']">
-                <img :src="model.logo" :alt="model.name" class="h-7 w-7 object-contain transition-transform duration-300" :class="{'animate-pop': idx === selectedModelIdx}" />
+                <img :src="model.logo" :alt="model.name" class="h-7 w-7 object-contain transition-transform duration-300" :class="{'animate-pop': idx === selectedModelIdx}" loading="lazy" />
                 <span class="hidden md:inline">{{ model.name }}</span>
                 <span class="md:hidden">{{ model.name.split(' ')[0] }}</span>
               </button>
@@ -755,7 +770,7 @@ onBeforeUnmount(() => {
             <transition name="fade-slide-scale" mode="out-in">
               <div :key="iaModels[selectedModelIdx].name" class="ia-model-card flex flex-col md:flex-row items-center md:items-stretch bg-[rgba(35,35,58,0.85)] backdrop-blur-lg rounded-2xl shadow-2xl p-6 md:p-10 w-full animate-fade-in-card border border-cyan-400/10">
                 <div class="flex-shrink-0 flex items-center justify-center w-20 h-20 md:w-32 md:h-32 rounded-xl bg-black/30 mr-0 md:mr-10 mb-4 md:mb-0">
-                  <img :src="iaModels[selectedModelIdx].logo" :alt="iaModels[selectedModelIdx].name" class="h-12 w-12 md:h-20 md:w-20 object-contain transition-transform duration-300 animate-pop" :title="iaModels[selectedModelIdx].name" />
+                  <img :src="iaModels[selectedModelIdx].logo" :alt="iaModels[selectedModelIdx].name" class="h-12 w-12 md:h-20 md:w-20 object-contain transition-transform duration-300 animate-pop" :title="iaModels[selectedModelIdx].name" loading="lazy" />
                 </div>
                 <div class="flex-1 flex flex-col items-center md:items-start">
                   <span class="text-xl md:text-2xl font-bold text-white mb-2">{{ iaModels[selectedModelIdx].name }}</span>
@@ -793,24 +808,7 @@ onBeforeUnmount(() => {
       <!-- Casos de uso -->
       <section id="usecases" class="py-20 bg-black">
         <div class="container mx-auto px-4">
-          <h2 class="text-3xl md:text-4xl font-bold text-white mb-8 text-center relative inline-block animate-fade-in-title">
-            Casos de uso
-            <span class="block h-1 w-full max-w-[220px] min-w-[64px] mx-auto mt-2 bg-gradient-to-r from-violet-500 via-cyan-400 to-blue-400 rounded-full animate-underline"></span>
-          </h2>
-          <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div class="rounded-2xl bg-[#18181b] p-8 shadow-lg text-white">
-              <h3 class="text-xl font-semibold mb-2">Soporte automatizado 24/7</h3>
-              <p class="text-gray-300">Responde consultas de clientes en tiempo real, en cualquier canal.</p>
-            </div>
-            <div class="rounded-2xl bg-[#18181b] p-8 shadow-lg text-white">
-              <h3 class="text-xl font-semibold mb-2">Ventas asistidas por IA</h3>
-              <p class="text-gray-300">Detecta oportunidades y sugiere productos en el momento justo.</p>
-            </div>
-            <div class="rounded-2xl bg-[#18181b] p-8 shadow-lg text-white">
-              <h3 class="text-xl font-semibold mb-2">Automatización de procesos</h3>
-              <p class="text-gray-300">Reduce tareas repetitivas y mejora la eficiencia operativa.</p>
-            </div>
-          </div>
+          <UseCasesTabs />
         </div>
       </section>
 
@@ -905,9 +903,9 @@ onBeforeUnmount(() => {
             <span class="block h-1 w-full max-w-[220px] min-w-[64px] mx-auto mt-2 bg-gradient-to-r from-violet-500 via-cyan-400 to-blue-400 rounded-full animate-underline"></span>
           </h2>
           <div class="flex flex-wrap justify-center gap-8">
-            <img src="https://placehold.co/400x300?text=IA+Image+1" alt="IA 1" class="rounded-2xl shadow-lg w-64 h-40 object-cover" />
-            <img src="https://placehold.co/400x300?text=IA+Image+2" alt="IA 2" class="rounded-2xl shadow-lg w-64 h-40 object-cover" />
-            <img src="https://placehold.co/400x300?text=IA+Image+3" alt="IA 3" class="rounded-2xl shadow-lg w-64 h-40 object-cover" />
+            <img src="https://placehold.co/400x300?text=IA+Image+1" alt="IA 1" class="rounded-2xl shadow-lg w-64 h-40 object-cover" loading="lazy" />
+            <img src="https://placehold.co/400x300?text=IA+Image+2" alt="IA 2" class="rounded-2xl shadow-lg w-64 h-40 object-cover" loading="lazy" />
+            <img src="https://placehold.co/400x300?text=IA+Image+3" alt="IA 3" class="rounded-2xl shadow-lg w-64 h-40 object-cover" loading="lazy" />
           </div>
         </div>
       </section>
@@ -1347,6 +1345,8 @@ section:not(:first-child):not(:last-child)::before {
 }
 .animate-scroll-x {
   animation: scroll-x 24s linear infinite;
+  will-change: transform;
+  transform: translateZ(0);
 }
 
 .team-nav-btn {
@@ -1448,9 +1448,15 @@ section:not(:first-child):not(:last-child)::before {
   overflow: hidden;
   min-height: 120px;
   transition: transform 0.25s, box-shadow 0.25s;
+  will-change: transform;
+  transform: translateZ(0);
+  background: rgba(24, 24, 32, 0.45);
+  /* backdrop-filter: blur(8px) saturate(1.1); */
+  border: 1.5px solid rgba(139, 92, 246, 0.13);
+  box-shadow: 0 4px 24px 0 rgba(124, 58, 237, 0.08);
 }
 .tech-card:hover {
-  transform: translateY(-8px) scale(1.06);
+  transform: translateY(-8px) scale(1.06) translateZ(0);
   box-shadow: 0 8px 32px 0 rgba(56, 189, 248, 0.18);
   z-index: 2;
 }
@@ -1458,12 +1464,22 @@ section:not(:first-child):not(:last-child)::before {
   border: 1.5px solid rgba(139, 92, 246, 0.13);
   box-shadow: 0 4px 24px 0 rgba(124, 58, 237, 0.08);
   transition: box-shadow 0.25s, border 0.25s, background 0.25s, transform 0.25s;
+  will-change: transform, box-shadow;
+  transform: translateZ(0);
 }
 .ia-model-card:hover {
   box-shadow: 0 8px 32px 0 rgba(56, 189, 248, 0.18);
   border-color: #38bdf8;
+  transform: translateZ(0);
 }
 @media (max-width: 768px) {
+  .tech-card {
+    background: rgba(24, 24, 32, 0.85) !important;
+    box-shadow: none !important;
+    backdrop-filter: none !important;
+    border: 1.5px solid rgba(139, 92, 246, 0.08) !important;
+    padding: 1.1rem 0.5rem !important;
+  }
   .ia-model-card {
     padding: 1.2rem !important;
   }

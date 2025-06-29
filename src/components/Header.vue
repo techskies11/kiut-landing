@@ -3,7 +3,7 @@
     <nav class="relative z-10 flex items-center py-1 md:py-1.5 rounded-2xl bg-black/60 backdrop-blur-xl shadow-md border border-white/10 pointer-events-auto floating-nav w-full max-w-5xl">
       <!-- Logo -->
       <a href="#hero" class="flex items-center h-8 md:h-10 pr-2 mr-2 md:mr-4 border-r border-white/10 focus:outline-none" aria-label="OnService Home">
-        <img src="/logo.png" alt="OnService logo" class="h-7 md:h-8 w-auto transition-all duration-200" />
+        <img src="/logo.png" alt="OnService logo" class="h-7 md:h-8 w-auto transition-all duration-200" loading="eager" />
       </a>
       <!-- Desktop nav -->
       <div class="flex-1 flex justify-center">
@@ -17,10 +17,12 @@
                @click.prevent="setActive(item.href)">
               <span class="relative z-10 flex items-center gap-1">
                 <span v-if="isActive(item.href)" class="inline-block w-1.5 h-1.5 rounded-full bg-gradient-to-r from-violet-400 to-cyan-400 mr-1"></span>
-                {{ item.label }}
+                <span class="relative inline-block">
+                  {{ item.label }}
+                  <span v-if="isActive(item.href)" class="active-underline absolute left-0 right-0 bottom-[-6px] mx-auto"></span>
+                  <span v-else class="hover-underline group-hover:opacity-100"></span>
+                </span>
               </span>
-              <span v-if="isActive(item.href)" class="active-underline"></span>
-              <span v-else class="hover-underline group-hover:opacity-100"></span>
             </a>
           </li>
         </ul>
@@ -162,9 +164,9 @@ onBeforeUnmount(() => {
 .active-underline {
   display: block;
   position: absolute;
-  left: 18%;
-  right: 18%;
-  bottom: 4px;
+  left: 0;
+  right: 0;
+  bottom: -2px;
   height: 3px;
   border-radius: 2px;
   background: linear-gradient(90deg, #7c3aed 0%, #38bdf8 100%);
@@ -172,6 +174,9 @@ onBeforeUnmount(() => {
   transform: scaleX(0.7);
   animation: underlineFadeIn 0.25s cubic-bezier(.68,-0.55,.27,1.55);
   transition: opacity 0.2s, transform 0.2s;
+  margin: 0 auto;
+  width: 100%;
+  pointer-events: none;
 }
 @keyframes underlineFadeIn {
   from { opacity: 0; transform: scaleX(0.3); }
