@@ -1,29 +1,31 @@
 <template>
-  <div
-    class="agent-chat-outer-glass"
-    :style="syncHeight && $vuetify?.breakpoint?.mdAndUp !== false ? { maxHeight: syncHeight + 'px', minHeight: '120px' } : { minHeight: '120px' }"
-  >
-    <div class="agent-chat-glass glass-hero-panel">
-      <div v-if="loading" class="chat-row chat-agent">
-        <div class="chat-bubble agent">
-          <span>Pensando<span class="thinking-dots"><span v-for="n in 3" :key="n" :class="['dot', {active: dotIdx === n}]">.</span></span></span>
+  <transition name="fade-slide">
+    <div
+      class="agent-chat-outer-glass"
+      v-show="showAgentResponse"
+    >
+      <div class="agent-chat-glass">
+        <div v-if="loading" class="chat-row chat-agent">
+          <div class="chat-bubble agent">
+            <span>Pensando<span class="thinking-dots"><span v-for="n in 3" :key="n" :class="['dot', {active: dotIdx === n}]">.</span></span></span>
+          </div>
         </div>
-      </div>
-      <div v-else ref="chatContainer" class="chat-messages chat-scrollable">
-        <div v-for="(msg, idx) in renderedMessages" :key="'msg-' + idx" :class="['chat-row', msg.role === 'Agent' ? 'chat-agent' : 'chat-user']">
-          <div :class="['chat-bubble', msg.role === 'Agent' ? 'agent' : 'user', msg.role === 'user' && idx === renderedMessages.length - 1 ? 'last' : '']">
-            <span v-if="msg.role === 'user'" class="chat-badge user-badge">User</span>
-            <span v-else-if="msg.role === 'Agent'" class="chat-badge agent-badge">Agent</span>
-            <span class="chat-text" v-if="msg.role === 'Agent'">
-              <span v-if="msg.partial">{{ msg.text }}<span v-if="showCursor && idx === typingMsgIdx && typingCharIdx > 0" class="editor-cursor">|</span></span>
-              <span v-else v-html="colorize(msg.text)"></span>
-            </span>
-            <span class="chat-text" v-else v-html="colorize(msg.text)"></span>
+        <div v-else ref="chatContainer" class="chat-messages chat-scrollable">
+          <div v-for="(msg, idx) in renderedMessages" :key="'msg-' + idx" :class="['chat-row', msg.role === 'Agent' ? 'chat-agent' : 'chat-user']">
+            <div :class="['chat-bubble', msg.role === 'Agent' ? 'agent' : 'user', msg.role === 'user' && idx === renderedMessages.length - 1 ? 'last' : '']">
+              <span v-if="msg.role === 'user'" class="chat-badge user-badge">User</span>
+              <span v-else-if="msg.role === 'Agent'" class="chat-badge agent-badge">Agent</span>
+              <span class="chat-text" v-if="msg.role === 'Agent'">
+                <span v-if="msg.partial">{{ msg.text }}<span v-if="showCursor && idx === typingMsgIdx && typingCharIdx > 0" class="editor-cursor">|</span></span>
+                <span v-else v-html="colorize(msg.text)"></span>
+              </span>
+              <span class="chat-text" v-else v-html="colorize(msg.text)"></span>
+            </div>
           </div>
         </div>
       </div>
     </div>
-  </div>
+  </transition>
 </template>
 
 <script setup>
@@ -49,6 +51,7 @@ let autoNextTimeout = null;
 const dotIdx = ref(1);
 const chatContainer = ref(null);
 const emit = defineEmits(['example-change', 'typing']);
+const showAgentResponse = ref(false);
 
 const renderedMessages = computed(() => {
   // Devuelve los mensajes a mostrar, con typing parcial solo en el Agent que está animando
@@ -191,6 +194,15 @@ watch(() => props.loading, (val) => {
   }
 });
 
+watch(() => props.typing, (val) => {
+  if (!val) {
+    // Cuando termina la animación del prompt, mostrar la respuesta
+    showAgentResponse.value = true;
+  } else {
+    showAgentResponse.value = false;
+  }
+});
+
 onMounted(() => {
   if (props.loading) startThinking();
   else if (props.typing) startTyping();
@@ -211,56 +223,55 @@ onBeforeUnmount(() => {
 </script>
 
 <style scoped>
+.agent-chat-outer-glass, .agent-chat-glass {
+  background: rgba(24,24,32,0.55) !important;
+  box-shadow: 0 8px 32px 0 rgba(124, 58, 237, 0.10), 0 2px 8px 0 rgba(56, 189, 248, 0.08) !important;
+  border: 1.5px solid rgba(139, 92, 246, 0.13) !important;
+  border-radius: 1.2rem;
+  padding-left: 1.2rem;
+  padding-right: 1.2rem;
+}
 .agent-chat-outer-glass {
-  background: rgba(17, 18, 28, 0.55);
-  border-radius: 1.5rem;
-  box-shadow: 0 8px 32px 0 rgba(124, 58, 237, 0.18);
-  border: 1.5px solid rgba(139, 92, 246, 0.13);
-  padding: 0.7rem 1.2rem 0.7rem 1.2rem;
-  min-width: 560px;
-  max-width: 560px;
+  min-width: 0;
+  max-width: none;
   width: 100%;
-  min-height: 120px;
+  min-height: 100px;
+  transition: opacity 0.3s;
+}
+.agent-chat-outer-glass[style*='display: none'] {
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+.agent-chat-glass {
+  background: none !important;
+  box-shadow: none !important;
+  border: none !important;
+  border-radius: 0;
+  padding: 0;
+}
+.chat-messages {
+  width: 100%;
   height: auto;
-  max-height: unset;
+  min-height: 0;
+  max-width: 100%;
+  overflow: visible;
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
-  z-index: 10;
-  position: relative;
-  overflow-y: auto;
-}
-.agent-chat-glass.glass-hero-panel {
-  backdrop-filter: blur(8px) saturate(1.1);
-  -webkit-backdrop-filter: blur(8px) saturate(1.1);
-  border: none;
-  box-shadow: none;
-  border-radius: 1.5rem;
-  padding: 0 1.1rem 0.7rem 1.1rem;
-  min-width: 560px;
-  max-width: 560px;
-  width: 100%;
-  min-height: 120px;
-  height: auto;
-  max-height: unset;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-end;
-  margin-top: 0;
-  overflow-y: auto;
-}
-.chat-messages {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-  width: 100%;
-  height: 100%;
-  max-height: 260px;
-  overflow-y: auto;
-  transition: max-height 0.4s cubic-bezier(.4,1.2,.4,1);
-  scroll-behavior: smooth;
+  gap: 0.2rem;
   margin: 0;
-  padding: 0.2rem 1.2rem 0.2rem 1.2rem;
+  padding: 1.1rem 1.3rem;
+  background: transparent !important;
+  box-shadow: none !important;
+  border: none !important;
+  color: #e5e7eb;
+  padding-left: 1.2rem;
+  padding-right: 1.2rem;
+  animation: fadeSlideIn 0.9s cubic-bezier(.4,1.6,.6,1);
+}
+@keyframes fadeSlideIn {
+  from { opacity: 0; transform: translateY(32px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 .chat-row {
   display: flex;
@@ -274,28 +285,44 @@ onBeforeUnmount(() => {
   justify-content: flex-start;
 }
 .chat-bubble {
-  max-width: 80%;
+  width: auto;
+  max-width: 85%;
+  min-width: 0;
+  margin-left: 0;
+  margin-right: 0;
   padding: 0.5rem 1.2rem;
   border-radius: 1.1rem;
-  font-size: 15px;
+  font-size: clamp(14px, 1.1vw, 16px);
   font-family: 'Fira Mono', 'Menlo', 'Consolas', monospace;
   box-shadow: 0 2px 12px 0 rgba(124, 58, 237, 0.13), 0 1.5px 8px 0 #7c3aed22;
   background: rgba(36, 36, 44, 0.85);
   color: #e5e7eb;
   word-break: break-word;
-  line-height: 1.22;
+  line-height: 1.3;
   position: relative;
   border: none;
   transition: background 0.18s, box-shadow 0.18s;
-  margin: 0;
+  margin-bottom: 0.2rem;
   opacity: 0;
   transform: translateY(16px);
   animation: fadeInMsg 0.5s cubic-bezier(.4,1.6,.6,1) forwards;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: 0.2rem;
+  gap: 0.15rem;
   text-align: left;
+  white-space: normal;
+  overflow: visible;
+}
+.chat-row.chat-user .chat-bubble {
+  align-self: flex-end;
+  margin-left: auto;
+  margin-right: 0;
+}
+.chat-row.chat-agent .chat-bubble {
+  align-self: flex-start;
+  margin-left: 0;
+  margin-right: auto;
 }
 @keyframes fadeInMsg {
   from { opacity: 0; transform: translateY(16px); }
@@ -359,6 +386,9 @@ onBeforeUnmount(() => {
   width: 100%;
   text-align: left;
   word-break: break-word;
+  white-space: pre-wrap;
+  overflow-wrap: break-word;
+  hyphens: auto;
 }
 .chat-badge {
   display: inline-block;
@@ -382,12 +412,38 @@ onBeforeUnmount(() => {
   border: 1px solid #38bdf855;
 }
 @media (max-width: 900px) {
-  .agent-chat-outer-glass,
-  .agent-chat-glass.glass-hero-panel {
-    min-width: 90vw;
-    max-width: 98vw;
+  .agent-chat-outer-glass, .agent-chat-glass {
     padding-left: 0.7rem;
     padding-right: 0.7rem;
   }
+  .chat-messages {
+    padding-left: 0.7rem;
+    padding-right: 0.7rem;
+  }
+  .agent-chat-outer-glass {
+    min-height: 140px;
+    height: auto;
+    max-height: none;
+  }
+  .agent-chat-glass {
+    height: 100%;
+    min-height: 0;
+    max-height: 100%;
+  }
+  .chat-bubble {
+    font-size: clamp(13px, 2vw, 15px);
+  }
+}
+.agent-response-hidden {
+  opacity: 0;
+  pointer-events: none;
+  visibility: hidden;
+  transition: opacity 0.2s;
+}
+.agent-response-visible {
+  opacity: 1;
+  pointer-events: auto;
+  visibility: visible;
+  transition: opacity 0.2s;
 }
 </style> 
