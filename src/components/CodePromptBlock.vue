@@ -292,7 +292,7 @@ onBeforeUnmount(() => {
 @media (max-width: 768px) {
   .code-block-container {
     min-width: 0 !important;
-    max-width: 98vw !important;
+    max-width: 99vw !important;
     width: 100% !important;
     margin: 0 auto !important;
     justify-content: center !important;
@@ -300,22 +300,37 @@ onBeforeUnmount(() => {
   }
   .code-block-glass.code-block-terminal {
     min-width: 0 !important;
-    max-width: 98vw !important;
+    max-width: 99vw !important;
     width: 100% !important;
-    padding: 0.7rem 0.3rem 1.1rem 0.3rem !important;
-    min-height: 140px !important;
+    padding: 0.4rem 0.1rem 0.7rem 0.1rem !important;
+    min-height: 120px !important;
     height: auto !important;
-    max-height: 220px !important;
+    max-height: 340px !important;
     margin: 0 auto !important;
+    font-size: 13px !important;
+  }
+  .editor-block {
+    font-size: 13px !important;
+    padding: 0.4rem 0.2rem !important;
+    gap: 0.05rem !important;
   }
   .gutter-line {
-    min-width: 1.5em !important;
+    min-width: 1.1em !important;
+    width: 1.1em !important;
     text-align: right !important;
-    padding-right: 0.4em !important;
-    font-size: 12px !important;
+    padding-right: 0.2em !important;
+    font-size: 11px !important;
+    margin-right: 0.4em !important;
   }
   .editor-line-flex {
-    min-height: 1.1em !important;
+    min-height: 1em !important;
+  }
+  .editor-code-line, pre.editor-code-line {
+    font-size: 13px !important;
+    word-break: break-word !important;
+    white-space: pre-line !important;
+    overflow-wrap: break-word !important;
+    line-height: 1.25 !important;
   }
 }
 .code-block-container, .editor-block, .editor-line-flex, .editor-code-line {

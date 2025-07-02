@@ -278,15 +278,13 @@ onBeforeUnmount(() => {
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
-  gap: 0.2rem;
+  gap: 1.1rem;
   margin: 0;
-  padding: 1.1rem 1.3rem;
+  padding: 1.3rem 1.5rem 1.3rem 1.5rem;
   background: transparent !important;
   box-shadow: none !important;
   border: none !important;
   color: #e5e7eb;
-  padding-left: 1.2rem;
-  padding-right: 1.2rem;
   animation: fadeSlideIn 0.9s cubic-bezier(.4,1.6,.6,1);
 }
 @keyframes fadeSlideIn {
@@ -296,7 +294,7 @@ onBeforeUnmount(() => {
 .chat-row {
   display: flex;
   width: 100%;
-  margin: 0;
+  margin: 0 0 1.2rem 0;
 }
 .chat-user {
   justify-content: flex-end;
@@ -359,34 +357,42 @@ onBeforeUnmount(() => {
   border: 1.5px solid #a78bfa;
 }
 .chat-bubble.kai {
-  background: linear-gradient(90deg, #23272e 0%, #444950 100%);
-  color: #e5e7eb;
+  background: #23272e;
+  color: #f3f4f6;
   align-self: flex-start;
-  box-shadow: 0 0 32px 6px #7c3aed33, 0 2px 24px 0 #38bdf833;
-  border-radius: 2rem;
-  padding: 1.2rem 2.2rem;
-  font-size: 1.25rem;
-  font-family: 'Fira Mono', 'Menlo', 'Consolas', monospace;
-  margin-bottom: 0.5rem;
-  margin-top: 0.2rem;
-  min-width: 220px;
+  box-shadow: 0 0 18px 2px #7c3aed22, 0 2px 8px 0 #38bdf822;
+  border-radius: 1.6rem;
+  padding: 1.25rem 1.9rem;
+  font-size: 1.13rem;
+  font-family: 'Figtree', 'Inter', sans-serif;
+  margin-bottom: 0;
+  margin-top: 0;
+  min-width: 180px;
   max-width: 90%;
   position: relative;
   transition: box-shadow 0.18s;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  line-height: 1.55;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.3em;
 }
 .kai-badge {
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
   background: linear-gradient(90deg, #7c3aed 0%, #38bdf8 100%);
   color: #fff;
   font-weight: 700;
-  font-size: 1.05rem;
-  font-family: 'Fira Mono', 'Menlo', 'Consolas', monospace;
+  font-size: 0.98rem;
+  font-family: 'Figtree', 'Inter', sans-serif;
   border-radius: 999px;
-  padding: 0.18em 1.1em 0.18em 1.1em;
-  margin-bottom: 0.7em;
-  margin-right: 0.7em;
+  padding: 0.13em 1em 0.13em 1em;
+  margin: 0 0 0.3em 0;
   letter-spacing: 0.03em;
   box-shadow: 0 0 8px 2px #7c3aed33;
+  height: 2.1em;
 }
 .thinking-dots {
   display: inline-block;
@@ -433,6 +439,11 @@ onBeforeUnmount(() => {
   white-space: pre-wrap;
   overflow-wrap: break-word;
   hyphens: auto;
+  font-size: 1.13rem;
+  font-family: 'Figtree', 'Inter', sans-serif;
+  font-weight: 500;
+  line-height: 1.55;
+  letter-spacing: 0.01em;
 }
 .chat-badge {
   display: inline-block;
@@ -471,6 +482,8 @@ onBeforeUnmount(() => {
   .chat-messages {
     padding-left: 0.7rem;
     padding-right: 0.7rem;
+    gap: 1.7rem;
+    padding: 1.1rem 0.5rem 1.1rem 0.5rem;
   }
   .agent-chat-outer-glass {
     min-height: 140px;
@@ -484,6 +497,11 @@ onBeforeUnmount(() => {
   }
   .chat-bubble {
     font-size: clamp(13px, 2vw, 15px);
+  }
+  .chat-bubble.kai {
+    padding: 1.1rem 1.1rem;
+    font-size: 1rem;
+    border-radius: 1.2rem;
   }
 }
 .agent-response-hidden {
