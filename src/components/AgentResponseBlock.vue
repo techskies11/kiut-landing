@@ -5,23 +5,20 @@
       v-show="showAgentResponse"
     >
       <div class="agent-chat-glass">
-        <div v-if="loading" class="chat-row chat-agent">
-          <div class="chat-bubble agent">
-            <span>Pensando<span class="thinking-dots"><span v-for="n in 3" :key="n" :class="['dot', {active: dotIdx === n}]">.</span></span></span>
-          </div>
-        </div>
-        <div v-else ref="chatContainer" class="chat-messages chat-scrollable">
-          <div v-for="(msg, idx) in renderedMessages" :key="'msg-' + idx" :class="['chat-row', msg.role === 'Agent' ? 'chat-agent' : 'chat-user']">
-            <div :class="['chat-bubble', msg.role === 'Agent' ? 'agent' : 'user', msg.role === 'user' && idx === renderedMessages.length - 1 ? 'last' : '']">
-              <span v-if="msg.role === 'user'" class="chat-badge user-badge">User</span>
-              <span v-else-if="msg.role === 'Agent'" class="chat-badge agent-badge">Agent</span>
-              <span class="chat-text" v-if="msg.role === 'Agent'">
-                <span v-if="msg.partial">{{ msg.text }}<span v-if="showCursor && idx === typingMsgIdx && typingCharIdx > 0" class="editor-cursor">|</span></span>
-                <span v-else v-html="colorize(msg.text)"></span>
-              </span>
-              <span class="chat-text" v-else v-html="colorize(msg.text)"></span>
+        <div ref="chatContainer" class="chat-messages chat-scrollable">
+          <transition-group name="fadeInMsgSeq" tag="div">
+            <div v-for="(msg, idx) in visibleMessages" :key="'msg-' + idx" :class="['chat-row', msg.role === 'Agent' ? 'chat-agent' : 'chat-user']" :style="{ transitionDelay: (idx * 200) + 'ms' }">
+              <div :class="['chat-bubble', msg.role === 'Agent' ? 'kai' : 'user', msg.role === 'user' && idx === visibleMessages.length - 1 ? 'last' : '']">
+                <span v-if="msg.role === 'user'" class="chat-badge user-badge">User</span>
+                <span v-else-if="msg.role === 'Agent'" class="chat-badge kai-badge">KAI</span>
+                <span class="chat-text" v-if="msg.role === 'Agent'">
+                  <span v-if="msg.partial">{{ msg.text }}<span v-if="showCursor && idx === typingMsgIdx && typingCharIdx > 0" class="editor-cursor">|</span></span>
+                  <span v-else v-html="colorize(msg.text)"></span>
+                </span>
+                <span class="chat-text" v-else v-html="colorize(msg.text)"></span>
+              </div>
             </div>
-          </div>
+          </transition-group>
         </div>
       </div>
     </div>
@@ -38,6 +35,7 @@ const props = defineProps({
   loading: Boolean,
   exampleIdx: Number,
   tab: String,
+  syncHeight: Number, // nuevo: alto sincronizado desde el prompt
   syncHeight: Number // nuevo: alto sincronizado desde el prompt
 });
 const visibleMessages = ref([]);
@@ -107,9 +105,14 @@ function startTyping() {
   typingText.value = '';
   showCursor.value = true;
   emit('typing', true);
-  const messages = parseMessages(props.responses[props.exampleIdx ?? 0]);
+  
+  // Obtener las respuestas según el tab actual
+  const currentResponses = props.responses[props.tab] || props.responses;
+  const messages = parseMessages(currentResponses[props.exampleIdx ?? 0]);
+  
   let i = 0;
   let typing = false;
+  
   function typeNextMsg() {
     if (i < messages.length) {
       visibleMessages.value = messages.slice(0, i + 1);
@@ -125,7 +128,7 @@ function startTyping() {
         typingCharIdx.value = -1;
         typingText.value = '';
         i++;
-        typingTimeout = setTimeout(typeNextMsg, 180);
+        typingTimeout = setTimeout(typeNextMsg, 700); // más lento
       }
     } else {
       showCursor.value = false;
@@ -133,24 +136,30 @@ function startTyping() {
       typingCharIdx.value = -1;
       typingText.value = '';
       emit('typing', false);
+      emit('conversation-finished');
     }
   }
+  
   function typeCharInMsg() {
-    const msg = parseMessages(props.responses[props.exampleIdx ?? 0])[typingMsgIdx.value];
+    const currentResponses = props.responses[props.tab] || props.responses;
+    const messages = parseMessages(currentResponses[props.exampleIdx ?? 0]);
+    const msg = messages[typingMsgIdx.value];
+    
     if (typingCharIdx.value <= msg.text.length) {
       typingText.value = msg.text.slice(0, typingCharIdx.value);
       scrollToBottom();
       typingCharIdx.value++;
-      typingTimeout = setTimeout(typeCharInMsg, 18);
+      typingTimeout = setTimeout(typeCharInMsg, 35);
     } else {
       typingText.value = msg.text;
       typingMsgIdx.value = -1;
       typingCharIdx.value = -1;
       typing = false;
       i++;
-      typingTimeout = setTimeout(typeNextMsg, 180);
+      typingTimeout = setTimeout(typeNextMsg, 700); // más lento
     }
   }
+  
   visibleMessages.value = [];
   typeNextMsg();
 }
@@ -160,8 +169,10 @@ function nextExample() {
   clearTimeout(autoNextTimeout);
   typingTimeout = null;
   autoNextTimeout = null;
-  if (props.responses.length > 1) {
-    const nextIdx = (props.exampleIdx + 1) % props.responses.length;
+  
+  const currentResponses = props.responses[props.tab] || props.responses;
+  if (currentResponses.length > 1) {
+    const nextIdx = (props.exampleIdx + 1) % currentResponses.length;
     emit('example-change', nextIdx);
   } else {
     emit('example-change', 0);
@@ -177,7 +188,13 @@ function colorize(text) {
     .replace(/\b(Agent)\b/, '<span class="agent-label">$1</span>');
 }
 
-watch(() => props.tabKey, () => {
+watch(() => props.tab, () => {
+  clearTimeout(autoNextTimeout);
+  autoNextTimeout = null;
+  if (!props.loading) startTyping();
+});
+
+watch(() => props.exampleIdx, () => {
   clearTimeout(autoNextTimeout);
   autoNextTimeout = null;
   if (!props.loading) startTyping();
@@ -207,7 +224,8 @@ onMounted(() => {
   if (props.loading) startThinking();
   else if (props.typing) startTyping();
   else {
-    visibleMessages.value = parseMessages(props.responses[0]);
+    const currentResponses = props.responses[props.tab] || props.responses;
+    visibleMessages.value = parseMessages(currentResponses[0]);
     showCursor.value = false;
   }
 });
@@ -248,6 +266,8 @@ onBeforeUnmount(() => {
   border: none !important;
   border-radius: 0;
   padding: 0;
+  font-family: 'Fira Mono', 'Menlo', 'Consolas', monospace;
+  font-size: 1rem;
 }
 .chat-messages {
   width: 100%;
@@ -338,11 +358,35 @@ onBeforeUnmount(() => {
   box-shadow: 0 0 16px 2px #a78bfa99, 0 2px 16px 0 #7c3aed55;
   border: 1.5px solid #a78bfa;
 }
-.chat-bubble.agent {
+.chat-bubble.kai {
   background: linear-gradient(90deg, #23272e 0%, #444950 100%);
   color: #e5e7eb;
   align-self: flex-start;
-  box-shadow: 0 2px 12px 0 #7c3aed22;
+  box-shadow: 0 0 32px 6px #7c3aed33, 0 2px 24px 0 #38bdf833;
+  border-radius: 2rem;
+  padding: 1.2rem 2.2rem;
+  font-size: 1.25rem;
+  font-family: 'Fira Mono', 'Menlo', 'Consolas', monospace;
+  margin-bottom: 0.5rem;
+  margin-top: 0.2rem;
+  min-width: 220px;
+  max-width: 90%;
+  position: relative;
+  transition: box-shadow 0.18s;
+}
+.kai-badge {
+  display: inline-block;
+  background: linear-gradient(90deg, #7c3aed 0%, #38bdf8 100%);
+  color: #fff;
+  font-weight: 700;
+  font-size: 1.05rem;
+  font-family: 'Fira Mono', 'Menlo', 'Consolas', monospace;
+  border-radius: 999px;
+  padding: 0.18em 1.1em 0.18em 1.1em;
+  margin-bottom: 0.7em;
+  margin-right: 0.7em;
+  letter-spacing: 0.03em;
+  box-shadow: 0 0 8px 2px #7c3aed33;
 }
 .thinking-dots {
   display: inline-block;
@@ -359,14 +403,14 @@ onBeforeUnmount(() => {
   color: #7c3aed;
 }
 .editor-cursor {
-  color: #a78bfa;
+  color: #8b5cf6;
+  animation: blink 1s infinite;
   font-weight: bold;
-  animation: blink-violet 1s steps(1) infinite;
-  margin-left: 0.1em;
+  text-shadow: 0 0 8px rgba(139, 92, 246, 0.6);
 }
-@keyframes blink-violet {
-  0%, 100% { opacity: 0; color: #a78bfa; }
-  50% { opacity: 1; color: #7c3aed; }
+@keyframes blink {
+  0%, 50% { opacity: 1; }
+  51%, 100% { opacity: 0; }
 }
 .chat-icon {
   font-size: 1.15em;
@@ -402,9 +446,17 @@ onBeforeUnmount(() => {
   user-select: none;
 }
 .user-badge {
-  background: #a78bfa22;
-  color: #a78bfa;
-  border: 1px solid #a78bfa55;
+  display: inline-block;
+  background: #23272e;
+  color: #fff;
+  font-weight: 700;
+  font-size: 1.05rem;
+  font-family: 'Fira Mono', 'Menlo', 'Consolas', monospace;
+  border-radius: 999px;
+  padding: 0.18em 1.1em 0.18em 1.1em;
+  margin-bottom: 0.7em;
+  margin-right: 0.7em;
+  letter-spacing: 0.03em;
 }
 .agent-badge {
   background: #38bdf822;
@@ -445,5 +497,16 @@ onBeforeUnmount(() => {
   pointer-events: auto;
   visibility: visible;
   transition: opacity 0.2s;
+}
+.fadeInMsgSeq-enter-active {
+  transition: opacity 0.7s cubic-bezier(.4,1.6,.6,1), transform 0.7s cubic-bezier(.4,1.6,.6,1);
+}
+.fadeInMsgSeq-enter-from {
+  opacity: 0;
+  transform: translateY(24px);
+}
+.fadeInMsgSeq-enter-to {
+  opacity: 1;
+  transform: translateY(0);
 }
 </style> 

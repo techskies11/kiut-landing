@@ -3,7 +3,7 @@
     <div class="code-block-glass code-block-terminal glass-hero-panel">
       <div class="terminal-bar flex items-center gap-2 mb-2">
         <span class="flex-1"></span>
-        <span v-for="tab in tabs" :key="tab.key" :class="['example-tab-underline', tab.key === props.tab ? 'active' : '']" @click="setTab(tab.key)">
+        <span v-for="tab in tabs" :key="tab.key" :class="['example-tab-underline', tab.key === props.tab ? 'active pointer-events-none cursor-default' : '']" @click="tab.key !== props.tab && setTab(tab.key)">
           {{ tab.label }}
         </span>
       </div>
@@ -65,7 +65,7 @@ function startTyping() {
     if (charIdx <= fullText.length) {
       animatedText.value = fullText.slice(0, charIdx);
       charIdx++;
-      typingTimeout = setTimeout(typeChar, 18);
+      typingTimeout = setTimeout(typeChar, 35);
     } else {
       showCursor.value = false;
       emit('typing', false);
@@ -262,14 +262,14 @@ onBeforeUnmount(() => {
   font-style: italic;
 }
 .editor-cursor {
-  color: #38bdf8;
+  color: #8b5cf6;
+  animation: blink 1s infinite;
   font-weight: bold;
-  animation: blink 1s steps(1) infinite;
-  margin-left: 0.1em;
+  text-shadow: 0 0 8px rgba(139, 92, 246, 0.6);
 }
 @keyframes blink {
-  0%, 100% { opacity: 0; }
-  50% { opacity: 1; }
+  0%, 50% { opacity: 1; }
+  51%, 100% { opacity: 0; }
 }
 @media (max-width: 900px) {
   .code-block-glass.code-block-terminal {

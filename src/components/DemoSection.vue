@@ -1,14 +1,380 @@
 <template>
-  <section id="demo" class="py-16 px-4 max-w-5xl mx-auto">
-    <h2 class="text-3xl font-bold mb-8 text-center dark:text-white">Demo Interactivo</h2>
-    <div class="flex flex-wrap justify-center gap-8">
-      <div class="w-full bg-gray-200 dark:bg-gray-800 rounded-lg flex items-center justify-center text-gray-500 dark:text-gray-400 py-12">
-        Próximamente: demo interactivo
+  <section id="demo" class="relative w-full min-h-[90vh] flex items-center justify-center px-2 md:px-0 bg-transparent overflow-hidden">
+    <!-- Circuit background decorativo -->
+    <div class="absolute inset-0 w-full h-full z-0 pointer-events-none select-none">
+      <CircuitBackground />
+    </div>
+    <div class="relative z-10 w-full max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-center gap-8 md:gap-16 min-h-[70vh] py-8 md:py-16 animate-fade-in-up">
+      <!-- Bloque Prompt (66%) -->
+      <div class="flex-[2_2_0%] w-full max-w-3xl bg-white/80 dark:bg-white/10 backdrop-blur-2xl rounded-3xl shadow-2xl shadow-black/10 border border-white/30 dark:border-white/10 px-2 md:px-10 py-6 md:py-14 flex flex-col items-center animate-fade-in-up min-h-[420px] md:min-h-[540px] h-full">
+        <CodePromptBlock 
+          :prompts="prompts" 
+          :tab="currentTab" 
+          :exampleIdx="currentExampleIdx"
+          @tab-change="handleTabChange"
+          @typing="handleTyping"
+        />
+      </div>
+      <!-- Bloque Agent Response (33%) -->
+      <div class="flex-[1_1_0%] w-full max-w-xl bg-white/80 dark:bg-white/10 backdrop-blur-2xl rounded-3xl shadow-2xl shadow-black/10 border border-white/30 dark:border-white/10 px-2 md:px-8 py-6 md:py-14 flex flex-col items-center animate-fade-in-up delay-150 min-h-[420px] md:min-h-[540px] h-full">
+        <AgentResponseBlock 
+          :responses="agentResponses" 
+          :tab="currentTab" 
+          :exampleIdx="currentExampleIdx"
+          :typing="isTyping"
+          :loading="isLoading"
+          :promptTyping="isTyping"
+          @example-change="handleExampleChange"
+          @conversation-finished="handleConversationFinished"
+        />
       </div>
     </div>
   </section>
 </template>
 
 <script setup>
-// No props por ahora
-</script> 
+import { ref, onMounted, onBeforeUnmount, watch } from 'vue'
+import CircuitBackground from './CircuitBackground.vue'
+import CodePromptBlock from './CodePromptBlock.vue'
+import AgentResponseBlock from './AgentResponseBlock.vue'
+
+// Estado del demo
+const currentTab = ref('airline')
+const currentExampleIdx = ref(0)
+const isTyping = ref(false)
+const isLoading = ref(false)
+const dotIdx = ref(1)
+let autoNextTimeout = null
+let dotInterval = null
+
+// Datos de ejemplo para los prompts - conversaciones más largas y realistas
+const prompts = {
+  airline: {
+    label: 'Aerolínea',
+    examples: [
+      [
+        '✈️ # System Prompt',
+        'Eres KAI, tu asistente virtual de aerolíneas.',
+        'Tono cordial y profesional.',
+        'Responde en español claro.',
+        'Ayuda con reservas, check-in y vuelos.',
+        '# Ejemplo',
+        '$ User: "¿Puedo cambiar mi vuelo?"'
+      ],
+      [
+        '🛫 # System Prompt',
+        'Hola, soy KAI, asistente digital de la aerolínea.',
+        'Responde con amabilidad y precisión.',
+        'Brinda información sobre equipaje y reservas.',
+        '# Ejemplo',
+        '$ User: "¿Cuánto equipaje puedo llevar en cabina?"'
+      ],
+      [
+        '✈️ # System Prompt',
+        'KAI, asistente de vuelos.',
+        'Tono profesional y empático.',
+        'Responde dudas sobre horarios y servicios.',
+        '# Ejemplo',
+        '$ User: "¿El vuelo AM123 está demorado?"'
+      ],
+      [
+        '🛬 # System Prompt',
+        'Eres KAI, experto en atención al pasajero.',
+        'Responde en español neutro.',
+        'Ayuda con selección de asientos y embarque.',
+        '# Ejemplo',
+        '$ User: "¿Puedo seleccionar mi asiento online?"'
+      ],
+      [
+        '✈️ # System Prompt',
+        'KAI, asistente de aerolínea.',
+        'Tono cercano y resolutivo.',
+        'Brinda soporte para servicios especiales.',
+        '# Ejemplo',
+        '$ User: "¿Cómo solicito asistencia especial para mi vuelo?"'
+      ]
+    ]
+  },
+  travel: {
+    label: 'Viajes',
+    examples: [
+      [
+        '🌍 # System Prompt',
+        'Eres KAI, experto en viajes internacionales.',
+        'Tono amigable y claro.',
+        'Recomienda destinos y tips de viaje.',
+        '# Ejemplo',
+        '$ User: "¿Necesito visa para viajar a Brasil?"'
+      ],
+      [
+        '🧳 # System Prompt',
+        'KAI, tu asesor de vacaciones.',
+        'Tono cercano y entusiasta.',
+        'Sugiere destinos y actividades.',
+        '# Ejemplo',
+        '$ User: "¿Qué destino recomendás para vacaciones en invierno?"'
+      ],
+      [
+        '🌏 # System Prompt',
+        'Eres KAI, guía de viajes.',
+        'Tono informativo y cordial.',
+        'Ayuda a reservar tours y excursiones.',
+        '# Ejemplo',
+        '$ User: "¿Cómo reservo un tour en París?"'
+      ],
+      [
+        '🗾 # System Prompt',
+        'KAI, experto en cultura y turismo.',
+        'Tono claro y detallista.',
+        'Responde sobre mejores épocas para viajar.',
+        '# Ejemplo',
+        '$ User: "¿Cuál es la mejor época para visitar Japón?"'
+      ],
+      [
+        '🚗 # System Prompt',
+        'Eres KAI, asistente de viajes.',
+        'Tono práctico y directo.',
+        'Brinda información sobre alquiler de autos.',
+        '# Ejemplo',
+        '$ User: "¿Qué documentos necesito para alquilar un auto en Europa?"'
+      ]
+    ]
+  },
+  it: {
+    label: 'Soporte IT',
+    examples: [
+      [
+        '💻 # System Prompt',
+        'Eres KAI, soporte técnico de la empresa.',
+        'Tono técnico y resolutivo.',
+        'Ayuda con acceso a sistemas y correo.',
+        '# Ejemplo',
+        '$ User: "No puedo acceder a mi correo corporativo."'
+      ],
+      [
+        '🔒 # System Prompt',
+        'KAI, tu asistente de tecnología.',
+        'Tono profesional y paciente.',
+        'Guía para configurar VPN y acceso remoto.',
+        '# Ejemplo',
+        '$ User: "¿Cómo configuro la VPN en mi laptop?"'
+      ],
+      [
+        '🖥️ # System Prompt',
+        'Eres KAI, experto en soporte digital.',
+        'Tono claro y directo.',
+        'Responde sobre sistemas y tickets.',
+        '# Ejemplo',
+        '$ User: "¿El sistema de tickets está caído?"'
+      ],
+      [
+        '🔑 # System Prompt',
+        'KAI, asistente de soporte.',
+        'Tono resolutivo y cordial.',
+        'Ayuda a restablecer contraseñas.',
+        '# Ejemplo',
+        '$ User: "¿Cómo restablezco mi contraseña?"'
+      ],
+      [
+        '💾 # System Prompt',
+        'Eres KAI, soporte informático.',
+        'Tono técnico y claro.',
+        'Brinda ayuda sobre instalaciones de software.',
+        '# Ejemplo',
+        '$ User: "¿Puedo instalar software en mi equipo?"'
+      ]
+    ]
+  }
+};
+
+// Datos de ejemplo para las respuestas - conversaciones más largas y realistas
+const agentResponses = {
+  airline: [
+    [
+      'User: "¿Puedo cambiar mi vuelo?"',
+      'Agent: "¡Por supuesto! ¿Podrías indicarme tu número de reserva?"',
+      'User: "Es 123456."',
+      'Agent: "Gracias. Verificando... Tu tarifa permite un cambio con costo adicional. ¿Deseas continuar?"'
+    ],
+    [
+      'User: "¿Cuánto equipaje puedo llevar en cabina?"',
+      'Agent: "Puedes llevar una pieza de hasta 10kg en cabina. ¿Te gustaría saber sobre equipaje en bodega?"'
+    ],
+    [
+      'User: "¿El vuelo AM123 está demorado?"',
+      'Agent: "El vuelo AM123 está programado para salir a tiempo. ¿Necesitas información de la puerta de embarque?"'
+    ],
+    [
+      'User: "¿Puedo seleccionar mi asiento online?"',
+      'Agent: "Sí, puedes seleccionar tu asiento desde la web o la app hasta 24h antes del vuelo."'
+    ],
+    [
+      'User: "¿Cómo solicito asistencia especial para mi vuelo?"',
+      'Agent: "Claro, puedo ayudarte a solicitar asistencia especial. ¿Requieres silla de ruedas o asistencia en el embarque?"'
+    ]
+  ],
+  travel: [
+    [
+      'User: "¿Necesito visa para viajar a Brasil?"',
+      'Agent: "No necesitas visa para viajes turísticos menores a 90 días si eres ciudadano argentino."'
+    ],
+    [
+      'User: "¿Qué destino recomendás para vacaciones en invierno?"',
+      'Agent: "Bariloche es ideal para esquí y paisajes nevados. ¿Te gustaría info de hoteles o actividades?"'
+    ],
+    [
+      'User: "¿Cómo reservo un tour en París?"',
+      'Agent: "Puedo ayudarte a reservar tours en París. ¿Prefieres museos, gastronomía o paseos guiados?"'
+    ],
+    [
+      'User: "¿Cuál es la mejor época para visitar Japón?"',
+      'Agent: "La primavera (marzo-abril) es famosa por los cerezos en flor. ¿Te gustaría recomendaciones de ciudades?"'
+    ],
+    [
+      'User: "¿Qué documentos necesito para alquilar un auto en Europa?"',
+      'Agent: "Necesitarás tu pasaporte, licencia de conducir internacional y una tarjeta de crédito."'
+    ]
+  ],
+  it: [
+    [
+      'User: "No puedo acceder a mi correo corporativo."',
+      'Agent: "¿Recibes algún mensaje de error al intentar ingresar?"',
+      'User: "Sí, dice contraseña incorrecta."',
+      'Agent: "Te ayudo a restablecerla. ¿Prefieres recibir el enlace por email o SMS?"'
+    ],
+    [
+      'User: "¿Cómo configuro la VPN en mi laptop?"',
+      'Agent: "Debes descargar el cliente VPN desde el portal interno y seguir la guía paso a paso. ¿Te la envío?"'
+    ],
+    [
+      'User: "¿El sistema de tickets está caído?"',
+      'Agent: "No se reportan incidentes. ¿Qué error ves al intentar ingresar?"'
+    ],
+    [
+      'User: "¿Cómo restablezco mi contraseña?"',
+      'Agent: "Puedes restablecerla desde el portal de autoservicio o te envío un enlace. ¿Qué prefieres?"'
+    ],
+    [
+      'User: "¿Puedo instalar software en mi equipo?"',
+      'Agent: "Depende del software. ¿Cuál necesitas instalar? Te ayudo con el proceso o la autorización."'
+    ]
+  ]
+};
+
+// Handlers para la comunicación entre componentes
+function handleTabChange(tab) {
+  currentTab.value = tab
+  currentExampleIdx.value = 0
+  clearTimeout(autoNextTimeout)
+  startNewConversation()
+}
+
+function handleTyping(typing) {
+  isTyping.value = typing
+}
+
+function handleExampleChange(exampleIdx) {
+  currentExampleIdx.value = exampleIdx
+  clearTimeout(autoNextTimeout)
+}
+
+function handleConversationFinished() {
+  clearTimeout(autoNextTimeout)
+  autoNextTimeout = setTimeout(() => {
+    const examples = prompts[currentTab.value].examples
+    const nextIdx = (currentExampleIdx.value + 1) % examples.length
+    currentExampleIdx.value = nextIdx
+    startNewConversation()
+  }, 7000)
+}
+
+function startNewConversation() {
+  isLoading.value = true
+  clearTimeout(autoNextTimeout)
+  setTimeout(() => {
+    isLoading.value = false
+  }, 1200)
+}
+
+function startDotAnimation() {
+  clearInterval(dotInterval)
+  dotInterval = setInterval(() => {
+    dotIdx.value = dotIdx.value === 3 ? 1 : dotIdx.value + 1
+  }, 400)
+}
+
+watch(isTyping, (val) => {
+  if (val) startDotAnimation()
+  else clearInterval(dotInterval)
+})
+
+onMounted(() => {
+  startNewConversation()
+})
+
+onBeforeUnmount(() => {
+  clearTimeout(autoNextTimeout)
+})
+</script>
+
+<style scoped>
+@keyframes fade-in-up {
+  0% { opacity: 0; transform: translateY(40px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+.animate-fade-in-up {
+  animation: fade-in-up 0.9s cubic-bezier(.4,0,.2,1) both;
+}
+.animate-fade-in-up.delay-150 {
+  animation-delay: 0.15s;
+}
+.prompt-thinking-block {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  margin-top: 1.2rem;
+}
+.prompt-thinking-bubble {
+  background: linear-gradient(90deg, #23272e 0%, #444950 100%);
+  color: #e5e7eb;
+  border-radius: 1.1rem;
+  padding: 0.6rem 1.5rem;
+  font-size: 1.1rem;
+  font-family: 'Fira Mono', 'Menlo', 'Consolas', monospace;
+  box-shadow: 0 0 16px 2px #a78bfa44, 0 2px 16px 0 #7c3aed33;
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  animation: promptGlow 2.2s infinite alternate;
+}
+@keyframes promptGlow {
+  0% { box-shadow: 0 0 16px 2px #a78bfa44, 0 2px 16px 0 #7c3aed33; }
+  100% { box-shadow: 0 0 32px 6px #7c3aed66, 0 2px 24px 0 #38bdf866; }
+}
+.thinking-dots {
+  display: inline-block;
+  margin-left: 0.2em;
+}
+.dot {
+  opacity: 0.2;
+  font-size: 1.2em;
+  transition: opacity 0.18s, color 0.18s;
+  color: #a78bfa;
+}
+.dot.active {
+  opacity: 1;
+  color: #7c3aed;
+}
+.fadeInMsgSeq-enter-active {
+  transition: opacity 0.45s cubic-bezier(.4,1.6,.6,1), transform 0.45s cubic-bezier(.4,1.6,.6,1);
+}
+.fadeInMsgSeq-enter-from {
+  opacity: 0;
+  transform: translateY(16px);
+}
+.fadeInMsgSeq-enter-to {
+  opacity: 1;
+  transform: translateY(0);
+}
+</style> 
