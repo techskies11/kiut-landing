@@ -1,7 +1,7 @@
 <template>
   <footer class="py-8 px-4 bg-gray-100 dark:bg-gray-900 text-center text-gray-600 dark:text-gray-300">
     <div class="max-w-5xl mx-auto">
-      <p>&copy; 2024 Kiut. Todos los derechos reservados.</p>
+      <p>&copy; {{ new Date().getFullYear() }} Kiut. Todos los derechos reservados.</p>
     </div>
   </footer>
 </template>

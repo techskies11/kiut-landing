@@ -29,7 +29,10 @@
 import { ref, watch, onMounted, computed, nextTick } from 'vue';
 import { onBeforeUnmount } from 'vue';
 const props = defineProps({
-  responses: Array, // array de arrays de strings
+  responses: {
+    type: [Array, Object],
+    required: true
+  },
   typing: Boolean,
   tabKey: String,
   loading: Boolean,
@@ -48,7 +51,7 @@ let dotInterval = null;
 let autoNextTimeout = null;
 const dotIdx = ref(1);
 const chatContainer = ref(null);
-const emit = defineEmits(['example-change', 'typing']);
+const emit = defineEmits(['example-change', 'typing', 'conversation-finished']);
 const showAgentResponse = ref(false);
 
 const renderedMessages = computed(() => {

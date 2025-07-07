@@ -1,11 +1,15 @@
 <template>
-  <section class="py-20 bg-gray-900 dark:bg-gray-100">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+  <section id="clients" class="relative py-20 bg-white dark:bg-gray-950 transition-colors duration-300 overflow-hidden">
+    <!-- Particle background -->
+    <div class="absolute inset-0 w-full h-full z-0 pointer-events-none select-none">
+      <ParticleBackground />
+    </div>
+    <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <div class="text-center mb-16">
-        <h2 class="text-3xl md:text-4xl font-bold text-white dark:text-gray-900 mb-4">
+        <h2 class="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4">
           Empresas que confían en nosotros
         </h2>
-        <p class="text-lg text-gray-300 dark:text-gray-600 max-w-2xl mx-auto">
+        <p class="text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
           Líderes en sus industrias que han transformado su atención al cliente con KIUT
         </p>
       </div>
@@ -31,13 +35,13 @@
 
         <!-- Navigation Arrows -->
         <button @click="prevSlide" 
-                class="absolute left-4 top-1/2 transform -translate-y-1/2 bg-white/10 hover:bg-white/20 text-white p-2 rounded-full transition-all duration-300">
+                class="absolute left-4 top-1/2 transform -translate-y-1/2 bg-gray-900/10 dark:bg-white/10 hover:bg-gray-900/20 dark:hover:bg-white/20 text-gray-900 dark:text-white p-2 rounded-full transition-all duration-300">
           <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
           </svg>
         </button>
         <button @click="nextSlide" 
-                class="absolute right-4 top-1/2 transform -translate-y-1/2 bg-white/10 hover:bg-white/20 text-white p-2 rounded-full transition-all duration-300">
+                class="absolute right-4 top-1/2 transform -translate-y-1/2 bg-gray-900/10 dark:bg-white/10 hover:bg-gray-900/20 dark:hover:bg-white/20 text-gray-900 dark:text-white p-2 rounded-full transition-all duration-300">
           <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
           </svg>
@@ -50,8 +54,8 @@
                   :class="[
                     'w-3 h-3 rounded-full transition-all duration-300',
                     index === currentSlide 
-                      ? 'bg-blue-500' 
-                      : 'bg-gray-400 hover:bg-gray-300'
+                      ? 'bg-violet-500' 
+                      : 'bg-gray-400 dark:bg-gray-600 hover:bg-gray-300 dark:hover:bg-gray-500'
                   ]">
           </button>
         </div>
@@ -62,6 +66,7 @@
 
 <script setup>
 import { ref, onMounted, onBeforeUnmount } from 'vue';
+import ParticleBackground from './ParticleBackground.vue';
 
 const clientLogos = [
   { src: '/aeromexico.png', alt: 'Aeromexico' },

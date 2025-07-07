@@ -7,7 +7,29 @@ export default {
   darkMode: 'class',
   theme: {
     extend: {
-      // Puedes agregar aquí tus colores y animaciones personalizadas si quieres
+      colors: {
+        // Paleta oficial OnService
+        'onservice': {
+          // Acentos principales
+          'violet': '#7C3AED',
+          'cyan': '#38BDF8',
+          
+          // Fondos
+          'bg-light': '#FFFFFF',
+          'bg-dark': '#111827',
+          
+          // Textos
+          'text-light': '#1F2937',
+          'text-dark': '#F9FAFB',
+          
+          // Dividers
+          'divider-light': '#E5E7EB',
+          'divider-dark': '#4B5563',
+        }
+      },
+      fontFamily: {
+        'inter': ['Inter', 'sans-serif'],
+      }
     },
   },
   plugins: [],

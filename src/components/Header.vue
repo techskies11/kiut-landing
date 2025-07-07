@@ -3,7 +3,7 @@
     class="fixed top-0 left-0 w-full z-50 flex justify-center mt-3 md:mt-4 px-4 md:px-8 pointer-events-none animate-header-fade-in"
   >
     <nav
-      class="relative z-10 flex items-center py-2 md:py-3 px-6 md:px-10 rounded-2xl bg-white/90 dark:bg-[rgba(24,24,32,0.55)] shadow-2xl border border-white/10 pointer-events-auto w-full max-w-5xl transition-all duration-300 backdrop-blur-xl"
+      class="relative z-10 flex items-center py-2 md:py-3 px-6 md:px-10 rounded-2xl bg-white/90 dark:bg-[rgba(41,47,61,0.55)] shadow-2xl border border-white/10 pointer-events-auto w-full max-w-5xl transition-all duration-300 backdrop-blur-xl"
     >
       <!-- Logo -->
       <a
@@ -139,11 +139,10 @@ import { ref, onMounted, onBeforeUnmount, nextTick } from 'vue'
 import DarkToggle from './DarkToggle.vue'
 
 const navItems = [
-  { label: 'Clientes', href: '#clients', section: 'clients' },
-  { label: 'IA Tech', href: '#ai-tech', section: 'ai-tech' },
+  { label: 'Quiénes somos', href: '#about', section: 'about' },
   { label: 'Casos de uso', href: '#usecases', section: 'usecases' },
-  { label: 'Planes', href: '#pricing', section: 'pricing' },
   { label: 'Equipo', href: '#team', section: 'team' },
+  { label: 'Clientes', href: '#clients', section: 'clients' },
 ]
 
 const activeSection = ref(null)
