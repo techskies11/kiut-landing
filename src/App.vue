@@ -60,7 +60,9 @@ function selectPanel(key) {
     <Header />
     <main>
       <HeroSection />
-      <DemoSection />
+      <section class="relative z-10 bg-white dark:bg-gray-950 transition-colors duration-300 overflow-hidden rounded-t-[32px] md:rounded-t-[64px]">
+        <DemoSection />
+      </section>
       <section id="about" class="relative py-24 bg-white dark:bg-gray-950 transition-colors duration-300 overflow-hidden">
         <!-- Particle background -->
         <div class="absolute inset-0 w-full h-full z-0 pointer-events-none select-none">

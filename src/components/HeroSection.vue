@@ -4,9 +4,9 @@
     <div class="absolute inset-0 w-full h-full z-0 pointer-events-none select-none">
       <CircuitBackground />
     </div>
-    <div class="relative z-10 max-w-6xl 2xl:max-w-5xl mx-auto flex flex-col-reverse md:flex-row items-center justify-center gap-8 md:gap-14 min-h-[60vh] md:min-h-[60vh]">
+    <div class="relative z-10 max-w-6xl 2xl:max-w-5xl mx-auto flex flex-col-reverse md:flex-row items-center justify-center gap-8 md:gap-20 min-h-[60vh] md:min-h-[60vh] mt-20">
       <!-- Columna izquierda: texto con fondo glass -->
-      <div class="flex-1 flex flex-col items-center justify-center text-center max-w-lg md:pr-8 animate-fade-in-up">
+      <div class="flex-1 flex flex-col items-center justify-center text-center max-w-xl md:pr-8 animate-fade-in-up">
         <div class="w-full bg-white/70 dark:bg-white/10 backdrop-blur-xl rounded-2xl shadow-xl shadow-black/10 border border-white/30 dark:border-white/10 px-4 md:px-8 py-8 md:py-10 flex flex-col items-center">
           <h1 class="text-3xl md:text-4xl font-extrabold leading-tight tracking-tight mb-7 text-gray-900 dark:text-white">
             {{ t('hero.title_pre') }} <span class="text-violet-500">{{ t('hero.title_highlight') }}</span> {{ t('hero.title_post') }}
