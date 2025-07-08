@@ -42,8 +42,7 @@
               <span class="relative z-10 flex items-center gap-1">
                 <span v-if="isActive(item.href)" class="inline-block w-1.5 h-1.5 rounded-full bg-gradient-to-r from-violet-400 to-cyan-400 mr-1"></span>
                 <span class="relative inline-block">
-                  {{ item.label }}
-                  <!-- Underline animado -->
+                  {{ $t('header.' + item.label) }}
                   <span v-if="isActive(item.href)" class="active-underline absolute left-0 right-0 bottom-[-6px] mx-auto"></span>
                   <span v-else class="hover-underline group-hover:opacity-100 transition-all duration-200 scale-x-0 group-hover:scale-x-100 origin-left"></span>
                 </span>
@@ -58,11 +57,14 @@
         href="#contact"
         class="hidden md:inline-block ml-2 px-4 py-1.5 rounded-lg font-semibold shadow-md border-0 bg-gradient-to-r from-violet-500 to-cyan-400 text-white text-sm mr-2 md:mr-4"
       >
-        Contacto
+        {{ $t('header.contact') }}
       </a>
 
       <!-- Toggle dark/light mode -->
       <DarkToggle class="ml-2" />
+
+      <!-- Language toggle -->
+      <LanguageToggle class="ml-2" />
 
       <!-- Mobile hamburger -->
       <button
@@ -111,21 +113,21 @@
               @click.prevent="handleMobileNav(item.href)"
               class="block text-lg font-semibold text-gray-900 py-3 px-4 rounded-xl text-center transition-all hover:bg-violet-100 focus:outline-none focus:ring-2 focus:ring-violet-400"
             >
-              {{ item.label }}
+              {{ $t('header.' + item.label) }}
             </a>
             <a
               href="#demo"
               @click.prevent="handleMobileNav('#demo')"
               class="mt-2 px-6 py-3 rounded-xl font-semibold text-gray-900 hover:bg-gray-100 transition"
             >
-              Demo en vivo
+              {{ $t('header.demo') }}
             </a>
             <a
               href="#contact"
               @click.prevent="handleMobileNav('#contact')"
               class="mt-2 px-6 py-3 rounded-xl font-semibold bg-gradient-to-r from-violet-500 to-cyan-400 text-white text-lg text-center shadow-lg transition"
             >
-              Contacto
+              {{ $t('header.contact') }}
             </a>
           </nav>
         </div>
@@ -137,12 +139,13 @@
 <script setup>
 import { ref, onMounted, onBeforeUnmount, nextTick } from 'vue'
 import DarkToggle from './DarkToggle.vue'
+import LanguageToggle from './LanguageToggle.vue'
 
 const navItems = [
-  { label: 'Quiénes somos', href: '#about', section: 'about' },
-  { label: 'Casos de uso', href: '#usecases', section: 'usecases' },
-  { label: 'Equipo', href: '#team', section: 'team' },
-  { label: 'Clientes', href: '#clients', section: 'clients' },
+  { label: 'about', href: '#about', section: 'about' },
+  { label: 'usecases', href: '#usecases', section: 'usecases' },
+  { label: 'team', href: '#team', section: 'team' },
+  { label: 'clients', href: '#clients', section: 'clients' },
 ]
 
 const activeSection = ref(null)
