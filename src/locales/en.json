@@ -15,5 +15,92 @@
     "description": "Automate customer service and grow your business with OnService.",
     "cta_demo": "Start Demo",
     "cta_usecases": "View Use Cases"
+  },
+  "about": {
+    "title": "About Us",
+    "description": "We are <span class=\"font-bold text-violet-500 dark:text-violet-400\">OnService</span>, pioneers at the intersection of <span class=\"text-cyan-500 dark:text-cyan-400 font-bold\">AI</span>, aviation, and customer service. Our mission: to transform the experience of passengers and companies with cutting-edge technology.",
+    "panels": [
+      {
+        "key": "mision",
+        "title": "Mission",
+        "text": "Optimize critical processes and enhance customer service in the global airline industry.",
+        "detail": "We focus on operational efficiency, reducing response times, and personalizing service, using state-of-the-art AI to solve the most complex challenges in the airline sector."
+      },
+      {
+        "key": "vision",
+        "title": "Vision",
+        "text": "Make the interaction between airlines and passengers smoother, more personalized, and more effective than ever.",
+        "detail": "We aspire to lead the digital transformation in the industry, integrating intelligent solutions that anticipate passenger needs and improve the travel experience from start to finish."
+      },
+      {
+        "key": "valores",
+        "title": "Values",
+        "text": "Innovation, empathy, excellence, and commitment to digital transformation.",
+        "detail": "We believe in collaboration, transparency, and continuous improvement, driving innovation with a strong ethical and human commitment."
+      }
+    ]
+  },
+  "usecases": {
+    "badge": "AI solutions for your product",
+    "title": "Transform your customer service",
+    "description": "Discover how leading airlines are revolutionizing their customer service with AI, <strong>reducing costs by up to 70%</strong> while improving passenger satisfaction.",
+    "metrics": {
+      "cost_reduction": "70% cost reduction",
+      "availability": "Availability",
+      "satisfaction": "95% customer satisfaction improvement",
+      "response_time": "Response time"
+    },
+    "channels_title": "Integration with all your channels",
+    "channels": {
+      "whatsapp": "WhatsApp",
+      "instagram": "Instagram",
+      "facebook": "Facebook",
+      "webchat": "Webchat",
+      "telegram": "Telegram"
+    },
+    "cases": [
+      {
+        "title": "24/7 Intelligent Support",
+        "desc": "AI agents that handle complex queries about flights, baggage, reservations, and check-in, providing instant and accurate responses at any time.",
+        "bullets": [
+          "70% cost reduction",
+          "95% customer satisfaction improvement",
+          "Average response time: 3 seconds"
+        ],
+        "cta": "View demo"
+      },
+      {
+        "title": "Automated Incident Management",
+        "desc": "Intelligent system that guides passengers in reporting incidents and claims, automatically escalating to human agents only when necessary.",
+        "bullets": [
+          "3x faster problem resolution",
+          "60% optimization of human resources",
+          "Automatic case tracking"
+        ],
+        "cta": "View demo"
+      },
+      {
+        "title": "Internal Operational Support",
+        "desc": "Internal virtual assistant providing instant access to operational FAQs, regulations, and procedures for crews and ground staff.",
+        "bullets": [
+          "80% improvement in internal communication",
+          "50% reduction in training time",
+          "24/7 access to critical information"
+        ],
+        "cta": "View demo"
+      },
+      {
+        "title": "Automated Post-Booking Sales",
+        "desc": "AI agents that offer upgrades, additional services, and manage post-booking changes, maximizing ARPU and improving customer experience.",
+        "bullets": [
+          "40% increase in ancillary revenue",
+          "65% reduction in contact center workload",
+          "Automatic offer personalization"
+        ],
+        "cta": "View demo"
+      }
+    ],
+    "cta": "Request personalized demo",
+    "cta_desc": "Discover how OnService can transform your product in 30 days"
   }
 } 

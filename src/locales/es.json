@@ -5,15 +5,102 @@
     "team": "Equipo",
     "clients": "Clientes",
     "contact": "Contacto",
-    "demo": "Demo en vivo"
+    "demo": "Demostración en vivo"
   },
   "hero": {
     "title_pre": "La nueva generación de",
     "title_highlight": "IA",
     "title_post": "para tu empresa",
-    "subtitle": "Soluciones de inteligencia artificial para potenciar ventas, soporte y operaciones.",
-    "description": "Automatizá la atención y hacé crecer tu negocio con OnService.",
-    "cta_demo": "Comenzar Demo",
-    "cta_usecases": "Ver Casos de Uso"
+    "subtitle": "Soluciones de inteligencia artificial para impulsar ventas, soporte y operaciones.",
+    "description": "Automatiza la atención y haz crecer tu negocio con OnService.",
+    "cta_demo": "Iniciar demostración",
+    "cta_usecases": "Ver casos de uso"
+  },
+  "about": {
+    "title": "¿Quiénes somos?",
+    "description": "Somos <span class=\"font-bold text-violet-500 dark:text-violet-400\">OnService</span>, pioneros en la intersección de <span class=\"text-cyan-500 dark:text-cyan-400 font-bold\">IA</span>, aviación y atención al cliente. Nuestra misión: transformar la experiencia de pasajeros y empresas con tecnología de vanguardia.",
+    "panels": [
+      {
+        "key": "mision",
+        "title": "Misión",
+        "text": "Optimizar procesos críticos y potenciar la atención al cliente en la industria aérea global.",
+        "detail": "Nos enfocamos en la eficiencia operativa, la reducción de tiempos de respuesta y la personalización de la atención, utilizando IA de última generación para resolver los desafíos más complejos del sector aéreo."
+      },
+      {
+        "key": "vision",
+        "title": "Visión",
+        "text": "Hacer que la interacción entre aerolíneas y pasajeros sea más fluida, personalizada y eficaz que nunca.",
+        "detail": "Aspiramos a liderar la transformación digital en la industria, integrando soluciones inteligentes que anticipen las necesidades de los pasajeros y mejoren la experiencia de viaje de principio a fin."
+      },
+      {
+        "key": "valores",
+        "title": "Valores",
+        "text": "Innovación, empatía, excelencia y compromiso con la transformación digital.",
+        "detail": "Creemos en la colaboración, la transparencia y la mejora continua, impulsando la innovación con un fuerte compromiso ético y humano."
+      }
+    ]
+  },
+  "usecases": {
+    "badge": "Soluciones IA para tu producto",
+    "title": "Transforma tu atención al cliente",
+    "description": "Descubre cómo las aerolíneas líderes están revolucionando su servicio al cliente con IA, <strong>reduciendo costos hasta un 70%</strong> mientras mejoran la satisfacción del pasajero.",
+    "metrics": {
+      "cost_reduction": "Reducción del 70% en los costos operativos",
+      "availability": "Disponibilidad",
+      "satisfaction": "Mejora del 95% en la satisfacción del cliente",
+      "response_time": "Tiempo de respuesta"
+    },
+    "channels_title": "Integración con todos tus canales",
+    "channels": {
+      "whatsapp": "WhatsApp",
+      "instagram": "Instagram",
+      "facebook": "Facebook",
+      "webchat": "Webchat",
+      "telegram": "Telegram"
+    },
+    "cases": [
+      {
+        "title": "Atención inteligente 24/7",
+        "desc": "Agentes de IA que gestionan consultas complejas sobre vuelos, equipaje, reservas y check-in, proporcionando respuestas instantáneas y precisas en cualquier momento del día.",
+        "bullets": [
+          "Reducción del 70% en los costos operativos",
+          "Mejora del 95% en la satisfacción del cliente",
+          "Tiempo de respuesta promedio: 3 segundos"
+        ],
+        "cta": "Ver demostración"
+      },
+      {
+        "title": "Gestión automatizada de incidencias",
+        "desc": "Sistema inteligente que guía a los pasajeros en el reporte de incidencias y reclamaciones, escalando automáticamente a agentes humanos solo cuando es necesario.",
+        "bullets": [
+          "Resolución 3x más rápida de problemas",
+          "Optimización del 60% de los recursos humanos",
+          "Seguimiento automático de los casos"
+        ],
+        "cta": "Ver demostración"
+      },
+      {
+        "title": "Soporte operacional interno",
+        "desc": "Asistente virtual interno que proporciona acceso instantáneo a preguntas frecuentes operacionales, normativas y procedimientos para tripulaciones y personal de tierra.",
+        "bullets": [
+          "Mejora del 80% en la comunicación interna",
+          "Reducción del 50% en el tiempo de capacitación",
+          "Acceso 24/7 a información crítica"
+        ],
+        "cta": "Ver demostración"
+      },
+      {
+        "title": "Ventas automatizadas post-reserva",
+        "desc": "Agentes de IA que ofrecen mejoras, servicios adicionales y gestionan cambios post-reserva, maximizando el ARPU y mejorando la experiencia del cliente.",
+        "bullets": [
+          "Incremento del 40% en los ingresos auxiliares",
+          "Reducción del 65% en la carga de los centros de contacto",
+          "Personalización automática de las ofertas"
+        ],
+        "cta": "Ver demostración"
+      }
+    ],
+    "cta": "Solicitar demostración personalizada",
+    "cta_desc": "Descubre cómo OnService puede transformar tu producto en 30 días"
   }
 } 
