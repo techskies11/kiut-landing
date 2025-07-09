@@ -82,7 +82,7 @@ function selectPanel(key) {
               </h1>
             </div>
             <p class="text-lg md:text-xl text-gray-800 dark:text-gray-200 mb-8 font-medium animate-fade-in">
-              Somos <span class="font-bold text-violet-500 dark:text-violet-400">OnService</span>, pioneros en la intersección de <span class="text-cyan-500 dark:text-cyan-400 font-bold">IA</span>, aviación y atención al cliente. Nuestra misión: transformar la experiencia de pasajeros y empresas con tecnología de vanguardia.
+              Somos <span class="font-bold text-violet-500 dark:text-violet-400">OnService</span><span class="text-violet-500 dark:text-violet-400 font-bold">.IA</span>, pioneros en la intersección de <span class="text-cyan-500 dark:text-cyan-400 font-bold">IA</span>, aviación y atención al cliente. Nuestra misión: transformar la experiencia de pasajeros y empresas con tecnología de vanguardia.
             </p>
             <div class="grid grid-cols-1 md:grid-cols-3 gap-8 w-full mt-6">
               <div v-for="(panel, idx) in panels" :key="panel.key" @click="selectPanel(panel.key)"
@@ -121,7 +121,7 @@ function selectPanel(key) {
       </section>
       <UseCasesSection />
       <TeamSection />
-      <ClientsSection />
+      <ClientsSection v-if="false" />
     </main>
     <FooterSection />
   </div>

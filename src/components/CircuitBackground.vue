@@ -6,16 +6,33 @@
 import { ref, onMounted, onBeforeUnmount, watch } from 'vue';
 import * as THREE from 'three';
 
+function getColorScheme() {
+  const isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+  return isDark
+    ? [0xa78bfa, 0x38bdf8, 0x7c3aed, 0xffffff] // colores claros para dark
+    : [0x3b2170, 0x7c3aed, 0x23272e, 0x38bdf8]; // colores oscuros para light
+}
+
+function getColorSchemeAndOpacity() {
+  const isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+  return isDark
+    ? { scheme: [0x7c3aed, 0x38bdf8, 0x23272e, 0xffffff], opacity: 0.18 } // dark: violeta paleta
+    : { scheme: [0xaeb4bb, 0x38bdf8, 0x23272e, 0x7c3aed], opacity: 1.0 }; // gris frío y puro para light
+}
+
+const colorScheme = ref(getColorSchemeAndOpacity().scheme);
+const dynamicOpacity = ref(getColorSchemeAndOpacity().opacity);
+
 const props = defineProps({
   width: { type: Number, default: null },
   height: { type: Number, default: null },
-  nodeCount: { type: Number, default: 32 },
-  chipCount: { type: Number, default: 8 },
-  rayCount: { type: Number, default: 4 },
-  opacity: { type: Number, default: 0.18 },
+  nodeCount: { type: Number, default: 48 },
+  chipCount: { type: Number, default: 12 },
+  rayCount: { type: Number, default: 7 },
+  // opacity eliminado, ahora es dinámico
   fps: { type: Number, default: 60 },
   blur: { type: Boolean, default: false },
-  colorScheme: { type: Array, default: () => [0x7c3aed, 0x38bdf8, 0x06b6d4, 0xa78bfa] },
+  // colorScheme eliminado, ahora es dinámico
 });
 
 const container = ref(null);
@@ -57,21 +74,49 @@ function randomBetween(a, b) {
   return a + Math.random() * (b - a);
 }
 
+function isInExclusionZone(x, y) {
+  // Zona izquierda (hero card)
+  const left = -currentWidth / 2 + 40;
+  const top = currentHeight / 2 - 220;
+  const right = -currentWidth / 8 + 120;
+  const bottom = -currentHeight / 2 + 120;
+  if (x > left && x < right && y < top && y > bottom) return true;
+  // Zona derecha (celular)
+  const rightLeft = currentWidth / 6;
+  const rightRight = currentWidth / 2 - 40;
+  const rightTop = currentHeight / 2 - 120;
+  const rightBottom = -currentHeight / 2 + 120;
+  if (x > rightLeft && x < rightRight && y < rightTop && y > rightBottom) return true;
+  return false;
+}
+
 function createPcbCircuit() {
   circuitLines = [];
   circuitNodes = [];
   chips = [];
   pulseObjs = [];
 
-  // 1. Distribuir nodos de forma orgánica (no grilla)
-  const nodeCount = props.nodeCount || 32;
+  // 1. Distribuir nodos de forma orgánica (no grilla), favoreciendo los márgenes
+  const nodeCount = props.nodeCount || 48;
   const minDist = 60;
   const maxDist = 220;
+  const marginFavor = 0.45; // 45% de los nodos en los márgenes
+  const marginWidth = Math.max(120, currentWidth * 0.18);
   for (let i = 0; i < nodeCount; i++) {
     let tries = 0;
     let x, y, valid;
     do {
-      x = randomBetween(-currentWidth / 2 + 60, currentWidth / 2 - 60);
+      // Favorecer márgenes
+      if (i < nodeCount * marginFavor) {
+        // Izquierda o derecha
+        if (Math.random() < 0.5) {
+          x = randomBetween(-currentWidth / 2 + 60, -currentWidth / 2 + marginWidth);
+        } else {
+          x = randomBetween(currentWidth / 2 - marginWidth, currentWidth / 2 - 60);
+        }
+      } else {
+        x = randomBetween(-currentWidth / 2 + 60, currentWidth / 2 - 60);
+      }
       y = randomBetween(-currentHeight / 2 + 60, currentHeight / 2 - 60);
       valid = true;
       for (const n of circuitNodes) {
@@ -80,15 +125,18 @@ function createPcbCircuit() {
           break;
         }
       }
+      if (isInExclusionZone(x, y)) valid = false;
       tries++;
     } while (!valid && tries < 30);
-    circuitNodes.push({
-      x,
-      y,
-      z: 0,
-      padType: Math.random() > 0.5 ? 'circle' : 'square',
-      pulse: Math.random() > 0.92
-    });
+    if (!isInExclusionZone(x, y)) {
+      circuitNodes.push({
+        x,
+        y,
+        z: 0,
+        padType: Math.random() > 0.5 ? 'circle' : 'square',
+        pulse: Math.random() > 0.92
+      });
+    }
   }
 
   // 2. Conexiones ortogonales, con cruces y ramificaciones
@@ -145,17 +193,40 @@ function createPcbCircuit() {
 }
 
 function addCircuitToScene() {
-  // Limpiar objetos existentes
   scene.children = scene.children.filter(child => child.type === 'Camera');
   
   // Agregar líneas de circuito
   for (let i = 0; i < circuitLines.length; i++) {
-    const points = circuitLines[i].map(p => new THREE.Vector3(p.x, p.y, p.z));
+    const points = circuitLines[i].map(p => {
+      // Profundidad: alejar más los puntos de los bordes
+      const depth = Math.abs(p.x) / (currentWidth / 2);
+      const px = p.x + parallax.x * depth;
+      const py = p.y + parallax.y * depth;
+      return new THREE.Vector3(px, py, p.z);
+    });
     const geometry = new THREE.BufferGeometry().setFromPoints(points);
+    // Blur y opacidad variable según profundidad
+    const depth = Math.abs(points[0].x) / (currentWidth / 2);
+    const lineOpacity = dynamicOpacity.value * (0.7 + 0.3 * (1 - depth));
+    const randomWidth = Math.random() < 0.7 ? 0.7 : (Math.random() < 0.5 ? 1.2 : 2);
+    // Glow gris claro en light mode
+    if (dynamicOpacity.value > 0.3) {
+      // Glow gris frío, ultra sutil
+      const glowMaterial = new THREE.LineBasicMaterial({
+        color: 0xe5e7eb, // gris frío claro
+        transparent: true,
+        opacity: 0.04 + 0.01 * (1 - depth), // ultra sutil
+        linewidth: 4,
+        blending: THREE.AdditiveBlending
+      });
+      const glowLine = new THREE.Line(geometry, glowMaterial);
+      scene.add(glowLine);
+    }
     const material = new THREE.LineBasicMaterial({
-      color: props.colorScheme[0],
+      color: colorScheme.value[0],
       transparent: true,
-      opacity: props.opacity,
+      opacity: Math.max(lineOpacity, 0.18), // ultra sutil
+      linewidth: Math.max(randomWidth, 1.1),
       blending: THREE.AdditiveBlending
     });
     const line = new THREE.Line(geometry, material);
@@ -164,15 +235,21 @@ function addCircuitToScene() {
   
   // Agregar nodos
   for (let i = 0; i < circuitNodes.length; i++) {
-    const { x, y, z, pulse } = circuitNodes[i];
+    const { x, y, z, pulse, padType } = circuitNodes[i];
+    // Si hay un chip en la misma posición, no dibujar el nodo
+    const isChip = chips.some(chip => chip.x === x && chip.y === y);
+    if (isChip) continue;
+    const depth = Math.abs(x) / (currentWidth / 2);
+    const px = x + parallax.x * depth;
+    const py = y + parallax.y * depth;
     const geometry = new THREE.CircleGeometry(4, 16);
     const material = new THREE.MeshBasicMaterial({
-      color: props.colorScheme[0],
+      color: colorScheme.value[0],
       transparent: true,
-      opacity: 0.6
+      opacity: 0.5 + 0.3 * (1 - depth)
     });
     const circle = new THREE.Mesh(geometry, material);
-    circle.position.set(x, y, z + 1);
+    circle.position.set(px, py, z + 1);
     scene.add(circle);
     if (pulse) pulseObjs.push(circle);
   }
@@ -180,14 +257,17 @@ function addCircuitToScene() {
   // Agregar chips
   for (let i = 0; i < chips.length; i++) {
     const { x, y, w, h, pulse } = chips[i];
+    const depth = Math.abs(x) / (currentWidth / 2);
+    const px = x + parallax.x * depth;
+    const py = y + parallax.y * depth;
     const geometry = new THREE.BoxGeometry(w, h, 3);
     const material = new THREE.MeshBasicMaterial({
-      color: props.colorScheme[1],
+      color: colorScheme.value[1],
       transparent: true,
-      opacity: 0.4
+      opacity: 0.3 + 0.2 * (1 - depth)
     });
     const box = new THREE.Mesh(geometry, material);
-    box.position.set(x, y, 2);
+    box.position.set(px, py, 2);
     scene.add(box);
     if (pulse) pulseObjs.push(box);
   }
@@ -206,7 +286,7 @@ function addRays() {
       new THREE.Vector3(path[0].x, path[0].y, 3),
       new THREE.Vector3(path[0].x, path[0].y, 3)
     ]);
-    const color = props.colorScheme[i % props.colorScheme.length];
+    const color = colorScheme.value[i % colorScheme.value.length];
     const material = new THREE.LineBasicMaterial({
       color,
       linewidth: 5,
@@ -349,6 +429,21 @@ function regenerateCircuit() {
   addRays();
 }
 
+function handleColorSchemeChange() {
+  const { scheme, opacity } = getColorSchemeAndOpacity();
+  colorScheme.value = scheme;
+  dynamicOpacity.value = opacity;
+  regenerateCircuit();
+}
+
+// Parallax global
+let parallax = { x: 0, y: 0 };
+function handleParallax(e) {
+  const w = window.innerWidth, h = window.innerHeight;
+  parallax.x = ((e.clientX / w) - 0.5) * 40; // rango -20 a 20px
+  parallax.y = ((e.clientY / h) - 0.5) * 40;
+}
+
 onMounted(() => {
   const isMobile = window.innerWidth < 768;
   targetFPS = isMobile ? 30 : 60;
@@ -391,6 +486,8 @@ onMounted(() => {
   startAnimation();
   window.addEventListener('resize', onWindowResize);
   window.addEventListener('scroll', onScroll, { passive: true });
+  window.addEventListener('mousemove', handleParallax);
+  window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', handleColorSchemeChange);
 });
 
 onBeforeUnmount(() => {
@@ -404,6 +501,8 @@ onBeforeUnmount(() => {
   }
   window.removeEventListener('scroll', onScroll);
   clearTimeout(scrollTimeout);
+  window.removeEventListener('mousemove', handleParallax);
+  window.matchMedia('(prefers-color-scheme: dark)').removeEventListener('change', handleColorSchemeChange);
 });
 </script>
 

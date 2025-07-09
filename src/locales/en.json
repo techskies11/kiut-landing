@@ -12,13 +12,13 @@
     "title_highlight": "AI",
     "title_post": "for your business",
     "subtitle": "Artificial intelligence solutions to boost sales, support and operations.",
-    "description": "Automate customer service and grow your business with OnService.",
+    "description": "Automate customer service and grow your business with OnService.IA.",
     "cta_demo": "Start Demo",
     "cta_usecases": "View Use Cases"
   },
   "about": {
     "title": "About Us",
-    "description": "We are <span class=\"font-bold text-violet-500 dark:text-violet-400\">OnService</span>, pioneers at the intersection of <span class=\"text-cyan-500 dark:text-cyan-400 font-bold\">AI</span>, aviation, and customer service. Our mission: to transform the experience of passengers and companies with cutting-edge technology.",
+    "description": "We are <span class=\"font-bold text-violet-500 dark:text-violet-400\">OnService</span><span class=\"text-violet-500 dark:text-violet-400 font-bold\">.IA</span>, pioneers at the intersection of <span class=\"text-cyan-500 dark:text-cyan-400 font-bold\">AI</span>, aviation, and customer service. Our mission: to transform the experience of passengers and companies with cutting-edge technology.",
     "panels": [
       {
         "key": "mision",
@@ -43,7 +43,9 @@
   "usecases": {
     "badge": "AI solutions for your product",
     "title": "Transform your customer service",
-    "description": "Discover how leading airlines are revolutionizing their customer service with AI, <strong>reducing costs by up to 70%</strong> while improving passenger satisfaction.",
+    "description_pre": "Discover how leading airlines are revolutionizing their customer service with AI,",
+    "description_highlight": "reducing costs by up to 70%",
+    "description_post": "while improving passenger satisfaction.",
     "metrics": {
       "cost_reduction": "70% cost reduction",
       "availability": "Availability",
@@ -101,6 +103,8 @@
       }
     ],
     "cta": "Request personalized demo",
-    "cta_desc": "Discover how OnService can transform your product in 30 days"
-  }
+    "cta_desc": "Discover how OnService.IA can transform your product in 30 days"
+  },
+  "brand": "OnService.",
+  "brand_ia": "AI"
 } 

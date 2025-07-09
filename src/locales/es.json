@@ -12,13 +12,13 @@
     "title_highlight": "IA",
     "title_post": "para tu empresa",
     "subtitle": "Soluciones de inteligencia artificial para impulsar ventas, soporte y operaciones.",
-    "description": "Automatiza la atención y haz crecer tu negocio con OnService.",
+    "description": "Automatiza la atención y haz crecer tu negocio con OnService.IA.",
     "cta_demo": "Iniciar demostración",
     "cta_usecases": "Ver casos de uso"
   },
   "about": {
     "title": "¿Quiénes somos?",
-    "description": "Somos <span class=\"font-bold text-violet-500 dark:text-violet-400\">OnService</span>, pioneros en la intersección de <span class=\"text-cyan-500 dark:text-cyan-400 font-bold\">IA</span>, aviación y atención al cliente. Nuestra misión: transformar la experiencia de pasajeros y empresas con tecnología de vanguardia.",
+    "description": "Somos <span class=\"font-bold text-violet-500 dark:text-violet-400\">OnService</span><span class=\"text-violet-500 dark:text-violet-400 font-bold\">.IA</span>, pioneros en la intersección de <span class=\"text-cyan-500 dark:text-cyan-400 font-bold\">IA</span>, aviación y atención al cliente. Nuestra misión: transformar la experiencia de pasajeros y empresas con tecnología de vanguardia.",
     "panels": [
       {
         "key": "mision",
@@ -43,7 +43,9 @@
   "usecases": {
     "badge": "Soluciones IA para tu producto",
     "title": "Transforma tu atención al cliente",
-    "description": "Descubre cómo las aerolíneas líderes están revolucionando su servicio al cliente con IA, <strong>reduciendo costos hasta un 70%</strong> mientras mejoran la satisfacción del pasajero.",
+    "description_pre": "Descubrí cómo las aerolíneas líderes están revolucionando su servicio al cliente con IA,",
+    "description_highlight": "reduciendo costos hasta un 70%",
+    "description_post": "mientras mejoran la satisfacción del pasajero.",
     "metrics": {
       "cost_reduction": "Reducción del 70% en los costos operativos",
       "availability": "Disponibilidad",
@@ -101,6 +103,8 @@
       }
     ],
     "cta": "Solicitar demostración personalizada",
-    "cta_desc": "Descubre cómo OnService puede transformar tu producto en 30 días"
-  }
+    "cta_desc": "Descubre cómo OnService.IA puede transformar tu producto en 30 días"
+  },
+  "brand": "OnService.",
+  "brand_ia": "IA"
 } 

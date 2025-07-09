@@ -9,17 +9,17 @@
       <a
         href="#hero"
         class="flex items-center h-12 pr-4 mr-4 border-r border-gray-200 dark:border-white/10 focus:outline-none"
-        aria-label="OnService Home"
+        aria-label="OnService.IA Home"
       >
         <img
           src="/logo-black.png"
-          alt="OnService logo black"
+          alt="OnService.IA logo black"
           class="h-10 md:h-12 w-auto transition-all duration-200 block dark:hidden"
           loading="eager"
         />
         <img
           src="/logo.png"
-          alt="OnService logo"
+          alt="OnService.IA logo"
           class="h-10 md:h-12 w-auto transition-all duration-200 hidden dark:block"
           loading="eager"
         />

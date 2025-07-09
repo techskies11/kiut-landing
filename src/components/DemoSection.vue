@@ -2,7 +2,7 @@
   <section id="demo" class="relative w-full min-h-[70vh] flex items-center justify-center px-1 md:px-0 bg-transparent overflow-hidden">
     <!-- Circuit background decorativo -->
     <div class="absolute inset-0 w-full h-full z-0 pointer-events-none select-none">
-      <CircuitBackground />
+      <ParticleBackground />
     </div>
     <div class="relative z-10 w-full max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-center gap-4 md:gap-8 min-h-[40vh] py-2 md:py-6 animate-fade-in-up">
       <!-- Bloque Prompt (66%) -->
@@ -34,7 +34,7 @@
 
 <script setup>
 import { ref, onMounted, onBeforeUnmount, watch } from 'vue'
-import CircuitBackground from './CircuitBackground.vue'
+import ParticleBackground from './ParticleBackground.vue'
 import CodePromptBlock from './CodePromptBlock.vue'
 import AgentResponseBlock from './AgentResponseBlock.vue'
 
