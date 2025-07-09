@@ -16,7 +16,11 @@
         <h2 class="text-4xl md:text-5xl font-bold mb-6 bg-gradient-to-r from-violet-600 to-cyan-600 bg-clip-text text-transparent">
           {{ t('usecases.title') }}
         </h2>
-        <p class="text-xl text-gray-600 dark:text-gray-300 max-w-4xl mx-auto leading-relaxed" v-html="t('usecases.description')"></p>
+        <p class="text-xl text-gray-600 dark:text-gray-300 max-w-4xl mx-auto leading-relaxed">
+          <i18n-t keypath="usecases.description">
+            <strong class="font-bold text-violet-600" place="strong"></strong>
+          </i18n-t>
+        </p>
       </div>
 
       <!-- Métricas -->
@@ -93,9 +97,9 @@ import ParticleBackground from './ParticleBackground.vue'
 
 const { t, tm } = useI18n()
 
-// Acceso a los datos de la sección desde i18n
-const usecases = t('usecases')
-const metrics = t('usecases.metrics')
-const channels = t('usecases.channels')
-const cases = t('usecases.cases')
+// Eliminar accesos directos incorrectos
+// const usecases = t('usecases')
+// const metrics = t('usecases.metrics')
+// const channels = t('usecases.channels')
+// const cases = t('usecases.cases')
 </script> 
