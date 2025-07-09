@@ -18,6 +18,7 @@
   },
   "about": {
     "title": "¿Quiénes somos?",
+    "subtitle": "Pioneros en la intersección de IA, aviación y atención al cliente",
     "description": "Somos <span class=\"font-bold text-violet-500 dark:text-violet-400\">OnService</span><span class=\"text-violet-500 dark:text-violet-400 font-bold\">.IA</span>, pioneros en la intersección de <span class=\"text-cyan-500 dark:text-cyan-400 font-bold\">IA</span>, aviación y atención al cliente. Nuestra misión: transformar la experiencia de pasajeros y empresas con tecnología de vanguardia.",
     "panels": [
       {
@@ -43,7 +44,7 @@
   "usecases": {
     "badge": "Soluciones IA para tu producto",
     "title": "Transforma tu atención al cliente",
-    "description_pre": "Descubrí cómo las aerolíneas líderes están revolucionando su servicio al cliente con IA,",
+    "description_pre": "Descubre cómo las aerolíneas líderes están revolucionando su servicio al cliente con IA,",
     "description_highlight": "reduciendo costos hasta un 70%",
     "description_post": "mientras mejoran la satisfacción del pasajero.",
     "metrics": {
@@ -106,5 +107,52 @@
     "cta_desc": "Descubre cómo OnService.IA puede transformar tu producto en 30 días"
   },
   "brand": "OnService.",
-  "brand_ia": "IA"
+  "brand_ia": "IA",
+  "sections": {
+    "hero": {
+      "title": "La nueva generación de IA para tu empresa",
+      "subtitle": "Soluciones de inteligencia artificial para impulsar ventas, soporte y operaciones.",
+      "badge": "Innovación en IA"
+    },
+    "demo": {
+      "title": "Prueba la IA en acción",
+      "subtitle": "Interactúa con nuestro demo en vivo y descubre el poder de la automatización.",
+      "badge": "Demo interactivo"
+    },
+    "usecases": {
+      "title": "Transforma tu atención al cliente",
+      "subtitle": "Descubre casos de éxito y cómo la IA revoluciona el sector.",
+      "badge": "Soluciones IA para tu producto"
+    },
+    "tech": {
+      "title": "Tecnología de vanguardia",
+      "subtitle": "Utilizamos los modelos de IA más avanzados y las mejores herramientas del mercado.",
+      "badge": "Infraestructura robusta"
+    },
+    "images": {
+      "title": "Ver es creer",
+      "subtitle": "Explora cómo KIUT transforma la atención al cliente con interfaces intuitivas y conversaciones naturales.",
+      "badge": "Galería de experiencias"
+    },
+    "team": {
+      "title": "Nuestro Equipo",
+      "subtitle": "Conoce a los expertos detrás de la innovación.",
+      "badge": "Talento humano"
+    },
+    "clients": {
+      "title": "Empresas que confían en nosotros",
+      "subtitle": "Líderes en sus industrias que han transformado su atención al cliente con KIUT.",
+      "badge": "Confianza empresarial"
+    },
+    "metrics": {
+      "title": "Nuestras Métricas",
+      "subtitle": "Resultados tangibles impulsados por IA.",
+      "badge": "Impacto real"
+    },
+    "pricing": {
+      "title": "Planes y Precios",
+      "subtitle": "Elige la solución que mejor se adapta a tu negocio.",
+      "badge": "Accesibilidad"
+    }
+  }
 } 

@@ -106,5 +106,52 @@
     "cta_desc": "Discover how OnService.IA can transform your product in 30 days"
   },
   "brand": "OnService.",
-  "brand_ia": "AI"
+  "brand_ia": "AI",
+  "sections": {
+    "hero": {
+      "title": "The new generation of AI for your business",
+      "subtitle": "AI solutions to boost sales, support, and operations.",
+      "badge": "AI Innovation"
+    },
+    "demo": {
+      "title": "Try AI in Action",
+      "subtitle": "Interact with our live demo and discover the power of automation.",
+      "badge": "Interactive Demo"
+    },
+    "usecases": {
+      "title": "Transform your customer service",
+      "subtitle": "Discover success stories and how AI is revolutionizing the industry.",
+      "badge": "AI solutions for your product"
+    },
+    "tech": {
+      "title": "Cutting-edge Technology",
+      "subtitle": "We use the most advanced AI models and the best tools on the market.",
+      "badge": "Robust Infrastructure"
+    },
+    "images": {
+      "title": "Seeing is Believing",
+      "subtitle": "Explore how KIUT transforms customer service with intuitive interfaces and natural conversations.",
+      "badge": "Experience Gallery"
+    },
+    "team": {
+      "title": "Our Team",
+      "subtitle": "Meet the experts behind the innovation.",
+      "badge": "Human Talent"
+    },
+    "clients": {
+      "title": "Companies that trust us",
+      "subtitle": "Industry leaders who have transformed their customer service with KIUT.",
+      "badge": "Business Trust"
+    },
+    "metrics": {
+      "title": "Our Metrics",
+      "subtitle": "Tangible results powered by AI.",
+      "badge": "Real Impact"
+    },
+    "pricing": {
+      "title": "Plans and Pricing",
+      "subtitle": "Choose the solution that best fits your business.",
+      "badge": "Accessibility"
+    }
+  }
 } 

@@ -4,24 +4,18 @@
     <div class="absolute inset-0 w-full h-full z-0 pointer-events-none select-none">
       <ParticleBackground />
     </div>
-    <div class="relative z-10 w-full max-w-[1440px] mx-auto px-6 md:px-10">
+    <div class="relative z-10 w-full max-w-[1440px] mx-auto px-6 md:px-10 mt-6">
       <!-- Header mejorado -->
-      <div class="text-center mb-20">
-        <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-violet-100 dark:bg-violet-900/30 text-violet-700 dark:text-violet-300 text-sm font-semibold mb-6">
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
-          </svg>
-          {{ t('usecases.badge') }}
-        </div>
-        <h2 class="text-4xl md:text-5xl font-bold mb-6 bg-gradient-to-r from-violet-600 to-cyan-600 bg-clip-text text-transparent">
-          {{ t('usecases.title') }}
-        </h2>
-        <p class="text-xl text-gray-600 dark:text-gray-300 max-w-4xl mx-auto leading-relaxed">
+      <TypewriterTitle
+        :i18n-key="'sections.usecases.title'"
+        :subtitle-i18n-key="'sections.usecases.subtitle'"
+        :badge="{ icon: `<svg class='w-4 h-4' fill='none' stroke='currentColor' viewBox='0 0 24 24'><path stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M13 10V3L4 14h7v7l9-11h-7z'/></svg>`, i18nKey: 'sections.usecases.badge' }"
+      />
+      <p class="text-xl text-gray-600 dark:text-gray-300 max-w-4xl mx-auto leading-relaxed mb-8">
           {{ t('usecases.description_pre') }}
           <span class="font-bold text-violet-600">{{ t('usecases.description_highlight') }}</span>
           {{ t('usecases.description_post') }}
         </p>
-      </div>
 
       <!-- Métricas -->
       <div class="grid grid-cols-2 md:grid-cols-4 gap-8 mb-20">
@@ -103,6 +97,7 @@
 <script setup>
 import { useI18n } from 'vue-i18n'
 import ParticleBackground from './ParticleBackground.vue'
+import TypewriterTitle from './TypewriterTitle.vue'
 
 const { t, tm } = useI18n()
 

@@ -1,32 +1,40 @@
 <template>
-  <section id="demo" class="relative w-full min-h-[70vh] flex items-center justify-center px-1 md:px-0 bg-transparent overflow-hidden">
+  <section id="demo" class="relative w-full min-h-[70vh] flex flex-col items-center justify-center px-1 md:px-0 bg-transparent overflow-hidden">
     <!-- Circuit background decorativo -->
     <div class="absolute inset-0 w-full h-full z-0 pointer-events-none select-none">
       <ParticleBackground />
     </div>
-    <div class="relative z-10 w-full max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-center gap-4 md:gap-8 min-h-[40vh] py-2 md:py-6 animate-fade-in-up">
-      <!-- Bloque Prompt (66%) -->
-      <div class="flex-[2_2_0%] w-full max-w-3xl bg-white/80 dark:bg-white/10 backdrop-blur-2xl rounded-3xl shadow-2xl shadow-black/10 border border-white/30 dark:border-white/10 px-3 md:px-6 py-5 md:py-8 flex flex-col items-center animate-fade-in-up min-h-[220px] md:min-h-[320px] h-full">
-        <CodePromptBlock 
-          :prompts="prompts" 
-          :tab="currentTab" 
-          :exampleIdx="currentExampleIdx"
-          @tab-change="handleTabChange"
-          @typing="handleTyping"
-        />
-      </div>
-      <!-- Bloque Agent Response (33%) -->
-      <div class="flex-[1_1_0%] w-full max-w-xl bg-white/80 dark:bg-white/10 backdrop-blur-2xl rounded-3xl shadow-2xl shadow-black/10 border border-white/30 dark:border-white/10 px-3 md:px-6 py-5 md:py-8 flex flex-col items-center animate-fade-in-up delay-150 min-h-[220px] md:min-h-[320px] h-full">
-        <AgentResponseBlock 
-          :responses="agentResponses" 
-          :tab="currentTab" 
-          :exampleIdx="currentExampleIdx"
-          :typing="isTyping"
-          :loading="isLoading"
-          :promptTyping="isTyping"
-          @example-change="handleExampleChange"
-          @conversation-finished="handleConversationFinished"
-        />
+    <div class="relative z-10 w-full flex flex-col items-center mt-10">
+      <TypewriterTitle
+        :i18n-key="'sections.demo.title'"
+        :subtitle-i18n-key="'sections.demo.subtitle'"
+        :badge="{ icon: `<svg class='w-4 h-4' fill='none' stroke='currentColor' viewBox='0 0 24 24'><path stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M13 10V3L4 14h7v7l9-11h-7z'/></svg>`, i18nKey: 'sections.demo.badge' }"
+        class="mb-10"
+      />
+      <div class="w-full max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-center gap-4 md:gap-8 min-h-[40vh] py-2 md:py-6 animate-fade-in-up">
+        <!-- Bloque Prompt (66%) -->
+        <div class="flex-[2_2_0%] w-full max-w-3xl bg-white/80 dark:bg-white/10 backdrop-blur-2xl rounded-3xl shadow-2xl shadow-black/10 border border-white/30 dark:border-white/10 px-3 md:px-6 py-5 md:py-8 flex flex-col items-center animate-fade-in-up min-h-[220px] md:min-h-[320px] h-full">
+          <CodePromptBlock 
+            :prompts="prompts" 
+            :tab="currentTab" 
+            :exampleIdx="currentExampleIdx"
+            @tab-change="handleTabChange"
+            @typing="handleTyping"
+          />
+        </div>
+        <!-- Bloque Agent Response (33%) -->
+        <div class="flex-[1_1_0%] w-full max-w-xl bg-white/80 dark:bg-white/10 backdrop-blur-2xl rounded-3xl shadow-2xl shadow-black/10 border border-white/30 dark:border-white/10 px-3 md:px-6 py-5 md:py-8 flex flex-col items-center animate-fade-in-up delay-150 min-h-[220px] md:min-h-[320px] h-full">
+          <AgentResponseBlock 
+            :responses="agentResponses" 
+            :tab="currentTab" 
+            :exampleIdx="currentExampleIdx"
+            :typing="isTyping"
+            :loading="isLoading"
+            :promptTyping="isTyping"
+            @example-change="handleExampleChange"
+            @conversation-finished="handleConversationFinished"
+          />
+        </div>
       </div>
     </div>
   </section>
@@ -37,6 +45,7 @@ import { ref, onMounted, onBeforeUnmount, watch } from 'vue'
 import ParticleBackground from './ParticleBackground.vue'
 import CodePromptBlock from './CodePromptBlock.vue'
 import AgentResponseBlock from './AgentResponseBlock.vue'
+import TypewriterTitle from './TypewriterTitle.vue'
 
 // Estado del demo
 const currentTab = ref('airline')
