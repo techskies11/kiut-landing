@@ -148,7 +148,6 @@ const navItems = [
   { label: 'about', href: '#about', section: 'about' },
   { label: 'usecases', href: '#usecases', section: 'usecases' },
   { label: 'team', href: '#team', section: 'team' },
-  { label: 'clients', href: '#clients', section: 'clients' },
 ]
 
 const activeSection = ref(null)
@@ -160,7 +159,8 @@ function setActive(href) {
   activeSection.value = href
   const el = document.querySelector(href)
   if (el) {
-    const y = el.getBoundingClientRect().top + window.scrollY - 64
+    // Ajustar el scroll para que la sección quede bien visible debajo del header
+    const y = el.getBoundingClientRect().top + window.scrollY - 100
     window.scrollTo({ top: y, behavior: 'smooth' })
   } else {
     window.location.hash = href

@@ -1,11 +1,11 @@
 <template>
   <transition name="fade-slide-scale-block" mode="out-in">
     <div
-      class="agent-chat-outer-glass min-h-[560px] h-[560px]"
+      class="agent-chat-outer-glass min-h-[540px] h-[540px]"
       v-show="showAgentResponse || props.promptTyping || props.loading"
     >
-      <div class="agent-chat-glass min-h-[560px] h-[560px]">
-        <div ref="chatContainer" class="chat-messages chat-scrollable min-h-[560px] h-[560px]">
+      <div class="agent-chat-glass min-h-[540px] h-[540px]">
+        <div ref="chatContainer" class="chat-messages chat-scrollable min-h-[540px] h-[540px]">
           <!-- Mensajes y loading como antes -->
           <transition-group name="fadeInMsgSeq" tag="div" v-if="showAgentResponse">
             <div v-for="(msg, idx) in compactedMessages" :key="'msg-' + idx" :class="['chat-row', msg.role === 'Agent' ? 'chat-agent' : 'chat-user']" :style="{ transitionDelay: (idx * 200) + 'ms' }">
@@ -21,7 +21,7 @@
             </div>
           </transition-group>
           <transition name="fade-slide-scale-block" mode="out-in">
-            <div v-if="props.promptTyping" class="kai-thinking-placeholder min-h-[560px] h-[560px] flex items-center justify-center">
+            <div v-if="props.promptTyping" class="kai-thinking-placeholder min-h-[540px] h-[540px] flex items-center justify-center">
               <div class="flex flex-col items-center justify-center w-full h-full">
                 <div class="kai-loading-avatar">
                   <div class="kai-avatar-core"></div>
@@ -37,7 +37,7 @@
             </div>
           </transition>
           <transition name="fade-slide-scale-block" mode="out-in">
-            <div v-if="(props.typing || props.loading) && compactedMessages.length === 0 && !props.promptTyping" class="kai-thinking-placeholder flex flex-col items-center justify-center w-full h-full min-h-[560px] h-[560px] py-8" aria-live="polite">
+            <div v-if="(props.typing || props.loading) && compactedMessages.length === 0 && !props.promptTyping" class="kai-thinking-placeholder flex flex-col items-center justify-center w-full h-full min-h-[540px] h-[540px] py-8" aria-live="polite">
               <div class="flex flex-col items-center gap-3 w-full">
                 <!-- Avatar de KAI con animación -->
                 <div class="kai-loading-avatar">
