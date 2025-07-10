@@ -37,6 +37,14 @@
           />
         </div>
       </div>
+      <!-- Botón de acceso al playground debajo de ambos bloques -->
+      <div class="w-full flex justify-center mt-8">
+        <a href="https://playground.kiut.ai" target="_blank" rel="noopener">
+          <button class="px-6 py-3 rounded-xl font-bold bg-gradient-to-r from-violet-500 to-cyan-400 text-white shadow-lg hover:scale-105 hover:shadow-2xl transition-all text-base">
+            {{ $t('sections.demo.playground_cta') }}
+          </button>
+        </a>
+      </div>
     </div>
   </section>
 </template>

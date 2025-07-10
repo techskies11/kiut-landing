@@ -145,6 +145,7 @@ import DarkToggle from './DarkToggle.vue'
 import LanguageToggle from './LanguageToggle.vue'
 
 const navItems = [
+  { label: 'demo', href: '#demo', section: 'demo' },
   { label: 'about', href: '#about', section: 'about' },
   { label: 'usecases', href: '#usecases', section: 'usecases' },
   { label: 'team', href: '#team', section: 'team' },

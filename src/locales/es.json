@@ -5,7 +5,7 @@
     "team": "Equipo",
     "clients": "Clientes",
     "contact": "Contacto",
-    "demo": "Demostración en vivo"
+    "demo": "Demo"
   },
   "hero": {
     "title_pre": "La nueva generación de",
@@ -117,7 +117,8 @@
     "demo": {
       "title": "Prueba la IA en acción",
       "subtitle": "Interactúa con nuestro demo en vivo y descubre el poder de la automatización.",
-      "badge": "Demo interactivo"
+      "badge": "Demo interactivo",
+      "playground_cta": "Acceder al Playground"
     },
     "usecases": {
       "title": "Transforma tu atención al cliente",

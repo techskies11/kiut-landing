@@ -5,7 +5,7 @@
     "team": "Team",
     "clients": "Clients",
     "contact": "Contact",
-    "demo": "Live Demo"
+    "demo": "Demo"
   },
   "hero": {
     "title_pre": "The new generation of",
@@ -116,7 +116,8 @@
     "demo": {
       "title": "Try AI in Action",
       "subtitle": "Interact with our live demo and discover the power of automation.",
-      "badge": "Interactive Demo"
+      "badge": "Interactive Demo",
+      "playground_cta": "Access Playground"
     },
     "usecases": {
       "title": "Transform your customer service",
