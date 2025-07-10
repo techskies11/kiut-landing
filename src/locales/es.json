@@ -63,48 +63,117 @@
     },
     "cases": [
       {
-        "title": "Atención inteligente 24/7",
-        "desc": "Agentes de IA que gestionan consultas complejas sobre vuelos, equipaje, reservas y check-in, proporcionando respuestas instantáneas y precisas en cualquier momento del día.",
+        "icon": "💳",
+        "title": "Cotización y Venta de Boletos",
+        "desc": "Guía al pasajero en la compra de boletos y servicios adicionales de forma personalizada, maximizando ingresos y eficiencia.",
         "bullets": [
-          "Reducción del 70% en los costos operativos",
-          "Mejora del 95% en la satisfacción del cliente",
-          "Tiempo de respuesta promedio: 3 segundos"
+          "Incremento en ventas directas",
+          "Mejora del ARPU",
+          "Reducción de carga operativa"
         ],
-        "cta": "Ver demostración"
+        "cta": "Ver más",
+        "longDesc": "El proceso de compra de boletos puede ser complejo y demandar mucho tiempo del personal, especialmente con las variaciones para diferentes tipos de pasajeros y la venta de servicios adicionales. Nuestro agente de IA guía al pasajero a través de un proceso de compra intuitivo directamente en su canal preferido (WhatsApp, Instagram, etc.). La IA puede cotizar vuelos, gestionar información de pasajeros, ofrecer y vender vuelos y ancillaries como selección de asientos o equipaje extra, y facilitar el pago de forma segura. Esto incrementa las ventas directas, mejora el ARPU y reduce la carga operativa, brindando una experiencia de compra fluida y conveniente."
       },
       {
-        "title": "Gestión automatizada de incidencias",
-        "desc": "Sistema inteligente que guía a los pasajeros en el reporte de incidencias y reclamaciones, escalando automáticamente a agentes humanos solo cuando es necesario.",
+        "icon": "🛫",
+        "title": "Check-in Simplificado",
+        "desc": "Automatiza el proceso de check-in, permitiendo a los pasajeros obtener su pase de abordar desde cualquier canal.",
         "bullets": [
-          "Resolución 3x más rápida de problemas",
-          "Optimización del 60% de los recursos humanos",
-          "Seguimiento automático de los casos"
+          "Check-in 100% digital",
+          "Reducción de colas y errores",
+          "Mayor conveniencia para el pasajero"
         ],
-        "cta": "Ver demostración"
+        "cta": "Ver más",
+        "longDesc": "El check-in puede ser un cuello de botella, especialmente durante picos de operación o para pasajeros menos familiarizados con los procesos digitales. El bot de IA automatiza el proceso de check-in: verifica el estado del vuelo, recopila y valida la información del pasajero, permite la selección de asiento y emite el pase de abordar con código QR directamente en el canal de chat. Esto reduce la necesidad de kioscos físicos, agiliza el flujo en el aeropuerto y minimiza errores humanos."
       },
       {
-        "title": "Soporte operacional interno",
-        "desc": "Asistente virtual interno que proporciona acceso instantáneo a preguntas frecuentes operacionales, normativas y procedimientos para tripulaciones y personal de tierra.",
+        "icon": "🔄",
+        "title": "Cambios Voluntarios de Vuelo",
+        "desc": "Permite a los pasajeros gestionar cambios de vuelo de forma autónoma, aplicando reglas tarifarias automáticamente.",
         "bullets": [
-          "Mejora del 80% en la comunicación interna",
-          "Reducción del 50% en el tiempo de capacitación",
-          "Acceso 24/7 a información crítica"
+          "Autoservicio 24/7",
+          "Consistencia en reglas",
+          "Reducción de carga de agentes"
         ],
-        "cta": "Ver demostración"
+        "cta": "Ver más",
+        "longDesc": "Los cambios de vuelo suelen ser una fuente de frustración y alta demanda para los centros de contacto. Nuestro agente de IA maneja cambios de vuelo de forma inteligente y automatizada: solicita datos de reserva, consulta reglas tarifarias, presenta alternativas y gestiona el pago de cargos asociados, emitiendo la nueva confirmación. Permite autoservicio 24/7, reduce la carga de agentes y asegura la correcta aplicación de reglas."
       },
       {
-        "title": "Ventas automatizadas post-reserva",
-        "desc": "Agentes de IA que ofrecen mejoras, servicios adicionales y gestionan cambios post-reserva, maximizando el ARPU y mejorando la experiencia del cliente.",
+        "icon": "⚠️",
+        "title": "Gestión de IROPs y Protección",
+        "desc": "Automatiza la comunicación y reubicación de pasajeros ante retrasos, cancelaciones o desvíos, reduciendo el caos operacional.",
         "bullets": [
-          "Incremento del 40% en los ingresos auxiliares",
-          "Reducción del 65% en la carga de los centros de contacto",
-          "Personalización automática de las ofertas"
+          "Notificación proactiva",
+          "Opciones flexibles de cambio",
+          "Cumplimiento normativo"
         ],
-        "cta": "Ver demostración"
+        "cta": "Ver más",
+        "longDesc": "Las interrupciones de vuelos (retrasos, cancelaciones, desvíos) generan estrés y una carga masiva para las aerolíneas. En situaciones de IROPs, nuestro bot de IA notifica proactivamente a los pasajeros afectados, identifica y presenta opciones de vuelos alternativos, permite seleccionar entre diferentes alternativas y procesa la reubicación de forma instantánea. Esto reduce el caos, mejora la experiencia y ayuda a cumplir regulaciones."
+      },
+      {
+        "icon": "❓",
+        "title": "FAQs y Dudas Generales",
+        "desc": "Responde instantáneamente preguntas frecuentes sobre políticas, servicios y procedimientos, 24/7.",
+        "bullets": [
+          "Base de conocimiento dinámica",
+          "Escalamiento inteligente",
+          "Consistencia en la información"
+        ],
+        "cta": "Ver más",
+        "longDesc": "Una gran parte de las interacciones con los clientes son consultas repetitivas sobre políticas, procedimientos y preguntas generales. Nuestro bot de IA es una base de conocimiento inteligente, disponible 24/7, entrenada con reglas y políticas de la aerolínea. Proporciona respuestas inmediatas y precisas, aprende con cada interacción y escala a un agente humano si es necesario, liberando recursos y asegurando consistencia."
+      },
+      {
+        "icon": "⏱️",
+        "title": "Estado de Vuelo en Tiempo Real",
+        "desc": "Proporciona información actualizada sobre vuelos, puertas, retrasos y notificaciones automáticas al pasajero.",
+        "bullets": [
+          "Actualizaciones en tiempo real",
+          "Menos consultas al call center",
+          "Mejora la experiencia pre-vuelo"
+        ],
+        "cta": "Ver más",
+        "longDesc": "Los pasajeros necesitan información actualizada sobre el estado de sus vuelos, especialmente en días de viaje. El bot de IA permite consultar el estado de un vuelo por número, destino, fecha y hora, y se conecta a los sistemas de la aerolínea para obtener información en tiempo real. Puede enviar notificaciones automáticas ante cambios, reduciendo la incertidumbre y mejorando la experiencia."
+      },
+      {
+        "icon": "🧳",
+        "title": "Rastreo y Reporte de Equipajes",
+        "desc": "Permite a los pasajeros rastrear su equipaje y reportar incidencias de forma rápida y estructurada.",
+        "bullets": [
+          "Reducción del estrés del pasajero",
+          "Eficiencia en el reporte",
+          "Disponibilidad 24/7"
+        ],
+        "cta": "Ver más",
+        "longDesc": "La pérdida o demora de equipaje es una de las experiencias más estresantes para un pasajero. Nuestro agente de IA permite rastrear el equipaje ingresando el número de reclamo o etiqueta, y reportar incidencias guiando al pasajero en la recolección de datos y documentación. Esto reduce el estrés, agiliza la gestión y mejora la imagen de la marca."
+      },
+      {
+        "icon": "🛒",
+        "title": "Recuperación de Carritos Abandonados",
+        "desc": "Detecta y contacta proactivamente a usuarios que abandonaron el proceso de compra, recuperando ventas perdidas.",
+        "bullets": [
+          "Incremento directo de ingresos",
+          "Recordatorio inteligente",
+          "Automatización del seguimiento"
+        ],
+        "cta": "Ver más",
+        "longDesc": "Un porcentaje significativo de usuarios inicia la compra de un boleto o ancillaries en línea, pero la abandona antes de finalizarla. Nuestro agente de IA detecta el abandono, contacta proactivamente al usuario con un mensaje personalizado y facilita la reanudación de la compra, recuperando ventas y optimizando el ROI de marketing."
+      },
+      {
+        "icon": "💸",
+        "title": "Reembolsos Automatizados",
+        "desc": "Gestiona solicitudes de reembolso de manera eficiente, segura y transparente para el pasajero.",
+        "bullets": [
+          "Proceso ágil y seguro",
+          "Reducción de carga manual",
+          "Mejora la satisfacción del cliente"
+        ],
+        "cta": "Ver más",
+        "longDesc": "Nuestros agentes de IA gestionan solicitudes de reembolso de manera eficiente y segura, conectándose con los sistemas de la aerolínea para validar la elegibilidad y procesar la devolución. El pasajero recibe información clara y seguimiento del estado de su solicitud, mejorando la transparencia y la satisfacción."
       }
     ],
     "cta": "Solicitar demostración personalizada",
-    "cta_desc": "Descubre cómo OnService.IA puede transformar tu producto en 30 días"
+    "cta_desc": "Descubre cómo OnService.IA puede transformar tu producto en 30 días",
+    "less": "Ver menos"
   },
   "brand": "OnService.",
   "brand_ia": "IA",

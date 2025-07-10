@@ -62,48 +62,117 @@
     },
     "cases": [
       {
-        "title": "24/7 Intelligent Support",
-        "desc": "AI agents that handle complex queries about flights, baggage, reservations, and check-in, providing instant and accurate responses at any time.",
+        "icon": "💳",
+        "title": "Quotation & Ticket Sales",
+        "desc": "Guides passengers through a personalized ticket and ancillary purchase process, maximizing revenue and efficiency.",
         "bullets": [
-          "70% cost reduction",
-          "95% customer satisfaction improvement",
-          "Average response time: 3 seconds"
+          "Increase in direct sales",
+          "Higher ARPU",
+          "Reduced operational workload"
         ],
-        "cta": "View demo"
+        "cta": "Learn more",
+        "longDesc": "The ticket purchase process can be complex and time-consuming, especially with variations for different passenger types and ancillary sales. Our AI agent guides the passenger through an intuitive purchase process directly in their preferred channel (WhatsApp, Instagram, etc.). The AI can quote flights, manage passenger information, proactively offer and sell flights and ancillaries like seat selection or extra baggage, and facilitate secure payment. This increases direct sales, improves ARPU, and reduces operational workload, providing a smooth and convenient buying experience."
       },
       {
-        "title": "Automated Incident Management",
-        "desc": "Intelligent system that guides passengers in reporting incidents and claims, automatically escalating to human agents only when necessary.",
+        "icon": "🛫",
+        "title": "Simplified Check-in",
+        "desc": "Automates the check-in process, allowing passengers to get their boarding pass from any channel.",
         "bullets": [
-          "3x faster problem resolution",
-          "60% optimization of human resources",
-          "Automatic case tracking"
+          "100% digital check-in",
+          "Fewer lines and errors",
+          "Greater passenger convenience"
         ],
-        "cta": "View demo"
+        "cta": "Learn more",
+        "longDesc": "Check-in can be a bottleneck, especially during peak times or for passengers less familiar with digital processes. The AI bot automates check-in: it verifies flight status, collects and validates passenger information, allows seat selection, and issues the boarding pass with QR code directly in the chat channel. This reduces the need for physical kiosks, speeds up airport flow, and minimizes human errors."
       },
       {
-        "title": "Internal Operational Support",
-        "desc": "Internal virtual assistant providing instant access to operational FAQs, regulations, and procedures for crews and ground staff.",
+        "icon": "🔄",
+        "title": "Voluntary Flight Changes",
+        "desc": "Enables passengers to manage flight changes autonomously, applying fare rules automatically.",
         "bullets": [
-          "80% improvement in internal communication",
-          "50% reduction in training time",
-          "24/7 access to critical information"
+          "24/7 self-service",
+          "Consistent rule application",
+          "Reduces agent workload"
         ],
-        "cta": "View demo"
+        "cta": "Learn more",
+        "longDesc": "Flight changes are often a source of frustration and high demand for contact centers. Our AI agent handles flight changes intelligently and automatically: it requests booking data, checks fare rules, presents alternatives, manages payment of any associated fees, and issues the new confirmation. This enables 24/7 self-service, reduces agent workload, and ensures correct rule application."
       },
       {
-        "title": "Automated Post-Booking Sales",
-        "desc": "AI agents that offer upgrades, additional services, and manage post-booking changes, maximizing ARPU and improving customer experience.",
+        "icon": "⚠️",
+        "title": "IROPs & Flight Protection",
+        "desc": "Automates communication and rebooking during delays, cancellations, or diversions, reducing operational chaos.",
         "bullets": [
-          "40% increase in ancillary revenue",
-          "65% reduction in contact center workload",
-          "Automatic offer personalization"
+          "Proactive notifications",
+          "Flexible change options",
+          "Regulatory compliance"
         ],
-        "cta": "View demo"
+        "cta": "Learn more",
+        "longDesc": "Flight disruptions (delays, cancellations, diversions) create stress and a massive workload for airlines. In IROPs situations, our AI bot proactively notifies affected passengers, identifies and presents alternative flight options, allows selection among different alternatives, and processes rebooking instantly. This reduces chaos, improves the passenger experience, and helps meet regulatory requirements."
+      },
+      {
+        "icon": "❓",
+        "title": "FAQs & General Queries",
+        "desc": "Instantly answers frequent questions about policies, services, and procedures, 24/7.",
+        "bullets": [
+          "Dynamic knowledge base",
+          "Smart escalation",
+          "Consistent information"
+        ],
+        "cta": "Learn more",
+        "longDesc": "A large part of customer interactions are repetitive queries about policies, procedures, and general questions. Our AI bot is an intelligent knowledge base, available 24/7, trained with the airline's rules and policies. It provides immediate and accurate answers, learns from each interaction, and escalates to a human agent if needed, freeing up resources and ensuring consistency."
+      },
+      {
+        "icon": "⏱️",
+        "title": "Real-Time Flight Status",
+        "desc": "Provides up-to-date flight information, gates, delays, and automatic notifications to passengers.",
+        "bullets": [
+          "Real-time updates",
+          "Fewer call center queries",
+          "Better pre-flight experience"
+        ],
+        "cta": "Learn more",
+        "longDesc": "Passengers need up-to-date information about their flights, especially on travel days. The AI bot allows passengers to check flight status by number, destination, date, and time, and connects to the airline's systems for real-time information. It can send automatic notifications about changes, reducing uncertainty and improving the experience."
+      },
+      {
+        "icon": "🧳",
+        "title": "Baggage Tracking & Claims",
+        "desc": "Lets passengers track their baggage and report issues quickly and in a structured way.",
+        "bullets": [
+          "Reduces passenger stress",
+          "Efficient claim process",
+          "24/7 availability"
+        ],
+        "cta": "Learn more",
+        "longDesc": "Lost or delayed baggage is one of the most stressful experiences for a passenger. Our AI agent allows passengers to track baggage by entering the claim or tag number, and to report issues by guiding them through data and documentation collection. This reduces stress, speeds up management, and improves brand image."
+      },
+      {
+        "icon": "🛒",
+        "title": "Abandoned Cart Recovery",
+        "desc": "Detects and proactively contacts users who abandoned the purchase process, recovering lost sales.",
+        "bullets": [
+          "Direct revenue increase",
+          "Smart reminders",
+          "Automated follow-up"
+        ],
+        "cta": "Learn more",
+        "longDesc": "A significant percentage of users start the purchase of a ticket or ancillaries online but abandon it before completion. Our AI agent detects abandonment, proactively contacts the user with a personalized message, and facilitates resuming the purchase, recovering sales and optimizing marketing ROI."
+      },
+      {
+        "icon": "💸",
+        "title": "Automated Refunds",
+        "desc": "Handles refund requests efficiently, securely, and transparently for passengers.",
+        "bullets": [
+          "Fast and secure process",
+          "Less manual workload",
+          "Improved customer satisfaction"
+        ],
+        "cta": "Learn more",
+        "longDesc": "Our AI agents handle refund requests efficiently and securely, connecting with the airline's systems to validate eligibility and process the refund. The passenger receives clear information and status updates on their request, improving transparency and satisfaction."
       }
     ],
     "cta": "Request personalized demo",
-    "cta_desc": "Discover how OnService.IA can transform your product in 30 days"
+    "cta_desc": "Discover how OnService.IA can transform your product in 30 days",
+    "less": "Show less"
   },
   "brand": "OnService.",
   "brand_ia": "AI",

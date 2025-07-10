@@ -57,22 +57,43 @@
       </div>
 
       <!-- Casos de uso -->
-      <div class="grid lg:grid-cols-2 gap-8">
-        <div v-for="(item, idx) in tm('usecases.cases')" :key="item.title" class="group relative overflow-hidden rounded-3xl bg-white/80 dark:bg-white/10 backdrop-blur-lg border border-gray-200 dark:border-white/10 shadow-xl hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 p-8 md:p-10">
-          <h3 class="text-2xl font-bold mb-4 text-gray-900 dark:text-white">{{ item.title }}</h3>
-          <p class="text-gray-700 dark:text-gray-300 mb-6 leading-relaxed">{{ item.desc }}</p>
-          <div class="space-y-3 mb-6">
-            <div v-for="(bullet, bidx) in item.bullets" :key="bidx" class="flex items-center gap-3">
-              <div class="w-2 h-2 bg-violet-500 rounded-full"></div>
-              <span class="text-sm text-gray-600 dark:text-gray-400">{{ bullet }}</span>
+      <div class="usecases-masonry">
+        <div
+          v-for="(item, idx) in tm('usecases.cases')"
+          :key="item.title"
+          class="usecase-card group relative overflow-hidden rounded-3xl bg-white/80 dark:bg-white/10 backdrop-blur-lg border border-gray-200 dark:border-white/10 shadow-xl hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 p-8 md:p-10 flex flex-col mb-8"
+          :class="{ 'ring-4 ring-violet-300/40 dark:ring-violet-500/30 scale-105 z-20': expandedIdx === idx }"
+          style="align-self: start; min-height: unset; break-inside: avoid;"
+        >
+          <div class="text-4xl mb-3 flex items-center justify-between">
+            <span v-if="item.icon" v-html="item.icon"></span>
+            <button
+              @click.stop="toggleExpand(idx)"
+              class="ml-auto px-3 py-1.5 rounded-lg bg-violet-100 dark:bg-violet-900/30 text-violet-700 dark:text-violet-300 font-semibold text-sm flex items-center gap-1 transition-all duration-200 hover:bg-violet-200 dark:hover:bg-violet-800/60 focus:outline-none"
+              :aria-expanded="expandedIdx === idx"
+              :aria-controls="'usecase-details-' + idx"
+            >
+              <span>{{ expandedIdx === idx ? t('usecases.less') : t('usecases.more') }}</span>
+              <svg :class="['transition-transform duration-300', expandedIdx === idx ? 'rotate-180' : '']" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+            </button>
+          </div>
+          <h3 class="text-xl font-bold mb-2 text-gray-900 dark:text-white">{{ item.title }}</h3>
+          <p class="text-gray-700 dark:text-gray-300 mb-4 leading-relaxed">{{ item.desc }}</p>
+          <ul class="mb-4 space-y-1">
+            <li v-for="(bullet, bidx) in item.bullets" :key="bidx" class="flex items-center"><span class="mr-2 text-green-400">✔️</span>{{ bullet }}</li>
+          </ul>
+          <transition name="expand-fade">
+            <div
+              v-if="expandedIdx === idx"
+              :id="'usecase-details-' + idx"
+              class="mt-2 rounded-xl bg-gradient-to-br from-violet-100/60 to-cyan-100/40 dark:from-violet-900/30 dark:to-cyan-900/20 text-gray-800 dark:text-gray-100 shadow-inner animate-fade-in-up overflow-hidden"
+              style="padding: 0;"
+            >
+              <div class="p-4">
+                <p class="whitespace-pre-line">{{ item.longDesc }}</p>
+              </div>
             </div>
-          </div>
-          <div class="inline-flex items-center gap-2 text-violet-600 dark:text-violet-400 font-semibold">
-            <span>{{ item.cta }}</span>
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
-            </svg>
-          </div>
+          </transition>
         </div>
       </div>
 
@@ -95,11 +116,17 @@
 </template>
 
 <script setup>
+import { ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import ParticleBackground from './ParticleBackground.vue'
 import TypewriterTitle from './TypewriterTitle.vue'
 
 const { t, tm } = useI18n()
+
+const expandedIdx = ref(null)
+function toggleExpand(idx) {
+  expandedIdx.value = expandedIdx.value === idx ? null : idx
+}
 
 // Colores e iconos de marca para los canales
 const channelStyles = {
@@ -134,4 +161,38 @@ const channelStyles = {
     icon: `<svg viewBox="0 0 240 240" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-6 h-6"><circle cx="120" cy="120" r="120" fill="#229ED9"/><path d="M180.5 72.5L157.5 180.5C155.5 188.5 150.5 190.5 143.5 186.5L110.5 162.5L94.5 177.5C92.5 179.5 91 181 87.5 181L90.5 146.5L157.5 85.5C160.5 82.5 157 81 153.5 84L77.5 143.5L43.5 132.5C36 130.5 36 125.5 44.5 122.5L170.5 74.5C176.5 72.5 181.5 76.5 180.5 72.5Z" fill="white"/></svg>`
   }
 }
-</script> 
+</script>
+
+<style scoped>
+.usecases-masonry {
+  columns: 1;
+}
+@media (min-width: 640px) {
+  .usecases-masonry {
+    columns: 2;
+  }
+}
+@media (min-width: 1024px) {
+  .usecases-masonry {
+    columns: 3;
+  }
+}
+.usecase-card {
+  display: block;
+  width: 100%;
+  margin-bottom: 1.5rem;
+  break-inside: avoid;
+}
+.expand-fade-enter-active, .expand-fade-leave-active {
+  transition: max-height 0.38s cubic-bezier(.4,0,.2,1), opacity 0.28s cubic-bezier(.4,0,.2,1);
+  overflow: hidden;
+}
+.expand-fade-enter-from, .expand-fade-leave-to {
+  opacity: 0;
+  max-height: 0;
+}
+.expand-fade-enter-to, .expand-fade-leave-from {
+  opacity: 1;
+  max-height: 500px;
+}
+</style> 
