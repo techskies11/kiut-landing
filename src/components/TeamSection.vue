@@ -21,5 +21,6 @@
 
 <script setup>
 import ParticleBackground from './ParticleBackground.vue'
+import TypewriterTitle from './TypewriterTitle.vue';
 // No props por ahora
 </script> 

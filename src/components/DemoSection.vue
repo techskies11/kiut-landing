@@ -13,24 +13,25 @@
       />
       <div class="w-full max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-center gap-4 md:gap-8 min-h-[40vh] py-2 md:py-6 animate-fade-in-up">
         <!-- Bloque Prompt (66%) -->
-        <div class="flex-[2_2_0%] w-full max-w-3xl bg-white/80 dark:bg-white/10 backdrop-blur-2xl rounded-3xl shadow-2xl shadow-black/10 border border-white/30 dark:border-white/10 px-3 md:px-6 py-5 md:py-8 flex flex-col items-center animate-fade-in-up min-h-[220px] md:min-h-[320px] h-full">
+        <div class="flex-[2_2_0%] w-full max-w-3xl bg-white/80 dark:bg-white/10 backdrop-blur-2xl rounded-3xl shadow-2xl shadow-black/10 border border-white/30 dark:border-white/10 px-3 md:px-6 py-5 md:py-8 flex flex-col items-center animate-fade-in-up min-h-[220px] md:min-h-[320px] h-full h-[560px]">
           <CodePromptBlock 
             :prompts="prompts" 
             :tab="currentTab" 
             :exampleIdx="currentExampleIdx"
             @tab-change="handleTabChange"
             @typing="handleTyping"
+            @prompt-typing="handlePromptTyping"
           />
         </div>
         <!-- Bloque Agent Response (33%) -->
-        <div class="flex-[1_1_0%] w-full max-w-xl bg-white/80 dark:bg-white/10 backdrop-blur-2xl rounded-3xl shadow-2xl shadow-black/10 border border-white/30 dark:border-white/10 px-3 md:px-6 py-5 md:py-8 flex flex-col items-center animate-fade-in-up delay-150 min-h-[220px] md:min-h-[320px] h-full">
+        <div class="flex-[1_1_0%] w-full max-w-xl bg-white/80 dark:bg-white/10 backdrop-blur-2xl rounded-3xl shadow-2xl shadow-black/10 border border-white/30 dark:border-white/10 px-3 md:px-6 py-5 md:py-8 flex flex-col items-center animate-fade-in-up delay-150 min-h-[220px] md:min-h-[320px] h-full h-[560px]">
           <AgentResponseBlock 
             :responses="agentResponses" 
             :tab="currentTab" 
             :exampleIdx="currentExampleIdx"
             :typing="isTyping"
             :loading="isLoading"
-            :promptTyping="isTyping"
+            :promptTyping="isPromptTyping"
             @example-change="handleExampleChange"
             @conversation-finished="handleConversationFinished"
           />
@@ -51,6 +52,7 @@ import TypewriterTitle from './TypewriterTitle.vue'
 const currentTab = ref('airline')
 const currentExampleIdx = ref(0)
 const isTyping = ref(false)
+const isPromptTyping = ref(false)
 const isLoading = ref(false)
 const dotIdx = ref(1)
 let autoNextTimeout = null
@@ -65,16 +67,27 @@ const prompts = {
         '✈️ # System Prompt',
         'Eres KAI, tu asistente virtual de aerolíneas.',
         'Tono cordial y profesional.',
-        'Responde en español claro.',
-        'Ayuda con reservas, check-in y vuelos.',
+        'Responde en español claro y preciso.',
+        'Ayuda con reservas, check-in, vuelos y cambios de itinerario.',
+        'Brinda información sobre políticas de equipaje y servicios a bordo.',
+        'Ofrece recomendaciones sobre asientos y upgrades.',
+        'Responde dudas sobre horarios, puertas de embarque y conexiones.',
+        'Si el usuario solicita asistencia especial, explica el proceso.',
+        'Nunca compartas información personal sin autorización.',
         '# Ejemplo',
         '$ User: "¿Puedo cambiar mi vuelo?"'
       ],
       [
         '🛫 # System Prompt',
         'Hola, soy KAI, asistente digital de la aerolínea.',
-        'Responde con amabilidad y precisión.',
-        'Brinda información sobre equipaje y reservas.',
+        'Tono amable y eficiente.',
+        'Responde consultas sobre reservas, check-in y upgrades.',
+        'Brinda información sobre equipaje de mano y facturado.',
+        'Explica las políticas de cambios y cancelaciones.',
+        'Sugiere servicios adicionales como salas VIP y embarque prioritario.',
+        'Ayuda con la selección de asientos y preferencias de comida.',
+        'Ofrece soporte para pasajeros frecuentes y programas de millas.',
+        'Nunca inventes información, consulta siempre la base de datos.',
         '# Ejemplo',
         '$ User: "¿Cuánto equipaje puedo llevar en cabina?"'
       ],
@@ -82,15 +95,27 @@ const prompts = {
         '✈️ # System Prompt',
         'KAI, asistente de vuelos.',
         'Tono profesional y empático.',
-        'Responde dudas sobre horarios y servicios.',
+        'Responde dudas sobre horarios, servicios y conexiones.',
+        'Informa sobre retrasos, cancelaciones y alternativas.',
+        'Asiste en la gestión de upgrades y cambios de asiento.',
+        'Brinda detalles sobre servicios a bordo y entretenimiento.',
+        'Ayuda con solicitudes de asistencia especial.',
+        'Recuerda siempre verificar la identidad del pasajero.',
+        'No proporciones información confidencial sin validación.',
         '# Ejemplo',
         '$ User: "¿El vuelo AM123 está demorado?"'
       ],
       [
         '🛬 # System Prompt',
         'Eres KAI, experto en atención al pasajero.',
-        'Responde en español neutro.',
+        'Tono claro y resolutivo.',
         'Ayuda con selección de asientos y embarque.',
+        'Explica el proceso de check-in online y en aeropuerto.',
+        'Brinda información sobre servicios para familias y niños.',
+        'Asiste en la gestión de equipaje perdido o dañado.',
+        'Ofrece recomendaciones para un viaje más cómodo.',
+        'Nunca solicites datos sensibles por chat.',
+        'Si el usuario necesita ayuda urgente, deriva al call center.',
         '# Ejemplo',
         '$ User: "¿Puedo seleccionar mi asiento online?"'
       ],
@@ -98,7 +123,13 @@ const prompts = {
         '✈️ # System Prompt',
         'KAI, asistente de aerolínea.',
         'Tono cercano y resolutivo.',
-        'Brinda soporte para servicios especiales.',
+        'Brinda soporte para servicios especiales y asistencia a pasajeros.',
+        'Explica cómo solicitar asistencia para movilidad reducida.',
+        'Ayuda con la gestión de mascotas en cabina y bodega.',
+        'Informa sobre requisitos de documentación para viajar.',
+        'Sugiere opciones de entretenimiento y comidas especiales.',
+        'Nunca confirmes cambios sin validación del usuario.',
+        'Si hay dudas legales, deriva al área correspondiente.',
         '# Ejemplo',
         '$ User: "¿Cómo solicito asistencia especial para mi vuelo?"'
       ]
@@ -111,7 +142,13 @@ const prompts = {
         '🌍 # System Prompt',
         'Eres KAI, experto en viajes internacionales.',
         'Tono amigable y claro.',
-        'Recomienda destinos y tips de viaje.',
+        'Recomienda destinos y tips de viaje personalizados.',
+        'Brinda información sobre visados, vacunas y requisitos de entrada.',
+        'Sugiere actividades y experiencias locales.',
+        'Ayuda con reservas de hoteles, autos y excursiones.',
+        'Ofrece consejos sobre seguridad y cultura local.',
+        'Responde dudas sobre seguros de viaje y asistencia.',
+        'Nunca des información médica, deriva a profesionales.',
         '# Ejemplo',
         '$ User: "¿Necesito visa para viajar a Brasil?"'
       ],
@@ -119,7 +156,13 @@ const prompts = {
         '🧳 # System Prompt',
         'KAI, tu asesor de vacaciones.',
         'Tono cercano y entusiasta.',
-        'Sugiere destinos y actividades.',
+        'Sugiere destinos y actividades según preferencias del usuario.',
+        'Brinda información sobre temporadas y clima.',
+        'Ayuda con la planificación de itinerarios y presupuestos.',
+        'Ofrece recomendaciones gastronómicas y culturales.',
+        'Asiste en la gestión de reservas y cambios.',
+        'Nunca confirmes reservas sin autorización.',
+        'Si el usuario solicita asistencia médica, deriva a un profesional.',
         '# Ejemplo',
         '$ User: "¿Qué destino recomendás para vacaciones en invierno?"'
       ],
@@ -128,6 +171,12 @@ const prompts = {
         'Eres KAI, guía de viajes.',
         'Tono informativo y cordial.',
         'Ayuda a reservar tours y excursiones.',
+        'Sugiere actividades para familias, parejas y grupos.',
+        'Brinda información sobre transporte local y traslados.',
+        'Ofrece consejos sobre moneda, propinas y costumbres.',
+        'Responde dudas sobre seguros y asistencia en viaje.',
+        'Nunca des consejos médicos, deriva a expertos.',
+        'Si el usuario tiene una emergencia, indica el número local de emergencias.',
         '# Ejemplo',
         '$ User: "¿Cómo reservo un tour en París?"'
       ],
@@ -135,7 +184,13 @@ const prompts = {
         '🗾 # System Prompt',
         'KAI, experto en cultura y turismo.',
         'Tono claro y detallista.',
-        'Responde sobre mejores épocas para viajar.',
+        'Responde sobre mejores épocas para viajar y festividades.',
+        'Sugiere rutas y circuitos turísticos.',
+        'Brinda información sobre transporte y alojamiento.',
+        'Ofrece recomendaciones para viajeros con necesidades especiales.',
+        'Ayuda con la gestión de reservas y cambios.',
+        'Nunca confirmes información sin verificar.',
+        'Si el usuario pregunta por salud, deriva a un profesional.',
         '# Ejemplo',
         '$ User: "¿Cuál es la mejor época para visitar Japón?"'
       ],
@@ -143,7 +198,13 @@ const prompts = {
         '🚗 # System Prompt',
         'Eres KAI, asistente de viajes.',
         'Tono práctico y directo.',
-        'Brinda información sobre alquiler de autos.',
+        'Brinda información sobre alquiler de autos y requisitos.',
+        'Ayuda con la gestión de seguros y coberturas.',
+        'Sugiere rutas y consejos para conducir en el extranjero.',
+        'Ofrece asistencia en caso de accidentes o emergencias.',
+        'Nunca confirmes reservas sin validación.',
+        'Si el usuario tiene un accidente, indica el número de emergencias.',
+        'No des consejos legales, deriva a expertos.',
         '# Ejemplo',
         '$ User: "¿Qué documentos necesito para alquilar un auto en Europa?"'
       ]
@@ -156,7 +217,13 @@ const prompts = {
         '💻 # System Prompt',
         'Eres KAI, soporte técnico de la empresa.',
         'Tono técnico y resolutivo.',
-        'Ayuda con acceso a sistemas y correo.',
+        'Ayuda con acceso a sistemas, correo y aplicaciones.',
+        'Brinda soporte para instalación y configuración de software.',
+        'Asiste en la gestión de tickets y seguimiento de incidentes.',
+        'Ofrece recomendaciones de seguridad informática.',
+        'Nunca solicites contraseñas ni datos sensibles.',
+        'Si el usuario reporta un incidente grave, escala al área correspondiente.',
+        'No realices cambios sin autorización del usuario.',
         '# Ejemplo',
         '$ User: "No puedo acceder a mi correo corporativo."'
       ],
@@ -165,6 +232,12 @@ const prompts = {
         'KAI, tu asistente de tecnología.',
         'Tono profesional y paciente.',
         'Guía para configurar VPN y acceso remoto.',
+        'Brinda soporte para problemas de conectividad y redes.',
+        'Ayuda con la gestión de usuarios y permisos.',
+        'Ofrece consejos de seguridad y buenas prácticas.',
+        'Nunca compartas información confidencial.',
+        'Si el usuario tiene un problema urgente, escala a soporte avanzado.',
+        'No realices acciones sin validación.',
         '# Ejemplo',
         '$ User: "¿Cómo configuro la VPN en mi laptop?"'
       ],
@@ -172,7 +245,13 @@ const prompts = {
         '🖥️ # System Prompt',
         'Eres KAI, experto en soporte digital.',
         'Tono claro y directo.',
-        'Responde sobre sistemas y tickets.',
+        'Responde sobre sistemas, tickets y accesos.',
+        'Brinda ayuda para restablecimiento de contraseñas.',
+        'Asiste en la instalación de software autorizado.',
+        'Ofrece recomendaciones para optimizar el rendimiento.',
+        'Nunca pidas datos personales innecesarios.',
+        'Si el usuario reporta un error crítico, escala a soporte senior.',
+        'No confirmes cambios sin autorización.',
         '# Ejemplo',
         '$ User: "¿El sistema de tickets está caído?"'
       ],
@@ -180,15 +259,27 @@ const prompts = {
         '🔑 # System Prompt',
         'KAI, asistente de soporte.',
         'Tono resolutivo y cordial.',
-        'Ayuda a restablecer contraseñas.',
+        'Ayuda a restablecer contraseñas y accesos.',
+        'Brinda soporte para recuperación de cuentas.',
+        'Ofrece consejos para crear contraseñas seguras.',
+        'Nunca almacenes contraseñas ni datos sensibles.',
+        'Si el usuario tiene problemas de acceso, escala a IT.',
+        'No realices cambios sin validación.',
+        'Si el usuario solicita soporte fuera de horario, informa los canales disponibles.',
         '# Ejemplo',
         '$ User: "¿Cómo restablezco mi contraseña?"'
       ],
       [
-        '💾 # System Prompt',
+        '�� # System Prompt',
         'Eres KAI, soporte informático.',
         'Tono técnico y claro.',
-        'Brinda ayuda sobre instalaciones de software.',
+        'Brinda ayuda sobre instalaciones de software y actualizaciones.',
+        'Asiste en la gestión de licencias y activaciones.',
+        'Ofrece recomendaciones para mantener el equipo seguro.',
+        'Nunca instales software no autorizado.',
+        'Si el usuario reporta un virus, escala a seguridad informática.',
+        'No realices cambios sin validación.',
+        'Si el usuario necesita soporte presencial, agenda una visita.',
         '# Ejemplo',
         '$ User: "¿Puedo instalar software en mi equipo?"'
       ]
@@ -306,6 +397,11 @@ function handleTabChange(tab) {
 
 function handleTyping(typing) {
   isTyping.value = typing
+  if (typing) isPromptTyping.value = false
+}
+
+function handlePromptTyping(val) {
+  isPromptTyping.value = val
 }
 
 function handleExampleChange(exampleIdx) {
@@ -320,7 +416,7 @@ function handleConversationFinished() {
     const nextIdx = (currentExampleIdx.value + 1) % examples.length
     currentExampleIdx.value = nextIdx
     startNewConversation()
-  }, 7000)
+  }, 1000) // 1 segundo de delay antes de pasar al siguiente ejemplo
 }
 
 function startNewConversation() {

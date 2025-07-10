@@ -1,13 +1,13 @@
 <template>
-  <div class="code-block-container">
-    <div class="code-block-glass code-block-terminal glass-hero-panel">
+  <div class="code-block-container min-h-[560px] h-[560px]">
+    <div class="code-block-glass code-block-terminal glass-hero-panel min-h-[560px] h-[560px]">
       <div class="terminal-bar flex items-center gap-2 mb-2">
         <span class="flex-1"></span>
         <span v-for="tab in tabs" :key="tab.key" :class="['example-tab-underline', tab.key === props.tab ? 'active pointer-events-none cursor-default' : '']" @click="tab.key !== props.tab && setTab(tab.key)">
           {{ tab.label }}
         </span>
       </div>
-      <div class="editor-block">
+      <div class="editor-block min-h-[560px] h-[560px]">
         <div v-for="(line, idx) in codeLines" :key="idx" class="editor-line-flex">
           <span class="gutter-line">{{ idx + 1 }}</span>
           <pre class="editor-code-line" v-html="colorizeBlock(line + (showCursor && idx === codeLines.length - 1 ? '<span class=\'editor-cursor\'>|</span>' : ''))"></pre>
@@ -19,7 +19,7 @@
 
 <script setup>
 import { ref, watch, onMounted, computed, onBeforeUnmount } from 'vue';
-const emit = defineEmits(['tab-change', 'typing']);
+const emit = defineEmits(['tab-change', 'typing', 'prompt-typing']);
 
 const props = defineProps({
   tab: String,
@@ -36,14 +36,14 @@ const tabs = computed(() => [
 const animatedText = ref('');
 const showCursor = ref(true);
 let typingTimeout = null;
+let restartTimeout = null;
 
 const currentPrompt = computed(() => props.prompts[props.tab]);
 const currentExampleIdx = computed(() => props.exampleIdx ?? 0);
 
-// NUEVO: Computed para dividir el texto animado en líneas sin agregar líneas vacías extra
+// Computed para dividir el texto animado en líneas, filtrando líneas vacías
 const codeLines = computed(() => {
-  // Split normal, sin agregar línea vacía extra
-  return animatedText.value.split('\n');
+  return animatedText.value.split('\n').filter(line => line.trim() !== '');
 });
 
 function setTab(tabKey) {
@@ -54,10 +54,13 @@ function setTab(tabKey) {
 
 function startTyping() {
   clearTimeout(typingTimeout);
+  clearTimeout(restartTimeout);
   typingTimeout = null;
+  restartTimeout = null;
   animatedText.value = '';
   showCursor.value = true;
   emit('typing', true);
+  emit('prompt-typing', true); // NUEVO: avisar que el prompt está tipeando
   const linesArr = currentPrompt.value?.examples?.[currentExampleIdx.value] || [];
   const fullText = linesArr.join('\n');
   let charIdx = 0;
@@ -69,6 +72,11 @@ function startTyping() {
     } else {
       showCursor.value = false;
       emit('typing', false);
+      emit('prompt-typing', false); // NUEVO: avisar que terminó el typing del prompt
+      // Reiniciar animación después de 4 segundos
+      restartTimeout = setTimeout(() => {
+        startTyping();
+      }, 4000);
     }
   }
   typeChar();
@@ -95,7 +103,9 @@ watch(() => [props.tab, props.exampleIdx, props.prompts], () => {
 
 onBeforeUnmount(() => {
   clearTimeout(typingTimeout);
+  clearTimeout(restartTimeout);
   typingTimeout = null;
+  restartTimeout = null;
 });
 </script>
 
@@ -105,13 +115,14 @@ onBeforeUnmount(() => {
   display: flex;
   flex-direction: column;
   align-items: stretch;
-  justify-content: flex-start;
   min-width: 0;
   max-width: 100%;
   padding: 0;
   background: transparent !important;
   box-shadow: none !important;
   border: none !important;
+  min-height: 560px;
+  height: 560px;
 }
 .code-block-glass.code-block-terminal {
   width: 100%;
@@ -121,15 +132,13 @@ onBeforeUnmount(() => {
   box-shadow: 0 8px 32px 0 rgba(124, 58, 237, 0.10), 0 2px 8px 0 rgba(56, 189, 248, 0.08) !important;
   border: 1.5px solid rgba(139, 92, 246, 0.13) !important;
   border-radius: 1.2rem;
-  padding: 1.2rem 1.2rem;
-  min-height: 0;
-  height: auto;
-  max-height: none;
+  padding: 0.7rem 0.7rem 0.7rem 0.7rem;
+  min-height: 560px;
+  height: 560px;
   z-index: 10;
   position: relative;
   display: flex;
   flex-direction: column;
-  justify-content: flex-start;
   font-size: 15px;
 }
 .terminal-bar {
@@ -187,13 +196,17 @@ onBeforeUnmount(() => {
   background: rgba(24,24,32,0.55);
   border-radius: 1.2rem;
   box-shadow: 0 8px 32px 0 rgba(124, 58, 237, 0.08), 0 2px 8px 0 rgba(56, 189, 248, 0.06);
-  padding: 1.1rem 1.2rem;
+  padding: 1.2rem 1.2rem 1.1rem 1.2rem;
   color: #e5e7eb;
   backdrop-filter: blur(16px) saturate(1.1);
   -webkit-backdrop-filter: blur(16px) saturate(1.1);
   border: 1.5px solid rgba(139, 92, 246, 0.13);
   animation: fadeSlideIn 0.9s cubic-bezier(.4,1.6,.6,1);
-  overflow-x: auto;
+  overflow-y: auto;
+  height: 100%;
+  min-height: 0;
+  justify-content: flex-start;
+  align-items: stretch;
 }
 @keyframes fadeSlideIn {
   from { opacity: 0; transform: translateY(32px); }
@@ -297,14 +310,16 @@ onBeforeUnmount(() => {
     margin: 0 auto !important;
     justify-content: center !important;
     align-items: center !important;
+    min-height: 340px !important;
+    height: 340px !important;
   }
   .code-block-glass.code-block-terminal {
     min-width: 0 !important;
     max-width: 99vw !important;
     width: 100% !important;
     padding: 0.4rem 0.1rem 0.7rem 0.1rem !important;
-    min-height: 120px !important;
-    height: auto !important;
+    min-height: 340px !important;
+    height: 340px !important;
     max-height: 340px !important;
     margin: 0 auto !important;
     font-size: 13px !important;
@@ -313,6 +328,8 @@ onBeforeUnmount(() => {
     font-size: 13px !important;
     padding: 0.4rem 0.2rem !important;
     gap: 0.05rem !important;
+    min-height: 340px !important;
+    height: 340px !important;
   }
   .gutter-line {
     min-width: 1.1em !important;
