@@ -27,7 +27,9 @@
             }"
           />
         </div>
-        <div class="relative w-full h-full flex flex-col items-start">
+        
+        <!-- Contenedor del stepper con altura fija -->
+        <div class="relative w-full" style="height: calc(3 * 350px + 500px);">
           <!-- Línea base y línea de progreso -->
           <div
             class="absolute left-6 top-0 bottom-0 w-2 flex flex-col items-center z-0"
@@ -49,88 +51,85 @@
             <!-- Círculo fin -->
             <div class="stepper-dot end"></div>
           </div>
-          <ol
-            class="relative z-10 w-full flex flex-col justify-between min-h-[520px]"
-            style="min-height: calc(100vh-300px)"
-          >
-            <!-- Círculo 1 absolutamente posicionado sobre el inicio de la línea -->
-            <span
-              class="stepper-circle flex items-center justify-center rounded-full border-4 transition-all duration-300 text-2xl font-bold absolute z-20 bg-white border-violet-500 text-violet-600 shadow-lg"
-              :class="[activeStep === 0 ? 'active' : '']"
-              style="width:48px;height:48px;left:6px;top:-11px;transform:none;"
-            >
-              1
-            </span>
-            <li
+          
+          <!-- Grid de steps con altura fija -->
+          <div class="relative z-10 w-full h-full grid grid-rows-4">
+            <div
               v-for="(step, idx) in steps"
               :key="step.key"
-              :class="[
-                'group relative',
-                idx === 0 ? 'mb-36 pl-0' : idx === steps.length - 1 ? 'mb-[240px] pl-0' : 'mb-36 pl-0'
-              ]"
-              style="scroll-snap-align: center"
+              class="relative flex items-center"
+              :style="idx === 3 ? 'height: 500px;' : 'height: 350px;'"
             >
+              <!-- Círculo del step alineado al centro vertical -->
               <div
-                :class="[
-                  'flex items-center cursor-pointer',
-                  idx === activeStep
-                    ? 'font-extrabold text-violet-600 dark:text-cyan-400' : 'text-gray-700 dark:text-gray-300',
-                  'ml-14'
-                ]"
-                @click="scrollToStep(idx)"
-                style="position:relative;"
+                class="absolute z-20"
+                style="left: 28px; top: 50%; width: 48px; height: 48px; transform: translate(-50%, -50%);"
               >
                 <span
-                  v-if="idx !== 0 && idx !== steps.length - 1"
-                  :class="[
-                    'stepper-circle flex items-center justify-center rounded-full border-4 transition-all duration-300 text-2xl font-bold z-10 relative',
-                    idx === activeStep ? 'active' : '',
-                  ]"
-                  :style="{ transform: 'none', marginLeft: '2px' }"
+                  class="stepper-circle flex items-center justify-center rounded-full border-4 transition-all duration-300 text-2xl font-bold bg-white border-violet-500 text-violet-600 shadow-lg"
+                  :class="[activeStep === idx ? 'active' : '']"
+                  style="width: 48px; height: 48px;"
                 >
                   {{ idx + 1 }}
                 </span>
-                <span
-                  :class="[
-                    'text-2xl font-bold transition-all duration-500',
-                    idx === activeStep ? 'grow-title' : '',
-                    'group-hover:scale-[1.03] group-hover:translate-x-1',
-                  ]"
-                  >{{ step.title }}</span
-                >
               </div>
+              
+              <!-- Contenido del step -->
               <div
                 :ref="(el) => (stepRefs[idx] = el)"
+                class="ml-16 w-full pr-8"
                 :class="[
-                  'mt-4 max-w-xl transition-all duration-500',
+                  'transition-all duration-500',
                   idx === activeStep ? 'grow-desc' : 'shrink-desc',
-                  'ml-14'
+                  idx === 3 ? 'pb-24' : '',
                 ]"
               >
-                {{ step.description }}
-              </div>
-              <!-- Círculo con el número 4 absolutamente posicionado sobre el dot final -->
-              <transition name="fade-bounce-dot" mode="out-in">
-                <span
-                  v-if="idx === steps.length - 1"
-                  class="stepper-circle flex items-center justify-center rounded-full border-4 transition-all duration-300 text-2xl font-bold absolute z-20 bg-white border-cyan-400 text-cyan-500 shadow-lg animate-bounce-in"
-                  :class="[idx === activeStep ? 'active' : '']"
-                  style="width:48px;height:48px;left:6px;bottom:-28px;transform:none;"
+                <div
+                  :class="[
+                    'flex items-center cursor-pointer mb-4',
+                    idx === activeStep
+                      ? 'font-extrabold text-violet-600 dark:text-violet-400' : 'text-gray-700 dark:text-gray-300',
+                  ]"
+                  @click="scrollToStep(idx)"
                 >
-                  {{ idx + 1 }}
-                </span>
-              </transition>
-            </li>
-          </ol>
+                  <span
+                    :class="[
+                      'text-2xl font-bold transition-all duration-500',
+                      idx === activeStep ? 'grow-title' : '',
+                      'group-hover:scale-[1.03] group-hover:translate-x-1',
+                    ]"
+                  >
+                    {{ step.title() }}
+                  </span>
+                </div>
+                
+                <div class="text-left">
+                  <p class="text-base leading-relaxed text-gray-700 dark:text-gray-300">
+                    {{ step.description() }}
+                  </p>
+                  <span
+                    v-if="step.badge()"
+                    :class="[
+                      'inline-block mt-3 px-3 py-1 rounded-full text-xs font-semibold',
+                      idx % 2 === 0 ? 'bg-violet-100 text-violet-700' : 'bg-cyan-100 text-cyan-700'
+                    ]"
+                  >
+                    {{ step.badge() }}
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
+      
       <!-- Imagen fija (derecha) solo visible cuando la sección está en viewport -->
       <transition name="fade-slide-scale-bg" mode="out-in">
         <div v-if="showImage" class="relative w-2/5 flex items-center justify-center ml-0 z-0">
           <div ref="imageBlockRef"
             class="image-block relative rounded-3xl shadow-2xl overflow-visible"
             :class="[imageLoaded ? 'border-4 border-violet-200 dark:border-cyan-700 bg-white/70 dark:bg-gray-900/70' : 'border-0 bg-transparent']"
-            :style="{width: '520px', height: '520px', opacity: imageLoaded ? 1 : 0, transition: 'opacity 0.5s'}">
+            :style="{width: isLargeScreen ? '570px' : '490px', height: isLargeScreen ? '570px' : '490px', maxHeight: 'calc(100vh - 120px)', opacity: imageLoaded ? 1 : 0, transition: 'opacity 0.5s'}">
             <transition name="fade-slide-up-image-smooth" mode="out-in">
               <img
                 :key="steps[activeStep].image"
@@ -151,6 +150,7 @@
         </div>
       </transition>
     </div>
+    
     <!-- Mobile Layout (menor a md) restaurado -->
     <div class="md:hidden flex flex-col w-full min-h-screen">
       <!-- Título con Typewriter -->
@@ -197,10 +197,10 @@
                 <!-- Contenido -->
                 <div class="p-6">
                   <h3 class="text-xl font-bold mb-3 text-violet-700 dark:text-cyan-300">
-                    {{ step.title }}
+                    {{ step.title() }}
                   </h3>
                   <p class="text-gray-700 dark:text-gray-300 text-base leading-relaxed">
-                    {{ step.description }}
+                    {{ step.description() }}
                   </p>
                 </div>
               </div>
@@ -227,10 +227,16 @@
 </template>
 
 <script setup>
-import { ref, onMounted, onBeforeUnmount, watch } from "vue";
+import { ref, onMounted, onBeforeUnmount, watch, computed, nextTick } from "vue";
+import { useI18n } from 'vue-i18n';
 import ParticleBackground from "./ParticleBackground.vue";
 import TypewriterTitle from "./TypewriterTitle.vue";
-import { computed } from "vue";
+
+const { t } = useI18n();
+
+const props = defineProps({
+  forceFirstStep: { type: [Object, Boolean], required: false, default: false }
+})
 
 const aboutSection = ref(null);
 const mobileScrollContainer = ref(null);
@@ -239,30 +245,30 @@ const imageBlockRef = ref(null);
 const steps = [
   {
     key: "historia",
-    title: "Nuestra Historia",
-    description:
-      "Somos OnService, pioneros en la intersección de IA, aviación y atención al cliente. Nuestro equipo combina experiencia tecnológica y conocimiento profundo del sector aéreo.",
+    title: () => t('aboutStepper.steps[0].title'),
+    description: () => t('aboutStepper.steps[0].description'),
+    badge: () => t('aboutStepper.steps[0].badge'),
     image: "/mision-stepper2.png",
   },
   {
     key: "mision",
-    title: "Nuestra Misión",
-    description:
-      "Transformar la atención al cliente y optimizar procesos críticos para aerolíneas, agencias y empresas de aviación a nivel global.",
+    title: () => t('aboutStepper.steps[1].title'),
+    description: () => t('aboutStepper.steps[1].description'),
+    badge: () => t('aboutStepper.steps[1].badge'),
     image: "/ia-generated-02.png",
   },
   {
     key: "vision",
-    title: "Nuestra Visión",
-    description:
-      "Hacer que la interacción entre aerolíneas y pasajeros sea más fluida, personalizada y eficaz que nunca, superando los desafíos de la industria aérea.",
+    title: () => t('aboutStepper.steps[2].title'),
+    description: () => t('aboutStepper.steps[2].description'),
+    badge: () => t('aboutStepper.steps[2].badge'),
     image: "/vision-stepper3.png",
   },
   {
     key: "valores",
-    title: "Nuestros Valores",
-    description:
-      "Innovación continua, seguridad de los datos y entrega de valor medible. Construimos el futuro de la atención al cliente en la aviación.",
+    title: () => t('aboutStepper.steps[3].title'),
+    description: () => t('aboutStepper.steps[3].description'),
+    badge: () => t('aboutStepper.steps[3].badge'),
     image: "/ia-generated-04.png",
   },
 ];
@@ -270,6 +276,7 @@ const activeStep = ref(0);
 const mobileActiveStep = ref(0);
 const stepRefs = [];
 const mobileStepRefs = [];
+const isLargeScreen = computed(() => window.innerWidth >= 1280);
 
 // Calcula el porcentaje de altura de la línea de progreso según el paso activo
 const progressHeight = computed(() => {
@@ -277,8 +284,10 @@ const progressHeight = computed(() => {
   return ((activeStep.value + 1) * (100 / steps.length));
 });
 
-// Offset visual explícito para la imagen sticky (ajustable)
-const IMAGE_VISUAL_OFFSET = 350;
+// Responsive IMAGE_VISUAL_OFFSET
+const IMAGE_VISUAL_OFFSET = computed(() =>
+  window.innerWidth < 768 ? 120 : (activeStep.value === 3 ? 200 : 300)
+);
 
 // Posiciones de los iconos decorativos por step (puedes tunear y agregar más)
 const stepIconPositions = [
@@ -395,8 +404,8 @@ function handleDesktopScroll() {
     const parentRect = imageBlockRef.value.parentElement.getBoundingClientRect();
     const imageHeight = imageBlockRef.value.offsetHeight || 520;
     // Sumo el offset visual explícito
-    let offsetActual = circleCenter - parentRect.top - imageHeight / 2 + IMAGE_VISUAL_OFFSET;
-    let offsetMinimo = firstCircleCenter - parentRect.top - imageHeight / 2 + IMAGE_VISUAL_OFFSET;
+    let offsetActual = circleCenter - parentRect.top - imageHeight / 2 + IMAGE_VISUAL_OFFSET.value;
+    let offsetMinimo = firstCircleCenter - parentRect.top - imageHeight / 2 + IMAGE_VISUAL_OFFSET.value;
     // --- Limitar para que la imagen nunca se corte por abajo, pero nunca desaparezca ---
     const parentBottom = parentRect.top + parentRect.height;
     let maxOffset = parentBottom - parentRect.top - imageHeight;
@@ -442,6 +451,17 @@ function handleMobileScroll() {
   mobileActiveStep.value = Math.max(0, Math.min(activeIndex, steps.length - 1));
 }
 
+watch(() => props.forceFirstStep && props.forceFirstStep.value, async (val) => {
+  if (val) {
+    activeStep.value = 0
+    showImage.value = true
+    imageLoaded.value = true
+    await nextTick()
+    handleDesktopScroll()
+    if (props.forceFirstStep) props.forceFirstStep.value = false
+  }
+})
+
 onMounted(() => {
   window.addEventListener('scroll', handleDesktopScroll, { passive: true });
   handleDesktopScroll();
@@ -450,7 +470,9 @@ onBeforeUnmount(() => {
   window.removeEventListener('scroll', handleDesktopScroll);
 });
 
-// Imagen sticky: animación más suave y borde violeta solo visible cuando la imagen está cargada
+// Imagen sticky: aseguro que el offset y tamaño nunca la corten ni desaparezca, especialmente en el primer step y pantallas chicas.
+// En el div de la imagen sticky:
+// <div ref="imageBlockRef" class="image-block ..." :style="{width: isLargeScreen ? '600px' : '520px', height: isLargeScreen ? '600px' : '520px', maxHeight: 'calc(100vh - 120px)', opacity: imageLoaded ? 1 : 0, transition: 'opacity 0.5s'}">
 const imageLoaded = ref(false);
 </script>
 
@@ -489,33 +511,36 @@ const imageLoaded = ref(false);
 
 .grow-title {
   animation: growFontTitle 0.7s cubic-bezier(0.4, 0, 0.2, 1);
-  font-size: 2.1rem !important;
+  font-size: 3rem !important;
+  letter-spacing: -0.01em;
 }
 @keyframes growFontTitle {
   0% {
-    font-size: 1.2rem;
+    font-size: 1.8rem;
   }
   100% {
-    font-size: 2.1rem;
+    font-size: 3rem;
   }
 }
 .grow-desc {
   animation: growFontDesc 0.7s cubic-bezier(0.4, 0, 0.2, 1);
-  font-size: 1.35rem !important;
+  font-size: 1.5rem !important;
   opacity: 1;
+  line-height: 1.7;
 }
 .shrink-desc {
-  font-size: 1.1rem;
+  font-size: 1.2rem;
   opacity: 0.7;
   transition: font-size 0.5s, opacity 0.5s;
+  line-height: 1.6;
 }
 @keyframes growFontDesc {
   0% {
-    font-size: 1.1rem;
+    font-size: 1.2rem;
     opacity: 0.7;
   }
   100% {
-    font-size: 1.35rem;
+    font-size: 1.5rem;
     opacity: 1;
   }
 }
@@ -543,6 +568,7 @@ const imageLoaded = ref(false);
   background: linear-gradient(180deg, #7c3aed 0%, #38bdf8 100%);
   z-index: 1;
   pointer-events: none;
+  animation: pulseLine 1.5s infinite alternate;
 }
 .stepper-dot {
   position: absolute;
@@ -658,5 +684,10 @@ const imageLoaded = ref(false);
 .fade-slide-up-image-fast-leave-from {
   opacity: 1;
   transform: translateY(0) scale(1);
+}
+
+@keyframes pulseLine {
+  0% { filter: brightness(1); box-shadow: 0 0 0 0 #38bdf855; }
+  100% { filter: brightness(1.25); box-shadow: 0 0 16px 2px #38bdf855; }
 }
 </style>
