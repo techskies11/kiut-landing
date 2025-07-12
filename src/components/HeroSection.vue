@@ -4,7 +4,7 @@
     <div class="absolute inset-0 w-full h-full z-0 pointer-events-none select-none">
       <CircuitBackground />
     </div>
-    <div class="relative z-10 w-full max-w-[1440px] mx-auto px-2 md:px-10 flex flex-col md:flex-row items-center justify-center gap-8 md:gap-20 min-h-[60vh] md:min-h-[60vh] mt-6 md:mt-20">
+    <div class="relative z-10 w-full max-w-[1440px] mx-auto px-2 md:px-10 flex flex-col md:flex-row items-center justify-center gap-8 md:gap-20 min-h-[60vh] md:min-h-[60vh] mt-14 md:mt-20">
       <!-- Columna izquierda: texto con fondo glass -->
       <div class="flex-1 flex flex-col items-center justify-center text-center md:pr-8 animate-fade-in-up order-1 md:order-none">
         <div class="w-full bg-white/70 dark:bg-white/10 backdrop-blur-xl rounded-2xl shadow-xl shadow-black/10 border border-white/30 dark:border-white/10 py-10 md:py-12 flex flex-col items-center min-h-[420px] md:min-h-[340px] lg:min-h-[420px]">

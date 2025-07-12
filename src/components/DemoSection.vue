@@ -12,7 +12,7 @@
       />
       <div class="w-full max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-center gap-4 md:gap-8 min-h-[40vh] py-2 md:py-6 animate-fade-in-up">
         <!-- Bloque Prompt (66%) -->
-        <div class="flex-[2_2_0%] w-full max-w-3xl bg-white/80 dark:bg-white/10 backdrop-blur-2xl rounded-3xl shadow-2xl shadow-black/10 border border-white/30 dark:border-white/10 px-3 md:px-6 py-5 md:py-8 flex flex-col items-center animate-fade-in-up h-[540px] min-h-[540px]">
+        <div class="flex-[2_2_0%] w-full max-w-3xl bg-white/80 dark:bg-white/10 backdrop-blur-2xl rounded-3xl shadow-2xl shadow-black/10 border border-white/30 dark:border-white/10 px-3 md:px-6 py-5 md:py-8 flex flex-col items-center animate-fade-in-up h-[420px] min-h-[420px] md:h-[620px] md:min-h-[620px]">
           <CodePromptBlock 
             :prompts="prompts" 
             :tab="currentTab" 
@@ -23,7 +23,7 @@
           />
         </div>
         <!-- Bloque Agent Response (33%) -->
-        <div class="flex-[1_1_0%] w-full max-w-xl bg-white/80 dark:bg-white/10 backdrop-blur-2xl rounded-3xl shadow-2xl shadow-black/10 border border-white/30 dark:border-white/10 px-3 md:px-6 py-5 md:py-8 flex flex-col items-center animate-fade-in-up delay-150 h-[540px] min-h-[540px]">
+        <div class="flex-[1_1_0%] w-full max-w-xl bg-white/80 dark:bg-white/10 backdrop-blur-2xl rounded-3xl shadow-black/10 border border-white/30 dark:border-white/10 px-3 md:px-6 py-5 md:py-8 flex flex-col items-center animate-fade-in-up h-[420px] min-h-[420px] md:h-[620px] md:min-h-[620px]">
           <AgentResponseBlock 
             :responses="agentResponses" 
             :tab="currentTab" 

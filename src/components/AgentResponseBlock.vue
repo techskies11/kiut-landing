@@ -1,12 +1,10 @@
 <template>
-  <div
-    class="agent-chat-outer-glass bg-[rgba(24,24,32,0.85)] backdrop-blur-2xl border border-white/30 dark:border-white/10 rounded-2xl shadow-2xl shadow-black/10 h-[500px] min-h-[500px] p-4 md:p-6 flex flex-col w-full"
-  >
-    <div class="agent-chat-glass h-full min-h-0 flex-1 flex flex-col w-full">
-      <div class="w-full h-full min-h-0 flex-1 flex flex-col justify-center items-center p-0 m-0">
+  <div class="w-full flex flex-col items-stretch justify-stretch h-full min-h-0 bg-white/80 dark:bg-transparent">
+    <div class="bg-[rgba(24,24,32,0.85)] backdrop-blur-2xl border border-white/30 dark:border-white/10 rounded-2xl shadow-2xl shadow-black/10 w-full h-full min-h-0 flex flex-col p-4 md:p-6">
+      <transition name="fade-slide-scale-block" mode="out-in">
         <!-- Loader: solo visible si loading o promptTyping, nunca junto a mensajes -->
-        <transition name="fade-slide-scale-block" mode="out-in">
-          <div v-if="props.promptTyping" class="kai-thinking-placeholder h-full min-h-0 flex flex-col items-center justify-center w-full rounded-2xl">
+        <template v-if="props.promptTyping || ((props.typing || props.loading) && compactedMessages.length === 0 && !props.promptTyping)">
+          <div class="kai-thinking-placeholder h-full min-h-0 flex flex-col items-center justify-center w-full rounded-2xl">
             <div class="flex flex-col items-center justify-center w-full h-full">
               <div class="kai-loading-avatar">
                 <div class="kai-avatar-core"></div>
@@ -16,57 +14,35 @@
               </transition-group>
               <div class="flex items-center gap-2 text-gray-400 text-sm mt-1">
                 <span class="spinner"></span>
-                <span>KAI está iniciando...</span>
-              </div>
-            </div>
-          </div>
-        </transition>
-        <transition name="fade-slide-scale-block" mode="out-in">
-          <div v-if="(props.typing || props.loading) && compactedMessages.length === 0 && !props.promptTyping" class="kai-thinking-placeholder h-full min-h-0 flex flex-col items-center justify-center w-full rounded-2xl" aria-live="polite">
-            <div class="flex flex-col items-center gap-3 w-full h-full">
-              <!-- Avatar de KAI con animación -->
-              <div class="kai-loading-avatar">
-                <div class="kai-avatar-glow"></div>
-                <div class="kai-avatar-core"></div>
-              </div>
-              <!-- Mensaje principal -->
-              <transition-group name="fade-phrase" tag="div">
-                <span :key="currentPhrase" class="font-semibold text-lg md:text-xl text-violet-700 dark:text-cyan-300 animate-grow block text-center mb-2">{{ currentPhrase }}
-                  <span class="thinking-dots ml-1">
-                    <span v-for="i in 3" :key="i" class="dot-bounce" :class="['dot-bounce-'+i, { active: dotIdx === i }]">●</span>
-                  </span>
-                </span>
-              </transition-group>
-              <!-- Mensaje secundario -->
-              <div class="flex items-center gap-2 text-gray-500 dark:text-gray-400 text-sm mt-1">
-                <span class="spinner"></span>
                 <span v-if="props.typing">Configurando personalidad de KAI...</span>
+                <span v-else-if="props.promptTyping">KAI está iniciando...</span>
                 <span v-else>Por favor, espera unos segundos...</span>
               </div>
             </div>
           </div>
-        </transition>
-        <!-- Mensajes: solo visibles si no está el loader -->
-        <div v-if="!props.promptTyping && !((props.typing || props.loading) && compactedMessages.length === 0 && !props.promptTyping)" ref="chatContainer" class="chat-messages w-full h-full min-h-0 flex flex-col justify-center gap-2 p-0 m-0 bg-transparent border-none shadow-none rounded-none">
-          <transition-group name="fadeInMsgSeq" tag="div" v-if="showAgentResponse">
-            <div v-for="(msg, idx) in compactedMessages" :key="'msg-' + idx" :class="['chat-row', msg.role === 'Agent' ? 'chat-agent' : 'chat-user']" :style="{ transitionDelay: (idx * 200) + 'ms' }">
-              <div :class="['chat-bubble', msg.role === 'Agent' ? 'kai' : 'user', msg.role === 'user' && idx === compactedMessages.length - 1 ? 'last' : '']">
-                <span v-if="msg.role === 'user'" class="chat-badge user-badge">User</span>
-                <span v-else-if="msg.role === 'Agent'" class="chat-badge kai-badge">KAI</span>
-                <span class="chat-text" v-if="msg.role === 'Agent'">
-                  <span v-if="msg.partial">{{ msg.text }}<span v-if="showCursor && idx === typingMsgIdx && typingCharIdx > 0" class="editor-cursor">|</span></span>
-                  <span v-else v-html="colorize(msg.text)"></span>
-                </span>
-                <span class="chat-text" v-else v-html="colorize(msg.text)"></span>
+        </template>
+        <template v-else>
+          <div ref="chatContainer" class="chat-messages w-full h-full min-h-0 flex flex-col justify-center gap-2 p-0 m-0 bg-transparent border-none shadow-none rounded-none">
+            <transition-group name="fadeInMsgSeq" tag="div" v-if="showAgentResponse">
+              <div v-for="(msg, idx) in compactedMessages" :key="'msg-' + idx" :class="['chat-row', msg.role === 'Agent' ? 'chat-agent' : 'chat-user']" :style="{ transitionDelay: (idx * 200) + 'ms' }">
+                <div :class="['chat-bubble', msg.role === 'Agent' ? 'kai' : 'user', msg.role === 'user' && idx === compactedMessages.length - 1 ? 'last' : '']">
+                  <span v-if="msg.role === 'user'" class="chat-badge user-badge">User</span>
+                  <span v-else-if="msg.role === 'Agent'" class="chat-badge kai-badge">KAI</span>
+                  <span class="chat-text" v-if="msg.role === 'Agent'">
+                    <span v-if="msg.partial">{{ msg.text }}<span v-if="showCursor && idx === typingMsgIdx && typingCharIdx > 0" class="editor-cursor">|</span></span>
+                    <span v-else v-html="colorize(msg.text)"></span>
+                  </span>
+                  <span class="chat-text" v-else v-html="colorize(msg.text)"></span>
+                </div>
               </div>
+            </transition-group>
+            <!-- Placeholder invisible para evitar saltos de layout -->
+            <div class="invisible absolute pointer-events-none select-none h-0 overflow-hidden">
+              <div class="chat-row chat-agent"><div class="chat-bubble kai">KAI: Esta es una respuesta de ejemplo muy larga para reservar espacio y evitar saltos de layout en la UI. Puedes ajustar este texto según el máximo esperado.</div></div>
             </div>
-          </transition-group>
-          <!-- Placeholder invisible para evitar saltos de layout -->
-          <div class="invisible absolute pointer-events-none select-none h-0 overflow-hidden">
-            <div class="chat-row chat-agent"><div class="chat-bubble kai">KAI: Esta es una respuesta de ejemplo muy larga para reservar espacio y evitar saltos de layout en la UI. Puedes ajustar este texto según el máximo esperado.</div></div>
           </div>
-        </div>
-      </div>
+        </template>
+      </transition>
     </div>
   </div>
 </template>
@@ -331,8 +307,8 @@ onBeforeUnmount(() => {
 
 <style scoped>
 .agent-chat-outer-glass, .agent-chat-glass {
-  background: rgba(24,24,32,0.55) !important;
-  box-shadow: 0 8px 32px 0 rgba(124, 58, 237, 0.10), 0 2px 8px 0 rgba(56, 189, 248, 0.08) !important;
+  background: rgba(24,24,32,0.85) !important;
+  box-shadow: 0 2px 12px 0 rgba(124,58,237,0.04) !important;
   border: 1.5px solid rgba(139, 92, 246, 0.13) !important;
   border-radius: 1.2rem;
   /* padding eliminado, ahora se usa Tailwind en el template */
@@ -564,6 +540,10 @@ onBeforeUnmount(() => {
   border: 1px solid #38bdf855;
 }
 @media (max-width: 900px) {
+  .kai-thinking-placeholder {
+    min-height: 475px !important;
+    height: 475px !important;
+  }
   .agent-chat-outer-glass, .agent-chat-glass {
     /* padding eliminado, ahora se usa Tailwind en el template */
   }
@@ -622,10 +602,8 @@ onBeforeUnmount(() => {
   align-items: center;
   justify-content: center;
   animation: fadeInMsg 0.15s cubic-bezier(.4,1.6,.6,1);
-  background: rgba(24,24,32,0.55) !important;
+  background: rgba(24,24,32,0.85) !important;
   border-radius: 1.2rem;
-  box-shadow: 0 8px 32px 0 rgba(124, 58, 237, 0.10), 0 2px 8px 0 rgba(56, 189, 248, 0.08) !important;
-  border: 1.5px solid rgba(139, 92, 246, 0.13) !important;
 }
 .kai-thinking-placeholder > .flex,
 .kai-thinking-placeholder > div {

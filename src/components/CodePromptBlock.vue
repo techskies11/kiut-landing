@@ -1,6 +1,6 @@
 <template>
   <div class="w-full flex flex-col items-stretch justify-stretch h-full min-h-0">
-    <div class="bg-[rgba(24,24,32,0.85)] backdrop-blur-2xl border border-white/30 dark:border-white/10 rounded-2xl shadow-2xl shadow-black/10 w-full h-full min-h-0 flex flex-col p-4 md:p-6">
+    <div class="bg-[rgba(24,24,32,0.85)] backdrop-blur-2xl border border-white/30 dark:border-white/10 rounded-2xl shadow-2xl shadow-black/10 w-full h-full min-h-0 flex flex-col p-4 md:p-6 min-h-0 h-full">
       <!-- Tabs mejoradas -->
       <div class="tabs-bar">
         <span class="tabs-bar-bg"></span>
@@ -8,7 +8,7 @@
           {{ tab.label }}
         </span>
       </div>
-      <div class="editor-block flex-1 w-full h-full bg-transparent p-0 flex flex-col items-stretch">
+      <div class="editor-block flex-1 w-full h-full min-h-0 bg-transparent p-0 flex flex-col items-stretch">
         <div v-for="(line, idx) in codeLines" :key="idx" class="editor-line-flex">
           <span class="gutter-line">{{ idx + 1 }}</span>
           <pre class="editor-code-line" v-html="colorizeBlock(line + (showCursor && idx === codeLines.length - 1 ? '<span class=\'editor-cursor\'>|</span>' : ''))"></pre>
@@ -298,6 +298,10 @@ onBeforeUnmount(() => {
   51%, 100% { opacity: 0; }
 }
 @media (max-width: 900px) {
+  .bg-\[rgba\(24\,24\,32\,0\.85\)\] {
+    min-height: 470px !important;
+    height: 470px !important;
+  }
   .prompt-glass-inner {
     padding: 0.8rem 0.7rem;
     min-height: 420px;
