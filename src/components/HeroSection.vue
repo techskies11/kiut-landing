@@ -1,5 +1,5 @@
 <template>
-  <section class="relative w-full min-h-[calc(100vh-80px)] pt-10 md:pt-26 pb-20 flex items-center justify-center bg-transparent overflow-hidden">
+  <section class="relative w-full min-h-[calc(100vh-80px)] pt-10 md:pt-16 pb-20 flex items-center justify-center bg-transparent overflow-hidden">
     <!-- Circuit background decorativo -->
     <div class="absolute inset-0 w-full h-full z-0 pointer-events-none select-none">
       <CircuitBackground />
