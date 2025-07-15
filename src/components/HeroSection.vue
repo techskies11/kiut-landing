@@ -7,9 +7,9 @@
     <div class="relative z-10 w-full max-w-[1440px] mx-auto px-2 md:px-10 flex flex-col md:flex-row items-center justify-center gap-8 md:gap-20 min-h-[60vh] md:min-h-[60vh] mt-14 md:mt-20">
       <!-- Columna izquierda: texto con fondo glass -->
       <div class="flex-1 flex flex-col items-center justify-center text-center md:pr-8 animate-fade-in-up order-1 md:order-none">
-        <div class="w-full bg-white/70 dark:bg-white/10 backdrop-blur-xl rounded-2xl shadow-xl shadow-black/10 border border-white/30 dark:border-white/10 py-16 md:py-20 flex flex-col items-center min-h-[480px] md:min-h-[400px] lg:min-h-[480px]">
+        <div class="w-full bg-white/70 dark:bg-white/10 backdrop-blur-xl rounded-2xl shadow-xl shadow-black/10 border border-white/30 dark:border-white/10 py-12 md:py-16 flex flex-col items-center min-h-[480px] md:min-h-[400px] lg:min-h-[480px]">
           <!-- Ajuste de min-height para evitar saltos de layout del typewriter -->
-          <div class="w-full flex flex-col items-center justify-center mb-8 px-0 md:px-12">
+          <div class="w-full flex flex-col items-center justify-center mb-6 px-0 md:px-12">
             <TypewriterTitle
               :i18n-key="'sections.hero.title'"
               :subtitle-i18n-key="'sections.hero.subtitle'"
@@ -18,7 +18,7 @@
               fixedTitleHeight="min-h-[5.2rem] md:min-h-[7.2rem]"
             />
           </div>
-          <p class="text-lg text-gray-500 dark:text-gray-400 mb-12 max-w-md mx-auto leading-relaxed">
+          <p class="text-lg text-gray-500 dark:text-gray-400 mb-8 max-w-md mx-auto leading-relaxed">
             {{ heroDescParts[0] }}<OnServiceAI />{{ heroDescParts[1] }}
           </p>
           <div class="flex flex-col sm:flex-row gap-4 w-full sm:w-auto justify-center px-2">
