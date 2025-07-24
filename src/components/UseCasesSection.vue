@@ -9,12 +9,11 @@
       <div class="text-center mb-12">
         <TypewriterTitle
           :i18n-key="'sections.usecases.title'"
-          :subtitle-i18n-key="'sections.usecases.subtitle'"
           :badge="{ icon: `<svg class='w-4 h-4' fill='none' stroke='currentColor' viewBox='0 0 24 24'><path stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M13 10V3L4 14h7v7l9-11h-7z'/></svg>`, i18nKey: 'sections.usecases.badge' }"
           fixed-title-height="min-h-[5.2rem] md:min-h-[7.2rem]"
         />
       </div>
-      <p class="text-xl text-gray-600 dark:text-gray-300 max-w-4xl mx-auto leading-relaxed mb-8">
+      <p class="text-xl text-gray-600 dark:text-gray-300 max-w-4xl mx-auto leading-relaxed mb-8 text-center">
           {{ t('usecases.description_pre') }}
           <span class="font-bold">{{ t('usecases.description_highlight') }}</span>
           {{ t('usecases.description_post') }}
@@ -26,34 +25,31 @@
           v-for="(item, index) in tm('usecases.cases')"
           :key="item.title"
           :id="'usecase-tile-' + index"
-          class="usecase-card group relative overflow-hidden rounded-3xl bg-white/80 dark:bg-gray-900/80 border border-gray-200 dark:border-gray-700 shadow-xl transition-all duration-400 p-8 md:p-10 flex flex-col cursor-pointer hover:shadow-2xl hover:-translate-y-1"
+          class="usecase-card grid grid-rows-[32px_82px_84px_32px] gap-4 group relative overflow-hidden rounded-3xl bg-white/80 dark:bg-gray-900/80 border border-gray-200 dark:border-gray-700 shadow-xl transition-all duration-400 p-8 md:p-10 flex flex-col cursor-pointer hover:shadow-2xl hover:-translate-y-1"
           :class="{
             'expanded-tile': expandedIdx === index,
-            'expanded-horizontal': expandedIdx === index && index !== tm('usecases.cases').length - 1,
-            'expanded-fullrow': expandedIdx === index && index === tm('usecases.cases').length - 1
           }"
           @click="toggleExpand(index)"
         >
-          <div class="text-4xl mb-3 flex items-center justify-between">
-            <span v-if="item.icon" v-html="item.icon" class="w-8 h-8 flex items-center justify-center"></span>
-            <button
-              @click.stop="toggleExpand(index)"
-              class="ml-auto px-3 py-1.5 rounded-lg bg-violet-100 dark:bg-violet-900/30 text-violet-700 dark:text-violet-300 font-semibold text-sm flex items-center gap-1 transition-all duration-200 hover:bg-violet-200 dark:hover:bg-violet-800/60 focus:outline-none focus:ring-2 focus:ring-violet-400 shadow-sm hover:shadow-md"
-              :aria-expanded="expandedIdx === index"
-              :aria-controls="'usecase-details-' + index"
-              role="button"
-              tabindex="0"
-            >
-              <span>{{ expandedIdx === index ? t('usecases.less') : t('usecases.more') }}</span>
-              <svg :class="['w-4 h-4 transition-transform duration-300', expandedIdx === index ? 'rotate-90' : '']" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
-            </button>
-          </div>
-          <h3 class="text-xl font-bold mb-2 text-gray-900 dark:text-white">{{ item.title }}</h3>
-          <p class="text-gray-700 dark:text-gray-300 mb-4 leading-relaxed">{{ item.desc }}</p>
-          <ul class="mb-4 space-y-1">
+          <header class="flex items-center justify-between">
+            <h3 class="text-xl font-bold text-gray-900 dark:text-white">{{ item.title }}</h3>
+          </header>
+          <p class="text-gray-700 dark:text-gray-300 leading-relaxed">{{ item.desc }}</p>
+          <ul class="space-y-1">
             <li v-for="(bullet, bidx) in item.bullets" :key="bidx" class="flex items-center"><span class="mr-2 text-green-400">✔️</span>{{ bullet }}</li>
           </ul>
-          <transition name="expand-fade">
+          <button
+            @click.stop="toggleExpand(index)"
+            class="ml-auto px-3 py-1.5 rounded-lg bg-violet-100 dark:bg-violet-900/30 text-violet-700 dark:text-violet-300 font-semibold text-sm flex items-center gap-1 transition-all duration-200 hover:bg-violet-200 dark:hover:bg-violet-800/60 focus:outline-none focus:ring-2 focus:ring-violet-400 shadow-sm hover:shadow-md"
+            :aria-expanded="expandedIdx === index"
+            :aria-controls="'usecase-details-' + index"
+            role="button"
+            tabindex="0"
+          >
+            <span>{{ expandedIdx === index ? t('usecases.less') : t('usecases.more') }}</span>
+            <svg :class="['w-4 h-4 transition-transform duration-300 rotate-90', expandedIdx === index ? 'rotate-270' : '']" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+          </button>
+          <transition name="expand-fade" mode="out-in">
             <div
               v-if="expandedIdx === index"
               :id="'usecase-details-' + index"
@@ -87,39 +83,33 @@
       <!-- Tiles de métricas -->
       <div class="grid grid-cols-2 md:grid-cols-4 gap-8 mb-12">
         <div class="text-center p-8 rounded-3xl bg-white/80 dark:bg-white/10 backdrop-blur-lg border border-gray-200 dark:border-white/10 shadow-xl hover:shadow-2xl hover:-translate-y-1 transition-all duration-300">
-          <div class="text-3xl md:text-4xl font-bold text-violet-600 dark:text-violet-400 mb-2">70%</div>
-          <div class="text-sm text-gray-800 dark:text-gray-300">{{ t('usecases.metrics.cost_reduction') }}</div>
+          <div class="text-3xl md:text-4xl font-bold text-violet-600 dark:text-violet-400 mb-2">+80</div>
+          <div class="text-sm text-gray-800 dark:text-gray-300">{{ t('usecases.metrics.languages') }}</div>
+        </div>
+        <div class="text-center p-8 rounded-3xl bg-white/80 dark:bg-white/10 backdrop-blur-lg border border-gray-200 dark:border-white/10 shadow-xl hover:shadow-2xl hover:-translate-y-1 transition-all duration-300">
+          <div class="text-3xl md:text-4xl font-bold text-violet-600 dark:text-violet-400 mb-2">{{ t('usecases.metrics.connection') }}</div>
+          <div class="text-sm text-gray-800 dark:text-gray-300">{{ t('usecases.metrics.omnichannel') }}</div>
+        </div>
+        <div class="text-center p-8 rounded-3xl bg-white/80 dark:bg-white/10 backdrop-blur-lg border border-gray-200 dark:border-white/10 shadow-xl hover:shadow-2xl hover:-translate-y-1 transition-all duration-300">
+          <div class="text-3xl md:text-4xl font-bold text-violet-600 dark:text-violet-400 mb-2">{{ t('usecases.metrics.textAndVoice') }}</div>
+          <div class="text-sm text-gray-800 dark:text-gray-300">{{ t('usecases.metrics.multimodal') }}</div>
         </div>
         <div class="text-center p-8 rounded-3xl bg-white/80 dark:bg-white/10 backdrop-blur-lg border border-gray-200 dark:border-white/10 shadow-xl hover:shadow-2xl hover:-translate-y-1 transition-all duration-300">
           <div class="text-3xl md:text-4xl font-bold text-violet-600 dark:text-violet-400 mb-2">24/7</div>
           <div class="text-sm text-gray-800 dark:text-gray-300">{{ t('usecases.metrics.availability') }}</div>
         </div>
-        <div class="text-center p-8 rounded-3xl bg-white/80 dark:bg-white/10 backdrop-blur-lg border border-gray-200 dark:border-white/10 shadow-xl hover:shadow-2xl hover:-translate-y-1 transition-all duration-300">
-          <div class="text-3xl md:text-4xl font-bold text-violet-600 dark:text-violet-400 mb-2">95%</div>
-          <div class="text-sm text-gray-800 dark:text-gray-300">{{ t('usecases.metrics.satisfaction') }}</div>
-        </div>
-        <div class="text-center p-8 rounded-3xl bg-white/80 dark:bg-white/10 backdrop-blur-lg border border-gray-200 dark:border-white/10 shadow-xl hover:shadow-2xl hover:-translate-y-1 transition-all duration-300">
-          <div class="text-3xl md:text-4xl font-bold text-violet-600 dark:text-violet-400 mb-2">3s</div>
-          <div class="text-sm text-gray-800 dark:text-gray-300">{{ t('usecases.metrics.response_time') }}</div>
-        </div>
       </div>
 
       <!-- CTA final (botón grande) -->
       <div class="text-center mt-10">
-        <div class="inline-flex items-center gap-3 px-8 py-4 rounded-2xl bg-gradient-to-r from-violet-500 to-cyan-500 text-white font-bold text-lg shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-105">
-          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
-          </svg>
-          {{ t('usecases.request_demo') }}
-        </div>
-        <p class="text-gray-600 dark:text-gray-300 mt-4 text-sm">
-          <template v-if="discoverTransformParts.length === 2">
-            {{ discoverTransformParts[0] }}<OnServiceAI />{{ discoverTransformParts[1] }}
-          </template>
-          <template v-else>
-            {{ t('usecases.discover_transform') }}
-          </template>
-        </p>
+        <a href="https://wa.me/525511903634" target="_blank">
+          <div class="inline-flex items-center gap-3 px-8 py-4 rounded-2xl bg-gradient-to-r from-violet-500 to-cyan-500 text-white font-bold text-lg shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-105">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+            </svg>
+            {{ t('usecases.request_demo') }}
+          </div>
+        </a>
       </div>
     </div>
   </section>
@@ -237,20 +227,16 @@ const channelStyles = {
   }
 }
 .expanded-content {
-  transition: box-shadow 0.3s, background 0.3s, border 0.3s, max-height 0.4s cubic-bezier(.4,0,.2,1);
+  transition: box-shadow 0.2s ease-in-out;
   box-shadow: 0 4px 24px 0 rgba(124, 58, 237, 0.10), 0 1px 4px 0 #38bdf822;
-  max-height: 600px;
 }
 .expand-fade-enter-active, .expand-fade-leave-active {
-  transition: max-height 0.38s cubic-bezier(.4,0,.2,1), opacity 0.28s cubic-bezier(.4,0,.2,1);
-  overflow: hidden;
+  transition: opacity 0.2s ease-in-out;
 }
 .expand-fade-enter-from, .expand-fade-leave-to {
   opacity: 0;
-  max-height: 0;
 }
 .expand-fade-enter-to, .expand-fade-leave-from {
   opacity: 1;
-  max-height: 600px;
 }
 </style> 

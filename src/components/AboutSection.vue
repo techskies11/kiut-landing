@@ -152,7 +152,7 @@ const aboutDescParts = t('about.description').split('{brand}')
 }
 
 .animate-fade-in-right {
-  animation: fade-in-right 1s cubic-bezier(.4,0,.2,1) both;
+  animation: fade-in-right .3s cubic-bezier(.4,0,.2,1) both;
 }
 
 .animate-fade-in-up {

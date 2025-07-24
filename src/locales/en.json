@@ -13,7 +13,7 @@
     "title_post": "for your business",
     "subtitle": "Artificial intelligence solutions to boost sales, support and operations.",
     "description": "Automate customer service and grow your business with {brand}",
-    "cta_demo": "Start Demo",
+    "cta_demo": "Request Demo",
     "cta_usecases": "View Use Cases"
   },
   "about": {
@@ -50,17 +50,17 @@
       },
       {
         "title": "Our Mission",
-        "description": "We transform customer service and optimize critical processes for airlines, agencies, and aviation companies worldwide.",
+        "description": "We make the interaction between airlines and passengers smoother, more personalized, and more efficient than ever, overcoming the challenges of the airline industry.",
         "badge": "Automate your service"
       },
       {
         "title": "Our Vision",
-        "description": "We make the interaction between airlines and passengers smoother, more personalized, and more efficient than ever, overcoming the challenges of the airline industry.",
+        "description": "We seek a future where, by sharing the needs and challenges of our partners, we can redefine the passenger experience through cutting-edge AI solutions that are intuitive, personalized, and globally scalable.",
         "badge": "Scale your service"
       },
       {
-        "title": "Our Values",
-        "description": "Continuous innovation, data security, and measurable value delivery. We are building the future of customer service in aviation.",
+        "title": "Our Challenges",
+        "description": "We understand the unique challenges of the airline industry – the need for fast, accurate information and global scalability – and have designed our solutions to exceed these expectations.",
         "badge": "Innovation and Security"
       }
     ]
@@ -72,10 +72,12 @@
     "description_highlight": "reducing costs by up to 70%",
     "description_post": "while improving passenger satisfaction.",
     "metrics": {
-      "cost_reduction": "70% cost reduction",
-      "availability": "Availability",
-      "satisfaction": "95% customer satisfaction improvement",
-      "response_time": "Response time"
+      "languages": "Languages",
+      "connection": "Connection",
+      "omnichannel": "Omnichannel",
+      "textAndVoice": "Text and Voice",
+      "multimodal": "Multimodal",
+      "availability": "Always Online"
     },
     "request_demo": "Request personalized demo",
     "discover_transform": "Discover how {brand} can transform your product in 30 days",
@@ -90,7 +92,7 @@
     "cases": [
       {
         "icon": "💳",
-        "title": "Quotation & Ticket Sales",
+        "title": "Ticket Sales",
         "desc": "Guides passengers through a personalized ticket and ancillary purchase process, maximizing revenue and efficiency.",
         "bullets": [
           "Increase in direct sales",
@@ -208,13 +210,21 @@
     "hero": {
       "title": "The new generation of AI for your business",
       "subtitle": "AI solutions to boost sales, support, and operations.",
-      "badge": "AI Revolution in Aviation"
+      "badge": "Where service meets intelligence"
     },
     "demo": {
       "title": "Try AI in Action",
       "subtitle": "Interact with our live demo and discover the power of automation.",
       "badge": "Interactive Demo",
-      "playground_cta": "Access Playground"
+      "playground_cta": "Access Playground",
+      "categories": {
+        "airline": {
+          "label": "Airline"
+        },
+        "travel": {
+          "label": "Travel"
+        }
+      }
     },
     "usecases": {
       "title": "Transform your customer service",
@@ -239,34 +249,35 @@
       "members": [
         {
           "name": "Alberto Desimone",
-          "position": "CEO",
-          "bio": "Expert in NLP and AI architectures for conversational solutions. Over 10 years in AI development. Leads multidisciplinary teams and delivers innovative AI projects for global clients.",
-          "image": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=500&fit=crop&crop=face",
-          "extra": "AI Experience",
-          "tag1": "AI & NLP",
-          "tag2": "IT Leadership",
-          "tag3": "Aviation"
+          "position": "CEO of KIU",
+          "position_key": "Co-founder of OnService.AI",
+          "bio": "<i>\"The future is not made by technologies, but by people who dare to adopt them\"</i><br>I have over 20 years developing technological solutions for the aviation industry in Latin America. From my beginnings with DINAR Airlines to leading KIU and its regional expansion, I have always bet on innovation with real impact. Today I co-founded OnService to continue on that path: creating simple, evolutionary, and human services that transform the daily operations of the sector."
         },
         {
           "name": "Juan Felipe Restrepo",
-          "position": "CPO",
-          "bio": "Technical leader with expertise in complex system integration and cloud scalability. Extensive experience in technology and aviation companies. Passionate about building robust, scalable solutions.",
-          "image": "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=400&h=500&fit=crop&crop=face",
-          "extra": "Aviation",
-          "tag1": "Cloud Architecture",
-          "tag2": "Systems Integration",
-          "tag3": "Aviation"
+          "position": "CPO of OnService.AI",
+          "position_key": "Leader in digital product development for the aviation industry",
+          "bio": "<i>\"The key is creating simple products that solve real problems with high-impact technology\"</i><br>I have over 15 years developing digital solutions for airlines in Latin America and global markets. From distribution systems and reservation engines to generative AI virtual assistants, I have always worked at the intersection of technological innovation and concrete business needs. Today I co-lead OnService with the purpose of designing accessible, scalable products focused on transforming operations and passenger experience."
         },
         {
           "name": "Alejandro Nardi",
-          "position": "COO",
-          "bio": "Specialist in user experience (UX) and interaction design for digital platforms. Focused on intuitive interfaces for service bots. Dedicated to creating seamless and engaging digital experiences.",
-          "image": "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=400&h=500&fit=crop&crop=face",
-          "extra": "UX & Bots",
-          "tag1": "UX/UI Design",
-          "tag2": "Conversational Bots",
-          "tag3": "Digital Platforms"
+          "position": "COO of OnService.AI",
+          "position_key": "Specialist in operations and technology for airlines",
+          "bio": "<i>\"Scaling a business requires simple processes, agile teams, and intelligent technology\"</i><br>I have over 15 years leading operations and technological projects for airlines in emerging markets. From implementing critical platforms at KIU to developing innovative solutions in complex environments, I have always worked with focus on efficiency and scalability. Today I co-lead OnService with a clear vision: transforming airline processes with accessible, robust, and results-oriented technology."
+        },
+        {
+          "name": "Georgina Engelen",
+          "position": "Head of People at OnService.AI",
+          "position_key": "Driver of culture, talent, and strategic development",
+          "bio": "<i>\"The most valuable resource is human: my mission is to ensure each person grows and contributes to the purpose\"</i><br>For over 3 years I have led selection, onboarding, and organizational development processes in technology companies. My experience at KIU allowed me to build solid teams, improve employee experience, and accompany cultural transformations in growth contexts. Today I take on the challenge of Head of People at OnService with a clear purpose: designing human and scalable organizations, focused on well-being, leadership, and real business impact."
+        },
+        {
+          "name": "Manuel Zapata",
+          "position": "CCO of OnService.AI",
+          "position_key": "Expert in commercial strategy for the aviation industry",
+          "bio": "<i>\"Technology only creates value when it drives intelligent commercial decisions\"</i><br>I have over 20 years driving business solutions for airlines and travel agencies in Latin America. From my beginnings leading sales at Amadeus Chile to accompanying the digital transformation of multiple sector players, I have always worked from the intersection between technology and commercial strategy. Today I co-lead OnService to continue that purpose: providing simple, agile tools oriented toward real business growth."
         }
+
       ],
       "footer": "Our team is driven by the vision of redefining efficiency and service quality in aviation, using AI as our primary tool. We are proud of the diversity of skills and perspectives that allow us to innovate and deliver cutting-edge solutions to our clients."
     },
@@ -287,5 +298,6 @@
     }
   },
   "cta_brand_line": "Discover how <brand /> can transform your product in 30 days",
-  "footer_copyright": "© 2025 Kiut. All rights reserved."
+  "footer_copyright": "© 2025 Kiut. All rights reserved.",
+  "footer_sponsor": "Powered by AI Travel Technologies Inc."
 } 

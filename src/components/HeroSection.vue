@@ -22,7 +22,7 @@
             {{ heroDescParts[0] }}<OnServiceAI />{{ heroDescParts[1] }}
           </p>
           <div class="flex flex-col sm:flex-row gap-3 md:gap-4 w-full sm:w-auto justify-center px-4 md:px-2">
-            <a href="#demo" class="group relative px-6 md:px-8 py-3 md:py-4 bg-gradient-to-r from-violet-600 to-cyan-500 text-white font-semibold rounded-xl shadow-lg hover:shadow-2xl hover:scale-105 transition-all duration-300 flex items-center justify-center gap-2 md:gap-3 overflow-hidden">
+            <a href="https://wa.me/525511903634" target="_blank" class="group relative px-6 md:px-8 py-3 md:py-4 bg-gradient-to-r from-violet-600 to-cyan-500 text-white font-semibold rounded-xl shadow-lg hover:shadow-2xl hover:scale-105 transition-all duration-300 flex items-center justify-center gap-2 md:gap-3 overflow-hidden">
               <span class="relative z-10 text-sm md:text-base">{{ t('hero.cta_demo') }}</span>
               <div class="absolute inset-0 bg-gradient-to-r from-violet-700 to-cyan-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
               <svg class="w-4 h-4 md:w-5 md:h-5 relative z-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">

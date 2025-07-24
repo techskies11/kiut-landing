@@ -8,7 +8,7 @@
       <TypewriterTitle
         :i18n-key="'sections.demo.title'"
         :subtitle-i18n-key="'sections.demo.subtitle'"
-        :badge="{ icon: `<svg class='w-4 h-4' fill='none' stroke='currentColor' viewBox='0 0 24 24'><path stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M13 10V3L4 14h7v7l9-11h-7z'/></svg>`, i18nKey: 'sections.demo.badge' }"
+        :badge="{ icon: `<svg class='w-4 h-4' fill='none' stroke='currentColor' viewBox='0 0 24 24'><path stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M13 10V3L4 14h7v7l9-11h-7z'/></svg>` }"
       />
       <div class="w-full max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-center gap-4 md:gap-8 min-h-[40vh] py-2 md:py-6 animate-fade-in-up">
         <!-- Bloque Prompt (66%) -->
@@ -37,7 +37,7 @@
         </div>
       </div>
       <!-- Botón de acceso al playground debajo de ambos bloques -->
-      <div class="w-full flex justify-center mt-8">
+      <div class="w-full flex justify-center mt-8" v-if="false">
         <a href="https://playground.kiut.ai" target="_blank" rel="noopener">
           <button class="px-6 py-3 rounded-xl font-bold bg-gradient-to-r from-violet-500 to-cyan-400 text-white shadow-lg hover:scale-105 hover:shadow-2xl transition-all text-base">
             {{ $t('sections.demo.playground_cta') }}
@@ -54,6 +54,9 @@ import ParticleBackground from './ParticleBackground.vue'
 import CodePromptBlock from './CodePromptBlock.vue'
 import AgentResponseBlock from './AgentResponseBlock.vue'
 import TypewriterTitle from './TypewriterTitle.vue'
+import { useI18n } from 'vue-i18n'
+
+const { t } = useI18n()
 
 // Estado del demo
 const currentTab = ref('airline')
@@ -68,11 +71,11 @@ let dotInterval = null
 // Datos de ejemplo para los prompts - conversaciones más largas y realistas
 const prompts = {
   airline: {
-    label: 'Aerolínea',
+    label: t('sections.demo.categories.airline.label'),
     examples: [
       [
         '✈️ # System Prompt',
-        'Eres KAI, tu asistente virtual de aerolíneas.',
+        'Eres Bot de OnService.AI, tu asistente virtual de aerolíneas.',
         'Tono cordial y profesional.',
         'Responde en español claro y preciso.',
         'Ayuda con reservas, check-in, vuelos y cambios de itinerario.',
@@ -86,7 +89,7 @@ const prompts = {
       ],
       [
         '🛫 # System Prompt',
-        'Hola, soy KAI, asistente digital de la aerolínea.',
+        'Hola, soy Bot de OnService.AI, asistente digital de la aerolínea.',
         'Tono amable y eficiente.',
         'Responde consultas sobre reservas, check-in y upgrades.',
         'Brinda información sobre equipaje de mano y facturado.',
@@ -100,7 +103,7 @@ const prompts = {
       ],
       [
         '✈️ # System Prompt',
-        'KAI, asistente de vuelos.',
+        'Bot de OnService.AI, asistente de vuelos.',
         'Tono profesional y empático.',
         'Responde dudas sobre horarios, servicios y conexiones.',
         'Informa sobre retrasos, cancelaciones y alternativas.',
@@ -114,7 +117,7 @@ const prompts = {
       ],
       [
         '🛬 # System Prompt',
-        'Eres KAI, experto en atención al pasajero.',
+        'Eres Bot de OnService.AI, experto en atención al pasajero.',
         'Tono claro y resolutivo.',
         'Ayuda con selección de asientos y embarque.',
         'Explica el proceso de check-in online y en aeropuerto.',
@@ -128,7 +131,7 @@ const prompts = {
       ],
       [
         '✈️ # System Prompt',
-        'KAI, asistente de aerolínea.',
+        'Bot de OnService.AI, asistente de aerolínea.',
         'Tono cercano y resolutivo.',
         'Brinda soporte para servicios especiales y asistencia a pasajeros.',
         'Explica cómo solicitar asistencia para movilidad reducida.',
@@ -147,7 +150,7 @@ const prompts = {
     examples: [
       [
         '🌍 # System Prompt',
-        'Eres KAI, experto en viajes internacionales.',
+        'Eres Bot de OnService.AI, experto en viajes internacionales.',
         'Tono amigable y claro.',
         'Recomienda destinos y tips de viaje personalizados.',
         'Brinda información sobre visados, vacunas y requisitos de entrada.',
@@ -161,7 +164,7 @@ const prompts = {
       ],
       [
         '🧳 # System Prompt',
-        'KAI, tu asesor de vacaciones.',
+        'Bot de OnService.AI, tu asesor de vacaciones.',
         'Tono cercano y entusiasta.',
         'Sugiere destinos y actividades según preferencias del usuario.',
         'Brinda información sobre temporadas y clima.',
@@ -175,7 +178,7 @@ const prompts = {
       ],
       [
         '🌏 # System Prompt',
-        'Eres KAI, guía de viajes.',
+        'Eres Bot de OnService.AI, guía de viajes.',
         'Tono informativo y cordial.',
         'Ayuda a reservar tours y excursiones.',
         'Sugiere actividades para familias, parejas y grupos.',
@@ -189,7 +192,7 @@ const prompts = {
       ],
       [
         '🗾 # System Prompt',
-        'KAI, experto en cultura y turismo.',
+        'Bot de OnService.AI, experto en cultura y turismo.',
         'Tono claro y detallista.',
         'Responde sobre mejores épocas para viajar y festividades.',
         'Sugiere rutas y circuitos turísticos.',
@@ -203,7 +206,7 @@ const prompts = {
       ],
       [
         '🚗 # System Prompt',
-        'Eres KAI, asistente de viajes.',
+        'Eres Bot de OnService.AI, asistente de viajes.',
         'Tono práctico y directo.',
         'Brinda información sobre alquiler de autos y requisitos.',
         'Ayuda con la gestión de seguros y coberturas.',
@@ -216,81 +219,6 @@ const prompts = {
         '$ User: "¿Qué documentos necesito para alquilar un auto en Europa?"'
       ]
     ]
-  },
-  it: {
-    label: 'Soporte IT',
-    examples: [
-      [
-        '💻 # System Prompt',
-        'Eres KAI, soporte técnico de la empresa.',
-        'Tono técnico y resolutivo.',
-        'Ayuda con acceso a sistemas, correo y aplicaciones.',
-        'Brinda soporte para instalación y configuración de software.',
-        'Asiste en la gestión de tickets y seguimiento de incidentes.',
-        'Ofrece recomendaciones de seguridad informática.',
-        'Nunca solicites contraseñas ni datos sensibles.',
-        'Si el usuario reporta un incidente grave, escala al área correspondiente.',
-        'No realices cambios sin autorización del usuario.',
-        '# Ejemplo',
-        '$ User: "No puedo acceder a mi correo corporativo."'
-      ],
-      [
-        '🔒 # System Prompt',
-        'KAI, tu asistente de tecnología.',
-        'Tono profesional y paciente.',
-        'Guía para configurar VPN y acceso remoto.',
-        'Brinda soporte para problemas de conectividad y redes.',
-        'Ayuda con la gestión de usuarios y permisos.',
-        'Ofrece consejos de seguridad y buenas prácticas.',
-        'Nunca compartas información confidencial.',
-        'Si el usuario tiene un problema urgente, escala a soporte avanzado.',
-        'No realices acciones sin validación.',
-        '# Ejemplo',
-        '$ User: "¿Cómo configuro la VPN en mi laptop?"'
-      ],
-      [
-        '🖥️ # System Prompt',
-        'Eres KAI, experto en soporte digital.',
-        'Tono claro y directo.',
-        'Responde sobre sistemas, tickets y accesos.',
-        'Brinda ayuda para restablecimiento de contraseñas.',
-        'Asiste en la instalación de software autorizado.',
-        'Ofrece recomendaciones para optimizar el rendimiento.',
-        'Nunca pidas datos personales innecesarios.',
-        'Si el usuario reporta un error crítico, escala a soporte senior.',
-        'No confirmes cambios sin autorización.',
-        '# Ejemplo',
-        '$ User: "¿El sistema de tickets está caído?"'
-      ],
-      [
-        '🔑 # System Prompt',
-        'KAI, asistente de soporte.',
-        'Tono resolutivo y cordial.',
-        'Ayuda a restablecer contraseñas y accesos.',
-        'Brinda soporte para recuperación de cuentas.',
-        'Ofrece consejos para crear contraseñas seguras.',
-        'Nunca almacenes contraseñas ni datos sensibles.',
-        'Si el usuario tiene problemas de acceso, escala a IT.',
-        'No realices cambios sin validación.',
-        'Si el usuario solicita soporte fuera de horario, informa los canales disponibles.',
-        '# Ejemplo',
-        '$ User: "¿Cómo restablezco mi contraseña?"'
-      ],
-      [
-        '�� # System Prompt',
-        'Eres KAI, soporte informático.',
-        'Tono técnico y claro.',
-        'Brinda ayuda sobre instalaciones de software y actualizaciones.',
-        'Asiste en la gestión de licencias y activaciones.',
-        'Ofrece recomendaciones para mantener el equipo seguro.',
-        'Nunca instales software no autorizado.',
-        'Si el usuario reporta un virus, escala a seguridad informática.',
-        'No realices cambios sin validación.',
-        'Si el usuario necesita soporte presencial, agenda una visita.',
-        '# Ejemplo',
-        '$ User: "¿Puedo instalar software en mi equipo?"'
-      ]
-    ]
   }
 };
 
@@ -300,7 +228,7 @@ const agentResponses = {
     [
       'User: "¿Puedo cambiar mi vuelo?"',
       'Agent: "¡Por supuesto! ¿Podrías indicarme tu número de reserva?"',
-      'User: "Es 123456."',
+      'User: "Es XY48326."',
       'Agent: "Gracias. Verificando... Tu tarifa permite un cambio con costo adicional. ¿Deseas continuar?"'
     ],
     [
@@ -360,38 +288,6 @@ const agentResponses = {
       'Agent: "Perfecto, te envío los requisitos por email. ¿Algo más?"'
     ]
   ],
-  it: [
-    [
-      'User: "No puedo acceder a mi correo corporativo."',
-      'Agent: "¿Recibiste algún mensaje de error?"',
-      'User: "Sí, dice contraseña incorrecta."',
-      'Agent: "Te ayudo a restablecerla. ¿Quieres hacerlo ahora?"'
-    ],
-    [
-      'User: "¿Cómo configuro la VPN en mi laptop?"',
-      'Agent: "Debes descargar el software desde la intranet. ¿Te envío el enlace?"',
-      'User: "Sí, por favor."',
-      'Agent: "Aquí tienes: www.empresa.com/vpn. ¿Algo más?"'
-    ],
-    [
-      'User: "¿El sistema de tickets está caído?"',
-      'Agent: "Actualmente el sistema funciona con normalidad. ¿Quieres abrir un ticket nuevo?"',
-      'User: "Sí, necesito soporte."',
-      'Agent: "Por favor, describe el problema y lo derivaré al área correspondiente."'
-    ],
-    [
-      'User: "¿Cómo restablezco mi contraseña?"',
-      'Agent: "Puedes restablecerla desde la web o la app. ¿Te envío el enlace?"',
-      'User: "Sí, envíamelo."',
-      'Agent: "Aquí tienes: www.empresa.com/restablecer. ¿Algo más?"'
-    ],
-    [
-      'User: "¿Puedo instalar software en mi equipo?"',
-      'Agent: "Depende del tipo de software. ¿Cuál necesitas instalar?"',
-      'User: "Adobe Reader."',
-      'Agent: "Puedes instalarlo desde la intranet. ¿Te envío el enlace?"'
-    ]
-  ]
 };
 
 // Handlers para la comunicación entre componentes

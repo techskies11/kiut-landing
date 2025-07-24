@@ -13,7 +13,7 @@
     "title_post": "para tu empresa",
     "subtitle": "Soluciones de inteligencia artificial para impulsar ventas, soporte y operaciones.",
     "description": "Automatiza la atención y haz crecer tu negocio con {brand}",
-    "cta_demo": "Iniciar demostración",
+    "cta_demo": "Solicitar demostración",
     "cta_usecases": "Ver casos de uso"
   },
   "about": {
@@ -50,17 +50,17 @@
       },
       {
         "title": "Nuestra Misión",
-        "description": "Transformamos la atención al cliente y optimizamos procesos críticos para aerolíneas, agencias y empresas de aviación a nivel global.",
+        "description": "Hacemos que la interacción entre aerolíneas y pasajeros sea más fluida, personalizada y eficaz que nunca, superando los desafíos de la industria aérea.",
         "badge": "Automatiza tu atención"
       },
       {
         "title": "Nuestra Visión",
-        "description": "Hacemos que la interacción entre aerolíneas y pasajeros sea más fluida, personalizada y eficaz que nunca, superando los desafíos de la industria aérea.",
+        "description": "Buscamos un futuro donde, al compartir las necesidades y desafíos de nuestros aliados, podamos redefinir la experiencia del pasajero a través de soluciones de IA de vanguardia que son intuitivas, personalizadas y escalables globalmente.",
         "badge": "Escala tu servicio"
       },
       {
-        "title": "Nuestros Valores",
-        "description": "Innovación continua, seguridad de los datos y entrega de valor medible. Construimos el futuro de la atención al cliente en la aviación.",
+        "title": "Nuestros Desafios",
+        "description": "Entendemos los desafíos únicos de la industria aérea –la necesidad de respuestas rápidas, información precisa y escalabilidad global– y hemos diseñado nuestras soluciones para superar estas expectativas.",
         "badge": "Innovación y Seguridad"
       }
     ]
@@ -72,10 +72,12 @@
     "description_highlight": "reduciendo costos hasta un 70%",
     "description_post": "mientras mejoran la satisfacción del pasajero.",
     "metrics": {
-      "cost_reduction": "Reducción del 70% en los costos operativos",
-      "availability": "Disponibilidad",
-      "satisfaction": "Mejora del 95% en la satisfacción del cliente",
-      "response_time": "Tiempo de respuesta"
+      "languages": "Idiomas",
+      "connection": "Conexión",
+      "omnichannel": "Omnicanales",
+      "textAndVoice": "Texto y Voz",
+      "multimodal": "Multimodal",
+      "availability": "Siempre disponible"
     },
     "request_demo": "Solicitar demostración personalizada",
     "discover_transform": "Descubre cómo {brand} puede transformar tu producto en 30 días",
@@ -90,7 +92,7 @@
     "cases": [
       {
         "icon": "💳",
-        "title": "Cotización y Venta de Boletos",
+        "title": "Venta de Boletos",
         "desc": "Guía al pasajero en la compra de boletos y servicios adicionales de forma personalizada, maximizando ingresos y eficiencia.",
         "bullets": [
           "Incremento en ventas directas",
@@ -208,13 +210,231 @@
     "hero": {
       "title": "La nueva generación de IA para tu empresa",
       "subtitle": "Soluciones de inteligencia artificial para impulsar ventas, soporte y operaciones.",
-      "badge": "Revolución IA en Aviación"
+      "badge": "Donde el servicio se encuentra con la inteligencia"
     },
     "demo": {
       "title": "Prueba la IA en acción",
       "subtitle": "Interactúa con nuestro demo en vivo y descubre el poder de la automatización.",
       "badge": "Demo interactivo",
-      "playground_cta": "Acceder al Playground"
+      "playground_cta": "Acceder al Playground",
+      "categories": {
+        "airline": {
+          "label": "Aerolínea",
+          "examples": [
+            {
+              "system_prompt": "Eres Bot de OnService.AI, tu asistente virtual de aerolíneas.",
+              "tone": "Tono cordial y profesional.",
+              "responsibilities": [
+                "Responde en español claro y preciso.",
+                "Ayuda con reservas, check-in, vuelos y cambios de itinerario.",
+                "Brinda información sobre políticas de equipaje y servicios a bordo.",
+                "Ofrece recomendaciones sobre asientos y upgrades.",
+                "Responde dudas sobre horarios, puertas de embarque y conexiones.",
+                "Si el usuario solicita asistencia especial, explica el proceso.",
+                "Nunca compartas información personal sin autorización."
+              ],
+              "example": "¿Puedo cambiar mi vuelo?"
+            },
+            {
+              "system_prompt": "Hola, soy Bot de OnService.AI, asistente digital de la aerolínea.",
+              "tone": "Tono amable y eficiente.",
+              "responsibilities": [
+                "Responde consultas sobre reservas, check-in y upgrades.",
+                "Brinda información sobre equipaje de mano y facturado.",
+                "Explica las políticas de cambios y cancelaciones.",
+                "Sugiere servicios adicionales como salas VIP y embarque prioritario.",
+                "Ayuda con la selección de asientos y preferencias de comida.",
+                "Ofrece soporte para pasajeros frecuentes y programas de millas.",
+                "Nunca inventes información, consulta siempre la base de datos."
+              ],
+              "example": "¿Cuánto equipaje puedo llevar en cabina?"
+            },
+            {
+              "system_prompt": "Bot de OnService.AI, asistente de vuelos.",
+              "tone": "Tono profesional y empático.",
+              "responsibilities": [
+                "Responde dudas sobre horarios, servicios y conexiones.",
+                "Informa sobre retrasos, cancelaciones y alternativas.",
+                "Asiste en la gestión de upgrades y cambios de asiento.",
+                "Brinda detalles sobre servicios a bordo y entretenimiento.",
+                "Ayuda con solicitudes de asistencia especial.",
+                "Recuerda siempre verificar la identidad del pasajero.",
+                "No proporciones información confidencial sin validación."
+              ],
+              "example": "¿El vuelo AM123 está demorado?"
+            },
+            {
+              "system_prompt": "Eres Bot de OnService.AI, experto en atención al pasajero.",
+              "tone": "Tono claro y resolutivo.",
+              "responsibilities": [
+                "Ayuda con selección de asientos y embarque.",
+                "Explica el proceso de check-in online y en aeropuerto.",
+                "Brinda información sobre servicios para familias y niños.",
+                "Asiste en la gestión de equipaje perdido o dañado.",
+                "Ofrece recomendaciones para un viaje más cómodo.",
+                "Nunca solicites datos sensibles por chat.",
+                "Si el usuario necesita ayuda urgente, deriva al call center."
+              ],
+              "example": "¿Puedo seleccionar mi asiento online?"
+            },
+            {
+              "system_prompt": "Bot de OnService.AI, asistente de aerolínea.",
+              "tone": "Tono cercano y resolutivo.",
+              "responsibilities": [
+                "Brinda soporte para servicios especiales y asistencia a pasajeros.",
+                "Explica cómo solicitar asistencia para movilidad reducida.",
+                "Ayuda con la gestión de mascotas en cabina y bodega.",
+                "Informa sobre requisitos de documentación para viajar.",
+                "Sugiere opciones de entretenimiento y comidas especiales.",
+                "Nunca confirmes cambios sin validación del usuario.",
+                "Si hay dudas legales, deriva al área correspondiente."
+              ],
+              "example": "¿Cómo solicito asistencia especial para mi vuelo?"
+            }
+          ]
+        },
+        "travel": {
+          "label": "Viajes",
+          "examples": [
+            {
+              "system_prompt": "Eres Bot de OnService.AI, experto en viajes internacionales.",
+              "tone": "Tono amigable y claro.",
+              "responsibilities": [
+                "Recomienda destinos y tips de viaje personalizados.",
+                "Brinda información sobre visados, vacunas y requisitos de entrada.",
+                "Sugiere actividades y experiencias locales.",
+                "Ayuda con reservas de hoteles, autos y excursiones.",
+                "Ofrece consejos sobre seguridad y cultura local.",
+                "Responde dudas sobre seguros de viaje y asistencia.",
+                "Nunca des información médica, deriva a profesionales."
+              ],
+              "example": "¿Necesito visa para viajar a Brasil?"
+            },
+            {
+              "system_prompt": "Bot de OnService.AI, tu asesor de vacaciones.",
+              "tone": "Tono cercano y entusiasta.",
+              "responsibilities": [
+                "Sugiere destinos y actividades según preferencias del usuario.",
+                "Brinda información sobre temporadas y clima.",
+                "Ayuda con la planificación de itinerarios y presupuestos.",
+                "Ofrece recomendaciones gastronómicas y culturales.",
+                "Asiste en la gestión de reservas y cambios.",
+                "Nunca confirmes reservas sin autorización.",
+                "Si el usuario solicita asistencia médica, deriva a un profesional."
+              ],
+              "example": "¿Qué destino recomendás para vacaciones en invierno?"
+            },
+            {
+              "system_prompt": "Eres Bot de OnService.AI, guía de viajes.",
+              "tone": "Tono informativo y cordial.",
+              "responsibilities": [
+                "Ayuda a reservar tours y excursiones.",
+                "Sugiere actividades para familias, parejas y grupos.",
+                "Brinda información sobre transporte local y traslados.",
+                "Ofrece consejos sobre moneda, propinas y costumbres.",
+                "Responde dudas sobre seguros y asistencia en viaje.",
+                "Nunca des consejos médicos, deriva a expertos.",
+                "Si el usuario tiene una emergencia, indica el número local de emergencias."
+              ],
+              "example": "¿Cómo reservo un tour en París?"
+            },
+            {
+              "system_prompt": "Bot de OnService.AI, experto en cultura y turismo.",
+              "tone": "Tono claro y detallista.",
+              "responsibilities": [
+                "Responde sobre mejores épocas para viajar y festividades.",
+                "Sugiere rutas y circuitos turísticos.",
+                "Brinda información sobre transporte y alojamiento.",
+                "Ofrece recomendaciones para viajeros con necesidades especiales.",
+                "Ayuda con la gestión de reservas y cambios.",
+                "Nunca confirmes información sin verificar.",
+                "Si el usuario pregunta por salud, deriva a un profesional."
+              ],
+              "example": "¿Cuál es la mejor época para visitar Japón?"
+            },
+            {
+              "system_prompt": "Eres Bot de OnService.AI, asistente de viajes.",
+              "tone": "Tono práctico y directo.",
+              "responsibilities": [
+                "Brinda información sobre alquiler de autos y requisitos.",
+                "Ayuda con la gestión de seguros y coberturas.",
+                "Sugiere rutas y consejos para conducir en el extranjero.",
+                "Ofrece asistencia en caso de accidentes o emergencias.",
+                "Nunca confirmes reservas sin validación.",
+                "Si el usuario tiene un accidente, indica el número de emergencias.",
+                "No des consejos legales, deriva a expertos."
+              ],
+              "example": "¿Qué documentos necesito para alquilar un auto en Europa?"
+            }
+          ]
+        }
+      },
+      "agent_responses": {
+        "airline": [
+          [
+            "User: \"¿Puedo cambiar mi vuelo?\"",
+            "Agent: \"¡Por supuesto! ¿Podrías indicarme tu número de reserva?\"",
+            "User: \"Es XY48326.\"",
+            "Agent: \"Gracias. Verificando... Tu tarifa permite un cambio con costo adicional. ¿Deseas continuar?\""
+          ],
+          [
+            "User: \"¿Cuánto equipaje puedo llevar en cabina?\"",
+            "Agent: \"Puedes llevar una pieza de hasta 10kg en cabina. ¿Te gustaría saber sobre equipaje en bodega?\"",
+            "User: \"¿Y en bodega?\"",
+            "Agent: \"En bodega puedes llevar hasta 23kg por pieza, según tu tarifa. ¿Necesitás ayuda con algo más?\""
+          ],
+          [
+            "User: \"¿El vuelo AM123 está demorado?\"",
+            "Agent: \"Déjame verificar... El vuelo AM123 está programado para salir a horario. ¿Te gustaría recibir notificaciones de cambios?\"",
+            "User: \"Sí, por favor.\"",
+            "Agent: \"Listo, te avisaré ante cualquier novedad. ¿Algo más en lo que pueda ayudarte?\""
+          ],
+          [
+            "User: \"¿Puedo seleccionar mi asiento online?\"",
+            "Agent: \"Sí, puedes seleccionar tu asiento desde la web o la app. ¿Te gustaría que te envíe el enlace?\"",
+            "User: \"Sí, envíamelo.\"",
+            "Agent: \"Aquí tienes: www.aerolinea.com/seleccionar-asiento. ¿Algo más?\""
+          ],
+          [
+            "User: \"¿Cómo solicito asistencia especial para mi vuelo?\"",
+            "Agent: \"Puedes solicitar asistencia especial durante la reserva o llamando a nuestro call center. ¿Te gustaría que te ayude a gestionarlo?\"",
+            "User: \"Sí, por favor.\"",
+            "Agent: \"Perfecto, ¿me indicas tu número de reserva?\""
+          ]
+        ],
+        "travel": [
+          [
+            "User: \"¿Necesito visa para viajar a Brasil?\"",
+            "Agent: \"Si eres ciudadano argentino, no necesitas visa para turismo en Brasil. ¿Te gustaría saber sobre otros países?\"",
+            "User: \"¿Y para Estados Unidos?\"",
+            "Agent: \"Para Estados Unidos sí necesitas visa. ¿Te ayudo con el proceso?\""
+          ],
+          [
+            "User: \"¿Qué destino recomendás para vacaciones en invierno?\"",
+            "Agent: \"Bariloche y Ushuaia son excelentes opciones en Argentina. ¿Prefieres playa o nieve?\"",
+            "User: \"Nieve.\"",
+            "Agent: \"Entonces Ushuaia es ideal. ¿Te gustaría ver paquetes?\""
+          ],
+          [
+            "User: \"¿Cómo reservo un tour en París?\"",
+            "Agent: \"Puedes reservar tours en París desde nuestra web o app. ¿Te envío el enlace?\"",
+            "User: \"Sí, por favor.\"",
+            "Agent: \"Aquí tienes: www.tours.com/paris. ¿Algo más?\""
+          ],
+          [
+            "User: \"¿Cuál es la mejor época para visitar Japón?\"",
+            "Agent: \"La primavera (marzo-abril) es ideal por los cerezos en flor. ¿Te gustaría recomendaciones de itinerario?\"",
+            "User: \"Sí, por favor.\"",
+            "Agent: \"Te armo un itinerario personalizado. ¿Cuántos días planeas viajar?\""
+          ],
+          [
+            "User: \"¿Qué documentos necesito para alquilar un auto en Europa?\"",
+            "Agent: \"Necesitás licencia internacional y pasaporte vigente. ¿Te ayudo a gestionar la licencia?\"",
+            "User: \"Sí, por favor.\"",
+            "Agent: \"Perfecto, te envío los requisitos por email. ¿Algo más?\""
+          ]
+        ]
+      }
     },
     "usecases": {
       "title": "Transforma tu atención al cliente",
@@ -239,33 +459,33 @@
       "members": [
         {
           "name": "Alberto Desimone",
-          "position": "CEO",
-          "bio": "Experto en PNL y arquitecturas de IA para soluciones conversacionales. Más de 10 años en desarrollo de IA. Lidera equipos multidisciplinarios y entrega proyectos innovadores de IA para clientes globales.",
-          "image": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=500&fit=crop&crop=face",
-          "extra": "Experiencia IA",
-          "tag1": "IA & PLN",
-          "tag2": "Liderazgo IT",
-          "tag3": "Aviación"
+          "position": "CEO de KIU",
+          "position_key": "Co-fundador de OnService.AI",
+          "bio": "<i>“El futuro no lo hacen las tecnologías, lo hacen las personas que se animan a adoptarlas”</i><br>Llevo más de 20 años desarrollando soluciones tecnológicas para la industria aeronáutica en Latinoamérica. Desde mis inicios con DINAR Líneas Aéreas hasta liderar KIU y su expansión regional, siempre aposté por la innovación con impacto real. Hoy co-fundé OnService para seguir ese camino: crear servicios simples, evolutivos y humanos que transformen el día a día del sector."
         },
         {
           "name": "Juan Felipe Restrepo",
-          "position": "CPO",
-          "bio": "Líder técnico con expertise en integración de sistemas complejos y escalabilidad en la nube. Amplia experiencia en empresas de tecnología y aviación. Apasionado por construir soluciones robustas y escalables.",
-          "image": "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=400&h=500&fit=crop&crop=face",
-          "extra": "Aviación",
-          "tag1": "Arquitectura Cloud",
-          "tag2": "Integración de Sistemas",
-          "tag3": "Aviación"
+          "position": "CPO de OnService.AI",
+          "position_key": "Líder en desarrollo de productos digitales para la industria aérea",
+          "bio": "<i>“La clave está en crear productos simples que resuelvan problemas reales con tecnología de alto impacto“</i><br>Llevo más de 15 años desarrollando soluciones digitales para aerolíneas en Latinoamérica y mercados globales. Desde sistemas de distribución y motores de reserva hasta asistentes virtuales con IA generativa, siempre trabajé en el cruce entre innovación tecnológica y necesidades concretas del negocio. Hoy co-lidero OnService con el propósito de diseñar productos accesibles, escalables y pensados para transformar la operación y la experiencia del pasajero."
         },
         {
           "name": "Alejandro Nardi",
-          "position": "COO",
-          "bio": "Especialista en experiencia de usuario (UX) y diseño de interacción para plataformas digitales. Enfocado en interfaces intuitivas para bots de servicio. Dedicado a crear experiencias digitales fluidas y atractivas.",
-          "image": "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=400&h=500&fit=crop&crop=face",
-          "extra": "UX & Bots",
-          "tag1": "UX/UI Design",
-          "tag2": "Bots Conversacionales",
-          "tag3": "Plataformas Digitales"
+          "position": "COO de OnService.AI",
+          "position_key": "Especialista en operaciones y tecnología para aerolíneas",
+          "bio": "<i>“Escalar un negocio requiere procesos simples, equipos ágiles y tecnología inteligente“</i><br> Llevo más de 15 años liderando operaciones y proyectos tecnológicos para aerolíneas en mercados emergentes. Desde la implementación de plataformas críticas en KIU hasta el desarrollo de soluciones innovadoras en entornos complejos, siempre trabajé con foco en la eficiencia y la escalabilidad. Hoy co-lidero OnService con una visión clara: transformar los procesos de las aerolíneas con tecnología accesible, robusta y orientada al resultado."
+        },
+        {
+          "name": "Georgina Engelen",
+          "position": "Head of People de OnService.AI",
+          "position_key": "Impulsora de cultura, talento y desarrollo estratégico",
+          "bio": "<i>“El recurso más valioso es el humano: mi misión es lograr que cada persona crezca y aporte al propósito“</i><br>Desde hace más de 3 años lidero procesos de selección, onboarding y desarrollo organizacional en compañías tecnológicas. Mi trayectoria en KIU me permitió construir equipos sólidos, mejorar la experiencia del colaborador y acompañar transformaciones culturales en contextos de crecimiento. Hoy asumo el desafío de Head of People en OnService con un propósito claro: diseñar organizaciones humanas y escalables, enfocadas en el bienestar, el liderazgo y el impacto real en el negocio"
+        },
+        {
+          "name": "Manuel Zapata",
+          "position": "CCO de OnService.AI",
+          "position_key": "Experto en estrategia comercial para la industria aérea",
+          "bio": "<i>“La tecnología solo crea valor cuando impulsa decisiones comerciales inteligentes“</i><br> Llevo más de 20 años impulsando soluciones de negocio para aerolíneas y agencias de viaje en Latinoamérica. Desde mis inicios liderando ventas en Amadeus Chile hasta acompañar la transformación digital de múltiples actores del sector, siempre trabajé desde la intersección entre tecnología y estrategia comercial. Hoy co-lidero OnService para seguir ese propósito: brindar herramientas simples, ágiles y orientadas al crecimiento real del negocio."
         }
       ],
       "footer": "Nuestro equipo está impulsado por la visión de redefinir la eficiencia y la calidad del servicio en la aviación, utilizando la IA como nuestra herramienta principal. Estamos orgullosos de la diversidad de habilidades y perspectivas que nos permiten innovar y entregar soluciones de vanguardia a nuestros clientes."
@@ -287,5 +507,6 @@
     }
   },
   "cta_brand_line": "Descubre cómo <brand /> puede transformar tu producto en 30 días",
-  "footer_copyright": "© 2025 Kiut. Todos los derechos reservados."
+  "footer_copyright": "© 2025 Kiut. Todos los derechos reservados.",
+  "footer_sponsor": "Desarrollado por AI Travel Technologies Inc."
 } 

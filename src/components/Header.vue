@@ -74,7 +74,7 @@
 
       <!-- Desktop contacto -->
       <a
-        href="#contact"
+        href="mailto:commercial@techskies11.com"
         class="hidden md:inline-block ml-2 px-4 py-1.5 rounded-lg font-semibold shadow-md border-0 bg-gradient-to-r from-violet-500 to-cyan-400 text-white text-sm mr-2 md:mr-4"
       >
         {{ $t('header.contact') }}

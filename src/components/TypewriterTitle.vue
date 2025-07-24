@@ -23,7 +23,6 @@
     <div :class="['title-container relative', fixedTitleHeight ? fixedTitleHeight : '']">
       <h2 class="typewriter-title text-3xl md:text-5xl font-extrabold bg-gradient-to-r from-violet-500 to-cyan-400 bg-clip-text text-transparent leading-tight">
         <span class="title-text">{{ displayedTitle }}</span>
-        <span class="typewriter-cursor" :class="{ 'invisible': !showCursor }" aria-hidden="true">|</span>
       </h2>
     </div>
     <p v-if="subtitleText && subtitlePosition === 'bottom'" :class="['typewriter-subtitle', subtitleMarginTop]">
@@ -69,29 +68,9 @@ function startTypewriter() {
   clearTimeout(typingTimeout);
   clearInterval(cursorInterval);
   clearInterval(resetInterval);
-  displayedTitle.value = '';
-  showCursor.value = true;
   const text = fullTitle.value;
-  let idx = 0;
-  function typeChar() {
-    if (idx <= text.length) {
-      displayedTitle.value = text.slice(0, idx);
-      idx++;
-      typingTimeout = setTimeout(typeChar, 38);
-    } else {
-      showCursor.value = true;
-      // Cursor parpadeante
-      cursorInterval = setInterval(() => {
-        showCursor.value = !showCursor.value;
-      }, 500);
-      // Reiniciar animación cada 4 segundos
-      resetInterval = setInterval(() => {
-        clearInterval(cursorInterval);
-        startTypewriter();
-      }, 4000);
-    }
-  }
-  typeChar();
+  displayedTitle.value = text;
+  showCursor.value = true;
 }
 
 onMounted(() => {

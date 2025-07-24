@@ -46,90 +46,52 @@
       </div>
 
       <!-- Grid de miembros del equipo -->
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
+      <div class="flex flex-wrap justify-center mb-16">
         <div 
           v-for="(member, index) in teamMembers" 
           :key="member.name"
-          class="group relative"
+          class="group relative w-full md:w-1/2 lg:w-1/3 p-4"
+          @click="userActive == member.name ? userActive = null : userActive = member.name"
         >
           <!-- Card del miembro -->
-          <div class="relative bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm rounded-3xl shadow-xl border border-violet-100 dark:border-gray-800 overflow-hidden transition-all duration-500 hover:scale-[1.02] hover:shadow-2xl flex flex-col h-[540px]">
-            <!-- Imagen con overlay gradiente -->
-            <div class="relative h-[260px] min-h-[260px] max-h-[260px] overflow-hidden flex items-center justify-center transition-transform duration-500">
-              <div class="absolute inset-0 bg-gradient-to-br from-violet-500/20 via-cyan-400/20 to-emerald-500/20 z-10"></div>
-              <template v-if="member.image">
-                <img
-                  :src="member.image"
-                  :alt="member.name"
-                  class="w-full h-full object-cover"
-                  @error="(e) => handleImageError(e, index)"
-                  @load="() => handleImageLoad(index)"
-                  :style="{ opacity: imageLoaded[index] ? 1 : 0, transition: 'opacity 0.7s cubic-bezier(0.4,0,0.2,1)' }"
-                />
-                <!-- Skeleton loader -->
-                <div v-if="!imageLoaded[index]" class="absolute inset-0 bg-gradient-to-br from-gray-200 to-gray-300 dark:from-gray-700 dark:to-gray-600 animate-pulse z-20"></div>
-              </template>
-              <template v-else>
-                <!-- Fallback avatar -->
-                <div class="flex items-center justify-center w-full h-full bg-gradient-to-br from-violet-100 to-cyan-100 dark:from-gray-800 dark:to-gray-700">
-                  <svg class="w-20 h-20 text-violet-400 dark:text-cyan-400" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 7.5a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.5 19.5a7.5 7.5 0 1115 0v.75a.75.75 0 01-.75.75h-13.5a.75.75 0 01-.75-.75v-.75z" />
-                  </svg>
-                </div>
-              </template>
-              <!-- Badge de posición -->
+          <div class="relative bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm rounded-3xl shadow-xl border border-violet-100 dark:border-gray-800 transition-all duration-500 hover:shadow-2xl flex flex-col h-full">
+            
+            <!-- Imagen -->
+            <div class="relative h-[260px] flex items-center justify-center duration-500">
+              <img
+                :src="member.image"
+                :alt="member.name"
+                class="w-full h-full object-cover rounded-t-3xl"
+                @error="(e) => handleImageError(e, index)"
+                @load="() => handleImageLoad(index)"
+                :style="{ opacity: imageLoaded[index] ? 1 : 0, transition: 'opacity 0.7s cubic-bezier(0.4,0,0.2,1)' }"
+              />
               <div class="absolute top-4 right-4 px-3 py-1 bg-gradient-to-r from-violet-500 to-cyan-400 text-white text-sm font-semibold rounded-full shadow-lg">
-                {{ t(member.positionKey) }}
+                {{ t(member.position) }}
               </div>
             </div>
+
             <!-- Contenido -->
-            <div class="flex flex-col flex-1 min-h-[100px] pb-6 px-6 pt-4 justify-start">
-              <div class="flex items-center justify-between min-h-[32px] mb-2 gap-3">
+            <div class="flex flex-col flex-1 pb-6 px-6 pt-4 justify-start">
+              <div class="flex items-center justify-between min-h-[32px] mb-1 gap-3">
                 <h3 class="text-2xl font-bold text-violet-500 dark:text-violet-400 transition-colors flex-1 truncate h-[32px] flex items-center">
                   {{ member.name }}
                 </h3>
-                <div class="flex items-center gap-2 pr-1">
-                  <span class="inline-flex items-center justify-center w-8 h-8 rounded-full bg-[#0077b5] text-white" aria-label="LinkedIn decorativo">
-                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
-                      <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
-                    </svg>
-                  </span>
-                  <span class="inline-flex items-center justify-center w-8 h-8 rounded-full bg-black text-white" aria-label="X decorativo">
-                    <svg class="w-4 h-4" viewBox="0 0 1200 1227" fill="none" xmlns="http://www.w3.org/2000/svg">
-                      <path d="M908.305 0H1090.6L704.305 521.684L1152 1227H796.222L523.222 813.158L211.111 1227H28.1944L437.083 667.211L0 0H364.889L610.861 375.474L908.305 0ZM845.25 1102.53H943.5L288.861 117.895H183.139L845.25 1102.53Z" fill="currentColor"/>
-                    </svg>
-                  </span>
-                </div>
               </div>
-              <p class="text-gray-600 dark:text-gray-300 text-base leading-relaxed min-h-[72px] flex">
-                {{ t(member.bioKey) }}
-              </p>
+              <strong class="text-gray-600 dark:text-gray-300 text-base leading-relaxed mb-1" v-html="t(member.positionKey)"></strong>
+              <div class="text-gray-600 dark:text-gray-300 text-base leading-relaxed" v-html="t(member.bioKey)" v-if="userActive == member.name"></div>
             </div>
-              <!-- Redes y expertise tags -->
-              <div class="flex flex-col pt-4 pb-4 border-t border-gray-200 dark:border-gray-700 min-h-[60px] h-[60px] justify-center items-center">
-                <div class="flex flex-nowrap gap-2 justify-center items-center w-full h-full mx-auto overflow-x-auto">
-                  <template v-if="member.tags && member.tags.length > 0">
-                    <span 
-                      v-for="tagKey in member.tags" 
-                      :key="tagKey"
-                      class="inline-flex items-center px-2 py-1 rounded-full text-xs font-semibold border shadow-sm transition-all duration-300 hover:scale-105 hover:shadow-md cursor-default bg-cyan-800/80 text-cyan-100 border-cyan-700/30 max-w-[150px] truncate"
-                      :title="t(tagKey)"
-                    >
-                      {{ t(tagKeyShort(tagKey) ) }}
-                    </span>
-                  </template>
-                </div>
-              </div>
           </div>
-          <!-- Efecto de brillo en hover -->
+
+          <!-- Hover effect -->
           <div class="absolute inset-0 rounded-3xl bg-gradient-to-r from-violet-500/0 via-cyan-400/0 to-emerald-500/0 opacity-0 group-hover:opacity-10 transition-opacity duration-500 pointer-events-none"></div>
         </div>
       </div>
 
       <!-- Footer con mensaje inspirador -->
-      <div class="text-center mt-16">
-        <div class="max-w-5xl mx-auto">
-          <p class="text-lg text-gray-600 dark:text-gray-300 leading-relaxed md:text-left md:leading-loose pb-8">
+      <div class="mt-16">
+        <div class="w-full">
+          <p class="text-lg text-gray-600 dark:text-gray-300 leading-relaxed md:leading-loose pb-8 text-center mx-auto max-w-4xl">
             {{ t('sections.team.footer') }}
           </p>
         </div>
@@ -139,7 +101,7 @@
 </template>
 
 <script setup>
-import { computed, ref, watch } from 'vue';
+import { computed, ref } from 'vue';
 import { useI18n, I18nT } from 'vue-i18n';
 import ParticleBackground from './ParticleBackground.vue';
 import TypewriterTitle from './TypewriterTitle.vue';
@@ -147,6 +109,8 @@ import teamData from '../data/team.js';
 import OnServiceAI from './OnServiceAI.vue';
 
 const { t, locale } = useI18n();
+
+const userActive = ref(null);
 
 // Datos del equipo desde las traducciones, asegurando array y filtrando vacíos
 const teamMembers = teamData;
@@ -256,5 +220,30 @@ img {
 .group:hover .relative {
   transform: translateY(-8px);
   transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Estilos para el carrusel */
+.overflow-hidden {
+  mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
+  -webkit-mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
+}
+
+/* Animación de transición suave */
+.transition-transform {
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Efectos hover para los controles */
+button:not(:disabled):hover {
+  transform: scale(1.05);
+}
+
+button:not(:disabled):active {
+  transform: scale(0.95);
+}
+
+/* Indicadores activos */
+button.bg-violet-500 {
+  box-shadow: 0 0 10px rgba(139, 92, 246, 0.5);
 }
 </style> 

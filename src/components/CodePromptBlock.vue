@@ -31,7 +31,6 @@ const props = defineProps({
 const tabs = computed(() => [
   { key: 'airline', label: props.prompts.airline.label },
   { key: 'travel', label: props.prompts.travel.label },
-  { key: 'it', label: props.prompts.it.label }
 ]);
 
 const animatedText = ref('');

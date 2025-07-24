@@ -9,13 +9,15 @@
               <div class="kai-loading-avatar">
                 <div class="kai-avatar-core"></div>
               </div>
-              <transition-group name="fade-phrase" tag="div">
-                <span :key="currentPhrase" class="main-loading-text block">{{ currentPhrase }}</span>
-              </transition-group>
+              <div class="main-loading-text-container">
+                <transition name="fade-phrase" mode="out-in">
+                  <span :key="currentPhrase" class="main-loading-text block">{{ currentPhrase }}</span>
+                </transition>
+              </div>
               <div class="flex items-center gap-2 text-gray-400 text-sm mt-1">
                 <span class="spinner"></span>
-                <span v-if="props.typing">Configurando personalidad de KAI...</span>
-                <span v-else-if="props.promptTyping">KAI está iniciando...</span>
+                <span v-if="props.typing">Configurando personalidad de tu bot...</span>
+                <span v-else-if="props.promptTyping">Tu bot está iniciando...</span>
                 <span v-else>Por favor, espera unos segundos...</span>
               </div>
             </div>
@@ -27,7 +29,7 @@
               <div v-for="(msg, idx) in compactedMessages" :key="'msg-' + idx" :class="['chat-row', msg.role === 'Agent' ? 'chat-agent' : 'chat-user']" :style="{ transitionDelay: (idx * 200) + 'ms' }">
                 <div :class="['chat-bubble', msg.role === 'Agent' ? 'kai' : 'user', msg.role === 'user' && idx === compactedMessages.length - 1 ? 'last' : '']">
                   <span v-if="msg.role === 'user'" class="chat-badge user-badge">User</span>
-                  <span v-else-if="msg.role === 'Agent'" class="chat-badge kai-badge">KAI</span>
+                  <span v-else-if="msg.role === 'Agent'" class="chat-badge kai-badge">Tu bot</span>
                   <span class="chat-text" v-if="msg.role === 'Agent'">
                     <span v-if="msg.partial">{{ msg.text }}<span v-if="showCursor && idx === typingMsgIdx && typingCharIdx > 0" class="editor-cursor">|</span></span>
                     <span v-else v-html="colorize(msg.text)"></span>
@@ -38,7 +40,7 @@
             </transition-group>
             <!-- Placeholder invisible para evitar saltos de layout -->
             <div class="invisible absolute pointer-events-none select-none h-0 overflow-hidden">
-              <div class="chat-row chat-agent"><div class="chat-bubble kai">KAI: Esta es una respuesta de ejemplo muy larga para reservar espacio y evitar saltos de layout en la UI. Puedes ajustar este texto según el máximo esperado.</div></div>
+              <div class="chat-row chat-agent"><div class="chat-bubble kai">Tu bot: Esta es una respuesta de ejemplo muy larga para reservar espacio y evitar saltos de layout en la UI. Puedes ajustar este texto según el máximo esperado.</div></div>
             </div>
           </div>
         </template>
@@ -268,8 +270,8 @@ watch(() => props.promptTyping, (val) => {
 });
 
 const phrases = [
-  'KAI está configurando su personalidad',
-  'Cargando IA de KAI',
+  'Tu bot está configurando su personalidad',
+  'Cargando IA de tu bot',
   'Preparando entorno conversacional'
 ];
 const currentPhraseIdx = ref(0);
@@ -643,14 +645,12 @@ onBeforeUnmount(() => {
   font-weight: bold;
 }
 .kai-thinking-placeholder .main-loading-text {
-  min-height: 2.2em;
   font-size: 1.15rem;
   color: #e5e7eb;
   font-weight: 500;
   text-align: center;
   letter-spacing: 0.01em;
   margin-bottom: 0.7rem;
-  transition: opacity 0.4s;
 }
 .spinner {
   width: 1em;
@@ -668,6 +668,35 @@ onBeforeUnmount(() => {
 }
 .fade-slide-scale-block-enter-active, .fade-slide-scale-block-leave-active {
   transition: all 0.15s cubic-bezier(.4,1.6,.6,1);
+}
+
+/* Estilos para la transición de frases de carga */
+.main-loading-text-container {
+  min-height: 2.2em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.fade-phrase-enter-active,
+.fade-phrase-leave-active {
+  transition: all 0.3s ease-in-out;
+}
+
+.fade-phrase-enter-from {
+  opacity: 0;
+  transform: translateY(10px);
+}
+
+.fade-phrase-leave-to {
+  opacity: 0;
+  transform: translateY(-10px);
+}
+
+.fade-phrase-enter-to,
+.fade-phrase-leave-from {
+  opacity: 1;
+  transform: translateY(0);
 }
 
 

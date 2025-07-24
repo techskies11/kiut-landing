@@ -21,7 +21,6 @@
         <div class="w-full mb-8">
           <TypewriterTitle
             i18nKey="about.title"
-            subtitleI18nKey="about.subtitle"
             :badge="{
               icon: `<svg class='w-4 h-4' fill='none' stroke='currentColor' stroke-width='2' viewBox='0 0 24 24'><path stroke-linecap='round' stroke-linejoin='round' d='M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z'/></svg>`,
               text: 'Pioneros en IA y Aviación',
@@ -125,22 +124,32 @@
       </div>
       
       <!-- Imagen fija (derecha) solo visible cuando la sección está en viewport -->
-      <transition name="fade-slide-scale-bg" mode="out-in">
-        <div v-if="showImage" class="relative w-2/5 flex items-center justify-center ml-0 z-0">
+      <div v-if="showImage" class="relative w-2/5 flex items-center justify-center ml-0 z-0">
           <div ref="imageBlockRef"
             class="image-block relative rounded-3xl shadow-2xl overflow-visible"
             :class="[imageLoaded ? 'border-4 border-violet-200 dark:border-cyan-700 bg-white/70 dark:bg-gray-900/70' : 'border-0 bg-transparent']"
-            :style="{width: isLargeScreen ? '570px' : '490px', height: isLargeScreen ? '570px' : '490px', maxHeight: 'calc(100vh - 120px)', opacity: imageLoaded ? 1 : 0, transition: 'opacity 0.5s'}">
-            <transition name="fade-slide-up-image-smooth" mode="out-in">
-              <img
-                :key="steps[activeStep].image"
-                :src="steps[activeStep].image"
-                :alt="steps[activeStep].title"
-                class="w-full h-full object-cover rounded-3xl transition-all duration-500"
-                @load="imageLoaded = true"
-                @before-enter="imageLoaded = false"
-              />
-            </transition>
+            :style="{width: isLargeScreen ? '570px' : '490px', height: isLargeScreen ? '570px' : '490px', maxHeight: 'calc(100vh - 120px)', opacity: imageLoaded ? 1 : 0, transition: 'opacity 0.2s'}">
+            <img
+              :key="steps[activeStep].image"
+              :src="steps[activeStep].image"
+              :alt="steps[activeStep].title()"
+              class="w-full h-full object-cover rounded-3xl transition-opacity duration-200"
+              @load="handleImageLoad"
+              @error="handleImageError"
+              :style="{ opacity: imageLoaded ? 1 : 0 }"
+            />
+            
+            <!-- Placeholder mientras carga la imagen -->
+            <div 
+              v-if="!imageLoaded" 
+              class="absolute inset-0 bg-gradient-to-br from-violet-100 to-cyan-100 dark:from-violet-900/20 dark:to-cyan-900/20 rounded-3xl flex items-center justify-center"
+            >
+              <div class="animate-pulse">
+                <svg class="w-16 h-16 text-violet-400 dark:text-violet-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                </svg>
+              </div>
+            </div>
             <!-- Círculos decorativos con iconos -->
             <div class="decorative-circles pointer-events-none">
               <div v-for="(icon, i) in stepIcons[activeStep]" :key="i" class="circle-icon" :style="circleIconStyle(i)">
@@ -149,7 +158,7 @@
             </div>
           </div>
         </div>
-      </transition>
+      </div>
     </div>
     
     <!-- Mobile Layout (menor a md) restaurado -->
@@ -224,7 +233,6 @@
         </div>
       </div>
     </div>
-  </div>
   </section>
 </template>
 
@@ -251,28 +259,28 @@ const steps = [
     title: () => t('aboutStepper.steps[0].title'),
     descriptionParts: () => t('aboutStepper.steps[0].description').split('{brand}'),
     badge: () => t('aboutStepper.steps[0].badge'),
-    image: "/mision-stepper2.png",
+    image: "aboutUs/first.jpeg",
   },
   {
     key: "mision",
     title: () => t('aboutStepper.steps[1].title'),
     descriptionParts: () => [t('aboutStepper.steps[1].description'), ''],
     badge: () => t('aboutStepper.steps[1].badge'),
-    image: "/ia-generated-02.png",
+    image: "aboutUs/second.jpeg",
   },
   {
     key: "vision",
     title: () => t('aboutStepper.steps[2].title'),
     descriptionParts: () => [t('aboutStepper.steps[2].description'), ''],
     badge: () => t('aboutStepper.steps[2].badge'),
-    image: "/vision-stepper3.png",
+    image: "aboutUs/third.jpeg",
   },
   {
     key: "valores",
     title: () => t('aboutStepper.steps[3].title'),
     descriptionParts: () => [t('aboutStepper.steps[3].description'), ''],
     badge: () => t('aboutStepper.steps[3].badge'),
-    image: "/ia-generated-04.png",
+    image: "aboutUs/fourth.jpeg",
   },
 ];
 const activeStep = ref(0);
@@ -362,16 +370,6 @@ function handleDesktopScroll() {
   if (window.innerWidth < 768) return;
   // 1. Visibilidad de la imagen (ajustado para aparecer/desaparecer más temprano)
   const viewportCenter = window.scrollY + window.innerHeight / 2;
-  if (aboutSection.value) {
-    const sectionRect = aboutSection.value.getBoundingClientRect();
-    const sectionTop = window.scrollY + sectionRect.top;
-    const sectionBottom = sectionTop + sectionRect.height;
-    const sectionHeight = sectionRect.height;
-    const min = sectionTop + sectionHeight * 0.15;
-    const max = sectionTop + sectionHeight * 0.98;
-    showImage.value = viewportCenter > min && viewportCenter < max;
-  }
-  // 2. Step activo según scroll
   let minDist = Infinity;
   let closestIdx = 0;
   for (let i = 0; i < stepRefs.length; i++) {
@@ -454,6 +452,23 @@ function handleMobileScroll() {
   mobileActiveStep.value = Math.max(0, Math.min(activeIndex, steps.length - 1));
 }
 
+// Watcher para el cambio de step activo
+watch(activeStep, (newStep) => {
+  // Resetear el estado de carga de imagen cuando cambia el step
+  imageLoaded.value = false;
+  
+  // Precargar la nueva imagen
+  const newImage = new Image();
+  newImage.onload = () => {
+    imageLoaded.value = true;
+  };
+  newImage.onerror = () => {
+    console.error('Error loading image for step:', newStep, steps[newStep].image);
+    imageLoaded.value = true; // Mostrar de todas formas
+  };
+  newImage.src = steps[newStep].image;
+});
+
 watch(() => props.forceFirstStep && props.forceFirstStep.value, async (val) => {
   if (val) {
     activeStep.value = 0
@@ -466,6 +481,20 @@ watch(() => props.forceFirstStep && props.forceFirstStep.value, async (val) => {
 })
 
 onMounted(() => {
+  // Asegurar que la imagen esté visible desde el inicio
+  showImage.value = true;
+  
+  // Precargar la primera imagen
+  const firstImage = new Image();
+  firstImage.onload = () => {
+    imageLoaded.value = true;
+  };
+  firstImage.onerror = () => {
+    console.error('Error preloading first image:', steps[0].image);
+    imageLoaded.value = true; // Mostrar de todas formas
+  };
+  firstImage.src = steps[0].image;
+  
   window.addEventListener('scroll', handleDesktopScroll, { passive: true });
   handleDesktopScroll();
 });
@@ -477,40 +506,23 @@ onBeforeUnmount(() => {
 // En el div de la imagen sticky:
 // <div ref="imageBlockRef" class="image-block ..." :style="{width: isLargeScreen ? '600px' : '520px', height: isLargeScreen ? '600px' : '520px', maxHeight: 'calc(100vh - 120px)', opacity: imageLoaded ? 1 : 0, transition: 'opacity 0.5s'}">
 const imageLoaded = ref(false);
+
+// Funciones de manejo de imágenes
+const handleImageLoad = () => {
+  imageLoaded.value = true;
+};
+
+const handleImageError = (event) => {
+  console.error('Error loading image:', event.target.src);
+  // Fallback a una imagen por defecto si es necesario
+  event.target.src = '/ia-generated-1.png';
+  imageLoaded.value = true;
+};
 </script>
 
 <style scoped>
-.fade-slide-up-image-smooth-enter-active,
-.fade-slide-up-image-smooth-leave-active {
-  transition: opacity 0.5s cubic-bezier(0.4, 0, 0.2, 1),
-    transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-}
-.fade-slide-up-image-smooth-enter-from,
-.fade-slide-up-image-smooth-leave-to {
-  opacity: 0;
-  transform: translateY(120px) scale(0.88);
-}
-.fade-slide-up-image-smooth-enter-to,
-.fade-slide-up-image-smooth-leave-from {
-  opacity: 1;
-  transform: translateY(0) scale(1);
-}
 
-.fade-slide-scale-bg-enter-active,
-.fade-slide-scale-bg-leave-active {
-  transition: opacity 0.5s cubic-bezier(0.4, 0, 0.2, 1),
-    transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-}
-.fade-slide-scale-bg-enter-from,
-.fade-slide-scale-bg-leave-to {
-  opacity: 0;
-  transform: translateY(60px) scale(0.95);
-}
-.fade-slide-scale-bg-enter-to,
-.fade-slide-scale-bg-leave-from {
-  opacity: 1;
-  transform: translateY(0) scale(1);
-}
+
 
 .grow-title {
   animation: growFontTitle 0.7s cubic-bezier(0.4, 0, 0.2, 1);
@@ -662,6 +674,17 @@ const imageLoaded = ref(false);
   left: 0; right: 0;
   margin: auto;
   transition: transform 0.6s cubic-bezier(.4,0,.2,1);
+  min-height: 400px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.image-block img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: cover;
+  border-radius: 1.5rem;
 }
 
 .fade-bounce-dot-enter-active {
@@ -673,21 +696,7 @@ const imageLoaded = ref(false);
   100% { opacity: 1; transform: scale(1) translateY(0); }
 }
 
-.fade-slide-up-image-fast-enter-active,
-.fade-slide-up-image-fast-leave-active {
-  transition: opacity 0.2s cubic-bezier(0.4, 0, 0.2, 1),
-    transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-}
-.fade-slide-up-image-fast-enter-from,
-.fade-slide-up-image-fast-leave-to {
-  opacity: 0;
-  transform: translateY(120px) scale(0.88);
-}
-.fade-slide-up-image-fast-enter-to,
-.fade-slide-up-image-fast-leave-from {
-  opacity: 1;
-  transform: translateY(0) scale(1);
-}
+
 
 @keyframes pulseLine {
   0% { filter: brightness(1); box-shadow: 0 0 0 0 #38bdf855; }
