@@ -1,0 +1,35 @@
+# Mejores Prácticas Vue 3 - Kiut Landing
+
+## Estructura de Componentes
+- Usar `<script setup>` para todos los componentes
+- Importar componentes al inicio del script
+- Usar `ref()` y `reactive()` para estado reactivo
+- Implementar `defineProps()` y `defineEmits()` para comunicación entre componentes
+
+## Convenciones de Estilo
+- Usar Tailwind CSS para todos los estilos
+- Aplicar clases de transición: `transition-colors duration-300`
+- Implementar modo oscuro: `dark:bg-gray-900 dark:text-white`
+- Usar la paleta OnService.AI definida en [tailwind.config.js](mdc:tailwind.config.js)
+
+## Animaciones y Transiciones
+- Usar las animaciones CSS definidas en [src/App.vue](mdc:src/App.vue)
+- Implementar `animate-fade-in-up`, `animate-fade-in-right`, `animate-float`
+- Usar transiciones Vue con `transition` y `transition-group`
+- Aplicar `cubic-bezier(.4,0,.2,1)` para transiciones suaves
+
+## Internacionalización
+- Usar `vue-i18n` para todos los textos
+- Referenciar traducciones desde [src/locales/](mdc:src/locales/)
+- Implementar `LanguageToggle` para cambio de idioma
+- Mantener consistencia en las claves de traducción
+
+## Performance
+- Lazy load de componentes pesados
+- Usar `v-if` vs `v-show` apropiadamente
+- Implementar `key` en listas para optimizar re-renders
+- Optimizar imágenes con formatos modernos (WebP, AVIF)
+description:
+globs:
+alwaysApply: true
+---

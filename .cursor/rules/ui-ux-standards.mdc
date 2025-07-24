@@ -1,0 +1,47 @@
+# Estándares UI/UX - Kiut Landing
+
+## Paleta de Colores OnService.AI
+- **Violeta Principal**: `#7C3AED` (onservice-violet)
+- **Cian Acento**: `#38BDF8` (onservice-cyan)
+- **Fondos**: Blanco (`#FFFFFF`) y Gris oscuro (`#111827`)
+- **Textos**: Gris oscuro (`#1F2937`) y Blanco (`#F9FAFB`)
+
+## Tipografía
+- **Fuente Principal**: Inter (definida en [tailwind.config.js](mdc:tailwind.config.js))
+- **Fuentes Secundarias**: Figtree, Rubik
+- **Jerarquía**: Usar pesos 300-900 apropiadamente
+- **Legibilidad**: Contraste mínimo 4.5:1
+
+## Componentes de Diseño
+- **Botones**: Bordes redondeados, estados hover, transiciones suaves
+- **Cards**: Sombras sutiles, bordes redondeados, padding consistente
+- **Formularios**: Estados focus, validación visual, feedback inmediato
+- **Navegación**: Indicadores activos, transiciones fluidas
+
+## Modo Oscuro
+- Implementar toggle en [DarkToggle.vue](mdc:src/components/DarkToggle.vue)
+- Transiciones suaves entre modos
+- Mantener contraste y legibilidad
+- Usar colores apropiados para cada modo
+
+## Animaciones y Micro-interacciones
+- **Entrada**: `animate-fade-in-up` para secciones
+- **Hover**: Efectos sutiles en botones y cards
+- **Scroll**: Animaciones basadas en scroll
+- **Loading**: Estados de carga apropiados
+
+## Responsive Design
+- **Mobile First**: Diseñar para móviles primero
+- **Breakpoints**: Usar breakpoints de Tailwind
+- **Touch Targets**: Mínimo 44px para elementos táctiles
+- **Gestos**: Implementar gestos nativos cuando sea apropiado
+
+## Accesibilidad
+- **ARIA Labels**: Implementar en elementos interactivos
+- **Keyboard Navigation**: Navegación completa por teclado
+- **Focus Management**: Indicadores de focus visibles
+- **Screen Readers**: Contenido semántico apropiado
+description:
+globs:
+alwaysApply: true
+---

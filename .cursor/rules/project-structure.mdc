@@ -1,0 +1,28 @@
+# Estructura del Proyecto Kiut Landing
+
+## Arquitectura Principal
+- **Entry Point**: [index.html](mdc:index.html) - Configuración SEO y metadatos
+- **App Principal**: [src/App.vue](mdc:src/App.vue) - Componente raíz con layout principal
+- **Configuración**: [tailwind.config.js](mdc:tailwind.config.js) - Paleta de colores OnService.AI
+- **Dependencias**: [package.json](mdc:package.json) - Vue 3 + Vite + Tailwind CSS 4
+
+## Organización de Componentes
+- **Secciones Principales**: Hero, Demo, About, Use Cases, Team, Clients, Footer
+- **Componentes UI**: Header, DarkToggle, LanguageToggle, ParticleBackground
+- **Componentes Interactivos**: AboutStepper, CodePromptBlock, AgentResponseBlock
+- **Assets**: Imágenes en `/public/` organizadas por categorías (team/, aboutUs/)
+
+## Convenciones de Nomenclatura
+- Componentes: PascalCase (ej: `HeroSection.vue`)
+- Archivos de datos: camelCase (ej: `team.js`)
+- Locales: códigos de idioma (ej: `es.json`, `en.json`)
+
+## Estructura de Archivos Críticos
+- [src/main.js](mdc:src/main.js) - Configuración de Vue y i18n
+- [src/style.css](mdc:src/style.css) - Estilos globales y animaciones
+- [src/data/team.js](mdc:src/data/team.js) - Datos del equipo
+- [src/locales/](mdc:src/locales/) - Archivos de internacionalización
+description:
+globs:
+alwaysApply: true
+---
