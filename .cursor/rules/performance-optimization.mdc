@@ -1,0 +1,50 @@
+# Optimización de Performance - Kiut Landing
+
+## Core Web Vitals
+- **LCP (Largest Contentful Paint)**: < 2.5s
+- **FID (First Input Delay)**: < 100ms
+- **CLS (Cumulative Layout Shift)**: < 0.1
+
+## Optimización de Imágenes
+- Implementar lazy loading con `loading="lazy"`
+- Optimizar tamaños para diferentes dispositivos
+- Comprimir imágenes sin pérdida de calidad
+
+## JavaScript y CSS
+- **Code Splitting**: Lazy load de componentes pesados
+- **Tree Shaking**: Eliminar código no utilizado
+- **Minificación**: Comprimir en producción
+- **Caching**: Implementar estrategias de cache apropiadas
+
+## Optimización de Fuentes
+- Preconnect a Google Fonts como en [index.html](mdc:index.html)
+- Usar `font-display: swap` para mejor rendimiento
+- Cargar solo los pesos necesarios
+- Considerar self-hosting para fuentes críticas
+
+## Componentes Pesados
+- [ParticleBackground.vue](mdc:src/components/ParticleBackground.vue) - Lazy load
+- [CircuitBackground.vue](mdc:src/components/CircuitBackground.vue) - Optimizar Three.js
+- [AboutStepper.vue](mdc:src/components/AboutStepper.vue) - Virtualizar si es necesario
+
+## Estrategias de Carga
+- **Critical CSS**: Inline CSS crítico
+- **Preload**: Recursos críticos
+- **Prefetch**: Recursos futuros
+- **DNS Prefetch**: Para dominios externos
+
+## Monitoreo
+- Usar Lighthouse para auditorías
+- Implementar Real User Monitoring (RUM)
+- Monitorear métricas en producción
+- Optimizar basado en datos reales
+
+## Build Optimization
+- Usar Vite para desarrollo rápido
+- Implementar PWA features si es necesario
+- Optimizar bundle size
+- Usar CDN para assets estáticos
+description:
+globs:
+alwaysApply: true
+---

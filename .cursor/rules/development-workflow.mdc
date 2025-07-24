@@ -1,0 +1,52 @@
+# Flujo de Desarrollo - Kiut Landing
+
+## Comandos Principales
+```bash
+# Desarrollo local
+npm run dev
+
+# Build de producción
+npm run build
+
+# Preview del build
+npm run preview
+```
+
+## Estructura de Desarrollo
+- **Framework**: Vue 3 con Composition API
+- **Build Tool**: Vite para desarrollo rápido
+- **Styling**: Tailwind CSS 4 con configuración personalizada
+- **i18n**: Vue I18n para internacionalización
+
+## Archivos de Configuración Críticos
+- [vite.config.js](mdc:vite.config.js) - Configuración de Vite
+- [tailwind.config.js](mdc:tailwind.config.js) - Configuración de Tailwind
+- [package.json](mdc:package.json) - Dependencias y scripts
+
+## Organización de Assets
+- **Imágenes**: `/public/` organizadas por categorías
+- **Iconos**: SVG preferidos para escalabilidad
+- **Fuentes**: Google Fonts (Inter, Figtree, Rubik)
+- **Optimización**: Usar formatos modernos (WebP, AVIF)
+
+## Componentes Principales
+- [Header.vue](mdc:src/components/Header.vue) - Navegación principal
+- [HeroSection.vue](mdc:src/components/HeroSection.vue) - Sección hero
+- [DemoSection.vue](mdc:src/components/DemoSection.vue) - Demostración interactiva
+- [AboutStepper.vue](mdc:src/components/AboutStepper.vue) - Stepper de información
+
+## Internacionalización
+- **Archivos**: [src/locales/es.json](mdc:src/locales/es.json), [src/locales/en.json](mdc:src/locales/en.json)
+- **Componente**: [LanguageToggle.vue](mdc:src/components/LanguageToggle.vue)
+- **Configuración**: [src/main.js](mdc:src/main.js)
+
+## Mejores Prácticas de Desarrollo
+- Usar `<script setup>` en todos los componentes
+- Implementar lazy loading para componentes pesados
+- Mantener consistencia en nomenclatura
+- Documentar props y emits
+- Usar TypeScript para mejor DX (opcional)
+description:
+globs:
+alwaysApply: true
+---

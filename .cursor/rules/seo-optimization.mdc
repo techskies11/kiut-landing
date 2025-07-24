@@ -1,0 +1,41 @@
+# Optimización SEO - Kiut Landing
+
+## Metadatos Principales
+- **Título**: "OnService.AI | AI Solution for Airlines"
+- **Descripción**: "A solution powered by artificial intelligence that optimizes sales and customer service for airlines."
+- **Keywords**: Incluir términos como "ai", "artificial intelligence", "airlines", "customer service", "sales optimization"
+
+## Open Graph y Twitter Cards
+- Implementar todas las meta tags de OG y Twitter
+- Usar imagen optimizada: `og-image.jpg`
+- URL canónica: `https://www.onservice.ai/`
+
+## Schema.org Structured Data
+- Implementar `SoftwareApplication` schema como en [index.html](mdc:index.html)
+- Incluir información de la organización
+- Agregar `applicationCategory` y `applicationSubCategory`
+
+## Optimización Técnica
+- Usar `lang="es"` para español como idioma principal
+- Implementar `robots.txt` y `sitemap.xml`
+- Optimizar Core Web Vitals (LCP, FID, CLS)
+- Usar lazy loading para imágenes
+- Implementar preconnect para fuentes externas
+
+## Contenido SEO
+- Usar headings jerárquicos (H1, H2, H3)
+- Implementar alt text descriptivo en todas las imágenes
+- Incluir palabras clave naturalmente en el contenido
+- Optimizar URLs internas y enlaces
+- Implementar breadcrumbs si es necesario
+
+## Performance SEO
+- Minimizar CSS y JavaScript
+- Optimizar imágenes (WebP, AVIF)
+- Implementar caching apropiado
+- Usar CDN para assets estáticos
+- Monitorear PageSpeed Insights
+description:
+globs:
+alwaysApply: true
+---
