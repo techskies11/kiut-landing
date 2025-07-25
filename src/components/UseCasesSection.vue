@@ -82,20 +82,20 @@
 
       <!-- Tiles de métricas -->
       <div class="grid grid-cols-2 md:grid-cols-4 gap-8 mb-12">
-        <div class="text-center p-8 rounded-3xl bg-white/80 dark:bg-white/10 backdrop-blur-lg border border-gray-200 dark:border-white/10 shadow-xl hover:shadow-2xl hover:-translate-y-1 transition-all duration-300">
-          <div class="text-3xl md:text-4xl font-bold text-violet-600 dark:text-violet-400 mb-2">+80</div>
+        <div class="text-center p-5 md:p-8 rounded-3xl bg-white/80 dark:bg-white/10 backdrop-blur-lg border border-gray-200 dark:border-white/10 shadow-xl hover:shadow-2xl hover:-translate-y-1 transition-all duration-300">
+          <div class="text-2xl md:text-3xl font-bold text-violet-600 dark:text-violet-400 mb-2">+80</div>
           <div class="text-sm text-gray-800 dark:text-gray-300">{{ t('usecases.metrics.languages') }}</div>
         </div>
-        <div class="text-center p-8 rounded-3xl bg-white/80 dark:bg-white/10 backdrop-blur-lg border border-gray-200 dark:border-white/10 shadow-xl hover:shadow-2xl hover:-translate-y-1 transition-all duration-300">
-          <div class="text-3xl md:text-4xl font-bold text-violet-600 dark:text-violet-400 mb-2">{{ t('usecases.metrics.connection') }}</div>
+        <div class="text-center p-5 md:p-8 rounded-3xl bg-white/80 dark:bg-white/10 backdrop-blur-lg border border-gray-200 dark:border-white/10 shadow-xl hover:shadow-2xl hover:-translate-y-1 transition-all duration-300">
+          <div class="text-2xl md:text-3xl font-bold text-violet-600 dark:text-violet-400 mb-2">{{ t('usecases.metrics.connection') }}</div>
           <div class="text-sm text-gray-800 dark:text-gray-300">{{ t('usecases.metrics.omnichannel') }}</div>
         </div>
-        <div class="text-center p-8 rounded-3xl bg-white/80 dark:bg-white/10 backdrop-blur-lg border border-gray-200 dark:border-white/10 shadow-xl hover:shadow-2xl hover:-translate-y-1 transition-all duration-300">
-          <div class="text-3xl md:text-4xl font-bold text-violet-600 dark:text-violet-400 mb-2">{{ t('usecases.metrics.textAndVoice') }}</div>
+        <div class="text-center p-5 md:p-8 rounded-3xl bg-white/80 dark:bg-white/10 backdrop-blur-lg border border-gray-200 dark:border-white/10 shadow-xl hover:shadow-2xl hover:-translate-y-1 transition-all duration-300">
+          <div class="text-2xl md:text-3xl font-bold text-violet-600 dark:text-violet-400 mb-2">{{ t('usecases.metrics.textAndVoice') }}</div>
           <div class="text-sm text-gray-800 dark:text-gray-300">{{ t('usecases.metrics.multimodal') }}</div>
         </div>
-        <div class="text-center p-8 rounded-3xl bg-white/80 dark:bg-white/10 backdrop-blur-lg border border-gray-200 dark:border-white/10 shadow-xl hover:shadow-2xl hover:-translate-y-1 transition-all duration-300">
-          <div class="text-3xl md:text-4xl font-bold text-violet-600 dark:text-violet-400 mb-2">24/7</div>
+        <div class="text-center p-5 md:p-8 rounded-3xl bg-white/80 dark:bg-white/10 backdrop-blur-lg border border-gray-200 dark:border-white/10 shadow-xl hover:shadow-2xl hover:-translate-y-1 transition-all duration-300">
+          <div class="text-2xl md:text-3xl font-bold text-violet-600 dark:text-violet-400 mb-2">24/7</div>
           <div class="text-sm text-gray-800 dark:text-gray-300">{{ t('usecases.metrics.availability') }}</div>
         </div>
       </div>

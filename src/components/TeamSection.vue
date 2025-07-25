@@ -1,5 +1,5 @@
 <template>
-  <section id="team" class="relative py-16 bg-white dark:bg-gray-950 transition-colors duration-300 overflow-hidden">
+  <section id="team" class="relative py-16 bg-white dark:bg-gray-950 transition-colors duration-300">
     <!-- Particle background -->
     <div class="absolute inset-0 w-full h-full z-0 pointer-events-none select-none">
       <ParticleBackground />
