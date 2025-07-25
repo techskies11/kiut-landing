@@ -32,7 +32,7 @@
                     aria-label="OnService.AI Home"
       >
         <img
-          src="/logo.png"
+          src="/logo-v2.png"
                       alt="OnService.AI logo"
           class="h-10 md:h-10 w-auto transition-all duration-200 invert dark:invert-0"
           loading="eager"

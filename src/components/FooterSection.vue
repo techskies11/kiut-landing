@@ -3,7 +3,7 @@
     <div class="w-full p-6 md:px-10 flex justify-between items-center flex-col md:flex-row gap-2 md:items-end">
       <div class="flex flex-col gap-2">
         <figure class="flex items-center gap-2">
-          <img src="/logo.png" alt="OnService.AI" class="w-10 invert dark:invert-0">
+          <img src="/logo-v2.png" alt="OnService.AI" class="w-10 invert dark:invert-0">
           <strong class="text-xl font-bold">OnService.AI</strong>
         </figure>
         <p class="opacity-70">
